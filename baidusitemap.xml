@@ -3,9 +3,11 @@
 
 
     
+    
+    
   <url>
     <loc>http://sunxiaodou.com/2017/07/07/AndroidStudio%E4%B8%AD%E4%BD%BF%E7%94%A8Aliyun%20Maven/</loc>
-    <lastmod>2017-07-07T05:02:21.000Z</lastmod>
+    <lastmod>2017-07-07T05:21:28.000Z</lastmod>
     <data>
         <display>
         <title>AndroidStudio中使用Aliyun Maven</title>
@@ -13,6 +15,10 @@
         
         <tag>android</tag>
          
+        <tag>androidstudio</tag>
+         
+        <tag>maven</tag>
+         
          
            
         </display>
@@ -20,22 +26,5 @@
     </url>
 
     
-    
-    
-    
-  <url>
-    <loc>http://sunxiaodou.com/2017/07/07/hello-world/</loc>
-    <lastmod>2017-07-07T01:33:33.000Z</lastmod>
-    <data>
-        <display>
-        <title>Hello World</title>
-        <pubTime>2017-07-07T00:29:11.000Z</pubTime>
-        
-         
-           
-        </display>
-    </data>
-    </url>
-
     
 </urlset>
