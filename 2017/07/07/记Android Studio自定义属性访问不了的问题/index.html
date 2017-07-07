@@ -15,17 +15,22 @@
 
 
 
-<meta name="description" content="AndroidStudio中使用Aliyun Maven">
-<meta name="keywords" content="android,androidstudio,maven">
+<meta name="description" content="记Android Studio自定义属性访问不了的问题">
+<meta name="keywords" content="android,androidstudio,自定义属性">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:url" content="http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/index.html">
+<meta property="og:title" content="记Android Studio自定义属性访问不了的问题">
+<meta property="og:url" content="http://sunxiaodou.com/2017/07/07/记Android Studio自定义属性访问不了的问题/index.html">
 <meta property="og:site_name" content="一壶浊酒空对月">
-<meta property="og:description" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:updated_time" content="2017-07-07T06:54:58.000Z">
+<meta property="og:description" content="记Android Studio自定义属性访问不了的问题">
+<meta property="og:image" content="http://img.blog.csdn.net/20160530101952575">
+<meta property="og:image" content="http://img.blog.csdn.net/20160530102219469">
+<meta property="og:image" content="http://img.blog.csdn.net/20160530102257942">
+<meta property="og:image" content="http://img.blog.csdn.net/20160530102544553">
+<meta property="og:updated_time" content="2017-07-07T09:38:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AndroidStudio中使用Aliyun Maven">
-<meta name="twitter:description" content="AndroidStudio中使用Aliyun Maven">
+<meta name="twitter:title" content="记Android Studio自定义属性访问不了的问题">
+<meta name="twitter:description" content="记Android Studio自定义属性访问不了的问题">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160530101952575">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -57,7 +62,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>AndroidStudio中使用Aliyun Maven | 一壶浊酒空对月</title>
+<title>记Android Studio自定义属性访问不了的问题 | 一壶浊酒空对月</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -238,11 +243,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-AndroidStudio中使用Aliyun Maven" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-记Android Studio自定义属性访问不了的问题" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" class="article-date">
-      <time datetime="2017-07-07T04:47:52.000Z" itemprop="datePublished">2017-07-07</time>
+      <a href="/2017/07/07/记Android Studio自定义属性访问不了的问题/" class="article-date">
+      <time datetime="2017-07-07T09:37:40.000Z" itemprop="datePublished">2017-07-07</time>
 </a>
 
 
@@ -257,7 +262,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      AndroidStudio中使用Aliyun Maven
+      记Android Studio自定义属性访问不了的问题
     </h1>
   
 
@@ -268,7 +273,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/自定义属性/">自定义属性</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -281,12 +286,20 @@
         <script src="/assets/js/APlayer.min.js"> </script><contents>
 
 <blockquote>
-<p>转载请注明出处<br><a href="http://blog.csdn.net/guodongAndroid/article/details/74598095" target="_blank" rel="external">http://blog.csdn.net/guodongAndroid/article/details/74598095</a><br>本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
+<p>转载请注明出处:<br><a href="http://blog.csdn.net/guodongAndroid/article/details/51536091" target="_blank" rel="external">http://blog.csdn.net/guodongAndroid/article/details/51536091</a><br>本文来自:<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
 </blockquote>
-<h2 id="AndroidStudio中使用Aliyun-Maven"><a href="#AndroidStudio中使用Aliyun-Maven" class="headerlink" title="AndroidStudio中使用Aliyun Maven"></a>AndroidStudio中使用Aliyun Maven</h2><p>Aliyun Maven地址：<a href="http://maven.aliyun.com" target="_blank" rel="external">http://maven.aliyun.com</a></p>
-<p>在项目级别的build.gradle中添加如下Maven地址：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:2.3.3'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="86" src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe></contents>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>在Eclipse中对于自定义属性的引用是在根布局文件中声明一个命名空间，比如：xmlns：xxx=“<a href="http://schemas.android.com/apk/res/项目包名”。其中xxx是自己定义的，项目包名就是Manifest文件中的package。而在Android" target="_blank" rel="external">http://schemas.android.com/apk/res/项目包名”。其中xxx是自己定义的，项目包名就是Manifest文件中的package。而在Android</a> Studio中声明命名控件和在Eclipse中类似，例如：xmlns:wzq=”<a href="http://schemas.android.com/apk/res-auto&quot;，" target="_blank" rel="external">http://schemas.android.com/apk/res-auto&quot;，</a><br>只是res后面不同。但是这样带来了一个麻烦！</p>
+<h2 id="二、解决"><a href="#二、解决" class="headerlink" title="二、解决"></a>二、解决</h2><p>AS这样做会带来什么麻烦呢？即，所有的自定义属性堆积在一起，导入的时候，就会很混乱。Google为了解决这个问题，就将要使用自定义View或ViewGroup类名与属性文件内的声明命名设置关联，如图：<br><img src="http://img.blog.csdn.net/20160530101952575" alt="这里写图片描述"></p>
+<p>意思是类名要和自定义属性文件的命名一致。</p>
+<p>如果不一致会出现情况呢？我们尝试一下，更改自定义属性文件的命名，如图：<img src="http://img.blog.csdn.net/20160530102219469" alt="这里写图片描述"></p>
+<p>出现的情况，如下图：<br><img src="http://img.blog.csdn.net/20160530102257942" alt="这里写图片描述"></p>
+<p>咦，自定义属性怎么没有了？这就是自定义View或ViewGroup类名与属性文件内的声明命名不一致，AS找不到关联。</p>
+<p>知道了问题所在，我们在改回来试试，如图：<br><img src="http://img.blog.csdn.net/20160530102544553" alt="这里写图片描述"></p>
+<p>哈，太棒了，自定义属性又回来了。</p>
+<p>还有一点哦，在自定义View或ViewGroup涉及onSaveInstanceState()或onRestoreInstanceState()时，如果自定义的View或ViewGroup没有设置一个id的话，状态是无法恢复的。</p>
+<p>这是一个简单的五子棋小游戏，根据鸿洋大神教程所写。</p>
+<p>谢谢！<br><a href="https://github.com/guodongAndroid/GameWuZiQi.git" target="_blank" rel="external">源码地址</a></p>
+</contents>
       
     </div>
     
@@ -294,13 +307,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/">AndroidStudio中使用Aliyun Maven</a></p>
+        <p><span>本文标题:</span><a href="/2017/07/07/记Android Studio自定义属性访问不了的问题/">记Android Studio自定义属性访问不了的问题</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">孫小逗</a></p>
-        <p><span>发布时间:</span>2017-07-07, 12:47:52</p>
-        <p><span>最后更新:</span>2017-07-07, 14:54:58</p>
+        <p><span>发布时间:</span>2017-07-07, 17:37:40</p>
+        <p><span>最后更新:</span>2017-07-07, 17:38:41</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" title="AndroidStudio中使用Aliyun Maven">http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/07/07/记Android Studio自定义属性访问不了的问题/" title="记Android Studio自定义属性访问不了的问题">http://sunxiaodou.com/2017/07/07/记Android Studio自定义属性访问不了的问题/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/07/07/记Android Studio自定义属性访问不了的问题/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -312,12 +325,12 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/07/07/使用秒级编译方案-Freeline/">
-                    使用秒级编译方案-Freeline
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/07/07/Android中关于scrollBy的一点点心得/">
+                    Android中关于scrollBy的一点点心得
                 </a>
             </div>
-        
         
     </nav>
 
@@ -327,7 +340,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AndroidStudio中使用Aliyun-Maven"><span class="toc-number">1.</span> <span class="toc-text">AndroidStudio中使用Aliyun Maven</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、概述"><span class="toc-number">1.</span> <span class="toc-text">一、概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、解决"><span class="toc-number">2.</span> <span class="toc-text">二、解决</span></a></li></ol>
         
     </div>
     <style>
@@ -363,7 +376,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"AndroidStudio中使用Aliyun Maven　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"记Android Studio自定义属性访问不了的问题　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -397,15 +410,15 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/07/07/使用秒级编译方案-Freeline/" title="上一篇: 使用秒级编译方案-Freeline">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2017/07/07/Android中关于scrollBy的一点点心得/" title="下一篇: Android中关于scrollBy的一点点心得">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
 

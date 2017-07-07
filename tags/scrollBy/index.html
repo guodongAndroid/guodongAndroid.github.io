@@ -15,17 +15,12 @@
 
 
 
-<meta name="description" content="AndroidStudio中使用Aliyun Maven">
-<meta name="keywords" content="android,androidstudio,maven">
-<meta property="og:type" content="article">
-<meta property="og:title" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:url" content="http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="一壶浊酒空对月">
+<meta property="og:url" content="http://sunxiaodou.com/tags/scrollBy/index.html">
 <meta property="og:site_name" content="一壶浊酒空对月">
-<meta property="og:description" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:updated_time" content="2017-07-07T06:54:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AndroidStudio中使用Aliyun Maven">
-<meta name="twitter:description" content="AndroidStudio中使用Aliyun Maven">
+<meta name="twitter:title" content="一壶浊酒空对月">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -57,7 +52,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>AndroidStudio中使用Aliyun Maven | 一壶浊酒空对月</title>
+<title>Tag: scrollBy | 一壶浊酒空对月</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -67,9 +62,9 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: true,
+        isPost: false,
         isArchive: false,
-        isTag: false,
+        isTag: true,
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
@@ -238,185 +233,56 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-AndroidStudio中使用Aliyun Maven" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap">
   
-    <div class="article-meta">
-      <a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" class="article-date">
-      <time datetime="2017-07-07T04:47:52.000Z" itemprop="datePublished">2017-07-07</time>
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2017" class="archive-year">2017</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+          <div class="article-meta">
+              <a href="/2017/07/07/Android中关于scrollBy的一点点心得/" class="archive-article-date">
+      <time datetime="2017-07-07T09:35:17.000Z" itemprop="datePublished">07-07</time>
 </a>
 
 
-    </div>
+        </div>
+         
   
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      AndroidStudio中使用Aliyun Maven
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2017/07/07/Android中关于scrollBy的一点点心得/">Android中关于scrollBy的一点点心得</a>
     </h1>
   
 
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-
-        
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li></ul>
-    </div>
-
-        <div class="clearfix"></div>
-      </div>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+        <div class="article-info info-on-archive">
           
-        <script src="/assets/js/APlayer.min.js"> </script><contents>
 
-<blockquote>
-<p>转载请注明出处<br><a href="http://blog.csdn.net/guodongAndroid/article/details/74598095" target="_blank" rel="external">http://blog.csdn.net/guodongAndroid/article/details/74598095</a><br>本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
-</blockquote>
-<h2 id="AndroidStudio中使用Aliyun-Maven"><a href="#AndroidStudio中使用Aliyun-Maven" class="headerlink" title="AndroidStudio中使用Aliyun Maven"></a>AndroidStudio中使用Aliyun Maven</h2><p>Aliyun Maven地址：<a href="http://maven.aliyun.com" target="_blank" rel="external">http://maven.aliyun.com</a></p>
-<p>在项目级别的build.gradle中添加如下Maven地址：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:2.3.3'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="86" src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe></contents>
-      
-    </div>
-    
-  </div>
-  
-    
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/">AndroidStudio中使用Aliyun Maven</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页">孫小逗</a></p>
-        <p><span>发布时间:</span>2017-07-07, 12:47:52</p>
-        <p><span>最后更新:</span>2017-07-07, 14:54:58</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" title="AndroidStudio中使用Aliyun Maven">http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
+          
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scrollBy/">scrollBy</a></li></ul>
     </div>
 
-
-
-    <nav id="article-nav">
-        
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/07/07/使用秒级编译方案-Freeline/">
-                    使用秒级编译方案-Freeline
-                </a>
-            </div>
-        
-        
-    </nav>
-
-  
-</article>
-
-    <div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AndroidStudio中使用Aliyun-Maven"><span class="toc-number">1.</span> <span class="toc-text">AndroidStudio中使用Aliyun Maven</span></a></li></ol>
-        
-    </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
-
-    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
-    </script>
-
-
-
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
         </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"AndroidStudio中使用Aliyun Maven　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section>
+  
 
     
-</div>
 
-
-
-
-
-
-
-    
-        <section class="youyan" id="comments">
-    <script>
-        var loadComment = function(){
-            var d = document, s = d.createElement('script');
-            s.src = 'http://v2.uyan.cc/code/uyan.js?uid=2138171';
-            (d.head || d.body).appendChild(s);
-        }
-    </script>
-    
-    <script> loadComment(); </script>
-
-    <div id="uyan_frame"></div>
-</section>
-    
-
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a href="/2017/07/07/使用秒级编译方案-Freeline/" title="上一篇: 使用秒级编译方案-Freeline">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/07/07/记Android Studio自定义属性访问不了的问题/">记Android Studio自定义属性访问不了的问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/07/Android中关于scrollBy的一点点心得/">Android中关于scrollBy的一点点心得</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/07/Android事件分发、拦截与处理的理解/">Android事件分发、拦截与处理的理解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/07/View滑动冲突的两种解决方式/">View滑动冲突的两种解决方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/07/使用秒级编译方案-Freeline/">使用秒级编译方案-Freeline</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/07/AndroidStudio中使用Aliyun Maven/">AndroidStudio中使用Aliyun Maven</a></li></ul>
-
-
-
-
-    <script>
-        
-    </script>
 </div>
       <footer id="footer">
     <div class="outer">

@@ -15,17 +15,22 @@
 
 
 
-<meta name="description" content="AndroidStudio中使用Aliyun Maven">
-<meta name="keywords" content="android,androidstudio,maven">
+<meta name="description" content="Android中关于scrollBy的一点点心得">
+<meta name="keywords" content="android,scrollBy">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:url" content="http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/index.html">
+<meta property="og:title" content="Android中关于scrollBy的一点点心得">
+<meta property="og:url" content="http://sunxiaodou.com/2017/07/07/Android中关于scrollBy的一点点心得/index.html">
 <meta property="og:site_name" content="一壶浊酒空对月">
-<meta property="og:description" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:updated_time" content="2017-07-07T06:54:58.000Z">
+<meta property="og:description" content="Android中关于scrollBy的一点点心得">
+<meta property="og:image" content="http://img.blog.csdn.net/20160601180554090">
+<meta property="og:image" content="http://img.blog.csdn.net/20160601181009530">
+<meta property="og:image" content="http://img.blog.csdn.net/20160601182849991">
+<meta property="og:image" content="http://img.blog.csdn.net/20160601183447763">
+<meta property="og:updated_time" content="2017-07-07T09:35:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AndroidStudio中使用Aliyun Maven">
-<meta name="twitter:description" content="AndroidStudio中使用Aliyun Maven">
+<meta name="twitter:title" content="Android中关于scrollBy的一点点心得">
+<meta name="twitter:description" content="Android中关于scrollBy的一点点心得">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160601180554090">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -57,7 +62,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>AndroidStudio中使用Aliyun Maven | 一壶浊酒空对月</title>
+<title>Android中关于scrollBy的一点点心得 | 一壶浊酒空对月</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -238,11 +243,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-AndroidStudio中使用Aliyun Maven" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Android中关于scrollBy的一点点心得" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" class="article-date">
-      <time datetime="2017-07-07T04:47:52.000Z" itemprop="datePublished">2017-07-07</time>
+      <a href="/2017/07/07/Android中关于scrollBy的一点点心得/" class="article-date">
+      <time datetime="2017-07-07T09:35:17.000Z" itemprop="datePublished">2017-07-07</time>
 </a>
 
 
@@ -257,7 +262,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      AndroidStudio中使用Aliyun Maven
+      Android中关于scrollBy的一点点心得
     </h1>
   
 
@@ -268,7 +273,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/scrollBy/">scrollBy</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -281,12 +286,34 @@
         <script src="/assets/js/APlayer.min.js"> </script><contents>
 
 <blockquote>
-<p>转载请注明出处<br><a href="http://blog.csdn.net/guodongAndroid/article/details/74598095" target="_blank" rel="external">http://blog.csdn.net/guodongAndroid/article/details/74598095</a><br>本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
+<p>转载请注明出处<br><a href="http://blog.csdn.net/guodongandroid/article/details/51558131" target="_blank" rel="external">http://blog.csdn.net/guodongandroid/article/details/51558131</a><br>本文来自<a href="http://www.sunxiaodou.com" target="_blank" rel="external">【孫小逗的博客】</a></p>
 </blockquote>
-<h2 id="AndroidStudio中使用Aliyun-Maven"><a href="#AndroidStudio中使用Aliyun-Maven" class="headerlink" title="AndroidStudio中使用Aliyun Maven"></a>AndroidStudio中使用Aliyun Maven</h2><p>Aliyun Maven地址：<a href="http://maven.aliyun.com" target="_blank" rel="external">http://maven.aliyun.com</a></p>
-<p>在项目级别的build.gradle中添加如下Maven地址：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:2.3.3'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="86" src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe></contents>
+<h3 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h3><p>最近对自定义View和动画进行了研究学习，同时之前不太明白的地方也豁然开朗。学习不是一下子就学会的，不懂的地方，在后续的学习过程中会慢慢的理解，有种拨云见日的感觉。<br>scrollBy(int dx, int dy)主要用于滑屏操作，第一个参数dx代表滑屏后与滑屏前的x坐标之差，第二个参数dy同理。那下面我们来试试吧。</p>
+<h3 id="二、自定义View，使用scrollBy"><a href="#二、自定义View，使用scrollBy" class="headerlink" title="二、自定义View，使用scrollBy"></a>二、自定义View，使用scrollBy</h3><p>首先我们新建了类DragView继承自Button</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">public class DragView extends Button</div><div class="line">&#123;</div><div class="line">    private int mDownX;</div><div class="line">    private int mDownY;</div><div class="line"></div><div class="line">    public DragView(Context context)</div><div class="line">    &#123;</div><div class="line">        this(context, null);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public DragView(Context context, AttributeSet attrs)</div><div class="line">    &#123;</div><div class="line">        this(context, attrs, 0);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public DragView(Context context, AttributeSet attrs, int defStyleAttr)</div><div class="line">    &#123;</div><div class="line">        super(context, attrs, defStyleAttr);</div><div class="line">        setBackgroundColor(0x88FF0000);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public boolean onTouchEvent(MotionEvent event)</div><div class="line">    &#123;</div><div class="line">        switch (event.getAction())</div><div class="line">        &#123;</div><div class="line">            case MotionEvent.ACTION_DOWN:</div><div class="line">                mDownX = (int) event.getX();</div><div class="line">                mDownY = (int) event.getY();</div><div class="line">                break;</div><div class="line"></div><div class="line">            case MotionEvent.ACTION_MOVE:</div><div class="line">                int mX = (int) event.getX();</div><div class="line">                int mY = (int) event.getY();</div><div class="line"></div><div class="line">                int dX = mX - mDownX;</div><div class="line">                int dY = mY - mDownY;</div><div class="line"></div><div class="line">                scrollBy(dX, dY);</div><div class="line">                break;</div><div class="line">        &#125;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，我们设置了浅红色的背景，声明了两个全局变量，并重写了onTouchEvent方法，里面判断了单击和滑动事件，单击时记录x和y的坐标，赋值给mDownX和mDownY，滑动的时候也获取x和y的坐标，和单击时的坐标相减取得偏移量，调用scrollBy方法。</p>
+<p>然后，我们在布局中使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">              android:orientation=&quot;vertical&quot;</div><div class="line">              android:layout_width=&quot;match_parent&quot;</div><div class="line">              android:layout_height=&quot;match_parent&quot;&gt;</div><div class="line"></div><div class="line">    &lt;com.sun.androidqyz.DragView</div><div class="line">        android:layout_width=&quot;100dp&quot;</div><div class="line">        android:layout_height=&quot;100dp&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/LinearLayout&gt;</div></pre></td></tr></table></figure>
+<p>很简单吧，效果图如下：</p>
+<p><img src="http://img.blog.csdn.net/20160601180554090" alt="这里写图片描述"></p>
+<p>咦，咋滑不动呢？（我是真的滑了，不是在滑动鼠标）先不管为啥拖不动。我们在布局中添加几个属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">              android:orientation=&quot;vertical&quot;</div><div class="line">              android:layout_width=&quot;match_parent&quot;</div><div class="line">              android:layout_height=&quot;match_parent&quot;&gt;</div><div class="line"></div><div class="line">    &lt;com.sun.androidqyz.DragView</div><div class="line">        android:layout_width=&quot;100dp&quot;</div><div class="line">        android:layout_height=&quot;100dp&quot;</div><div class="line">        android:gravity=&quot;center&quot;</div><div class="line">        android:text=&quot;@string/app_name&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/LinearLayout&gt;</div></pre></td></tr></table></figure>
+<p>可以看到，为自定义的View增加了android:text属性，重新运行程序，看看效果如何：</p>
+<p><img src="http://img.blog.csdn.net/20160601181009530" alt="这里写图片描述"></p>
+<p>哈，现在是不是可以看到滑动的效果了呢？不对啊，我们明明自定义的View，现在为啥拖动的不是View而是View里面的字呢，啥子情况哦？</p>
+<p>其实呢，在自定义View中直接调用scrollBy滑动的是View的Content内容，对于Button，它的Content就是文本，ImageView就是drawable了。</p>
+<p>还有一个问题，不知你们发现没有？开始滑动时，可以看到鼠标是向上滑动的，按照人们的正常思维，那“AndroidQYZ”这几个字母也应该向上滑动才对，而现在是向下滑动。</p>
+<p>这个就不太好理解了。做iOS开发的同学肯定用过UIScrolView，没错，看到这我才明白Android和iOS这么相似。其实是这样的：首先我们就要知道布局是没有边界的，就像很大一块画布，而手机屏幕就像是一个放大镜，放大了画布上的一小部分内容，当我们滑动屏幕时，画布是没有滑动的，滑动的是放大镜，就是我们的屏幕，可以这也说，当放大镜向上滑动时，我们就可以看到画布在向下滑动，这就是为啥鼠标明明向上滑动，而“AndroidQYZ”这几个字母却向下滑动的原因了，既然我们知道了为啥，那怎么修改呢？</p>
+<p>我们先修改第二个问题，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scrollBy(-dX, -dY);</div></pre></td></tr></table></figure>
+<p>so easy，没错，我们取了负值就可以了，不信？我们可以看看效果：</p>
+<p><img src="http://img.blog.csdn.net/20160601182849991" alt="这里写图片描述"></p>
+<p>可以看到，“AndroidQYZ”这几个字母已经跟随鼠标的移动而移动了，可还是没有让自定义View滑动呀，你这不是骗人嘛？不着急，之前说直接调用scrollBy滑动的是Content，这就简单了，我们直接调用自定义View的父View的scrollBy不就好了嘛，看下面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">((View) getParent()).scrollBy(-dX, -dY);</div></pre></td></tr></table></figure>
+<p>getParent()方法获取此View的ViewParent并强转为View，再调用scrollBy方法，要不要看看效果呢？就怕你们不信。</p>
+<p><img src="http://img.blog.csdn.net/20160601183447763" alt="这里写图片描述"></p>
+<p>哈哈，怎么样，可以滑动了吧。当然还有scrollTo方法，大家可以自己去试试。</p>
+</contents>
       
     </div>
     
@@ -294,13 +321,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/">AndroidStudio中使用Aliyun Maven</a></p>
+        <p><span>本文标题:</span><a href="/2017/07/07/Android中关于scrollBy的一点点心得/">Android中关于scrollBy的一点点心得</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">孫小逗</a></p>
-        <p><span>发布时间:</span>2017-07-07, 12:47:52</p>
-        <p><span>最后更新:</span>2017-07-07, 14:54:58</p>
+        <p><span>发布时间:</span>2017-07-07, 17:35:17</p>
+        <p><span>最后更新:</span>2017-07-07, 17:35:17</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" title="AndroidStudio中使用Aliyun Maven">http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/07/07/Android中关于scrollBy的一点点心得/" title="Android中关于scrollBy的一点点心得">http://sunxiaodou.com/2017/07/07/Android中关于scrollBy的一点点心得/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/07/07/Android中关于scrollBy的一点点心得/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -313,11 +340,17 @@
     <nav id="article-nav">
         
             <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/07/07/使用秒级编译方案-Freeline/">
-                    使用秒级编译方案-Freeline
+                <a href="/2017/07/07/记Android Studio自定义属性访问不了的问题/">
+                    记Android Studio自定义属性访问不了的问题
                 </a>
             </div>
         
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/07/07/Android事件分发、拦截与处理的理解/">
+                    Android事件分发、拦截与处理的理解
+                </a>
+            </div>
         
     </nav>
 
@@ -327,7 +360,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AndroidStudio中使用Aliyun-Maven"><span class="toc-number">1.</span> <span class="toc-text">AndroidStudio中使用Aliyun Maven</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、概述"><span class="toc-number">1.</span> <span class="toc-text">一、概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、自定义View，使用scrollBy"><span class="toc-number">2.</span> <span class="toc-text">二、自定义View，使用scrollBy</span></a></li></ol>
         
     </div>
     <style>
@@ -363,7 +396,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"AndroidStudio中使用Aliyun Maven　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Android中关于scrollBy的一点点心得　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -397,7 +430,7 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/07/07/使用秒级编译方案-Freeline/" title="上一篇: 使用秒级编译方案-Freeline">
+            <a href="/2017/07/07/记Android Studio自定义属性访问不了的问题/" title="上一篇: 记Android Studio自定义属性访问不了的问题">
                 <i class="fa fa-angle-left"></i>
             </a>
         
@@ -405,7 +438,9 @@
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2017/07/07/Android事件分发、拦截与处理的理解/" title="下一篇: Android事件分发、拦截与处理的理解">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
 
