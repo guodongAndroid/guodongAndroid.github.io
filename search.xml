@@ -3,6 +3,74 @@
   
     
     <entry>
+      <title><![CDATA[使用Kotlin开发Android(一) Kotlin开发环境搭建]]></title>
+      <url>/2017/07/11/%E4%BD%BF%E7%94%A8Kotlin%E5%BC%80%E5%8F%91Android(%E4%B8%80)Kotlin%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+      <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><contents>
+
+<blockquote>
+<p>转载请注明出处</p>
+<p><a href="http://sunxiaodou.com/2017/07/11/使用Kotlin开发Android(一)Kotlin开发环境搭建/">http://sunxiaodou.com/2017/07/11/使用Kotlin开发Android(一)Kotlin开发环境搭建/</a></p>
+<p>本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Kotlin：<a href="http://kotlinlang.org" target="_blank" rel="external">官网</a><br>Kotlin语法：<a href="https://huanglizhuo.gitbooks.io/kotlin-in-chinese/content/GettingStarted/Basic-Syntax.html" target="_blank" rel="external">基本语法-中文</a></p>
+<p>Kotlin教程：<a href="https://www.youtube.com/watch?v=H_oGi8uuDpA" target="_blank" rel="external">视频教程</a></p>
+<h2 id="Kotlin-for-Android"><a href="#Kotlin-for-Android" class="headerlink" title="Kotlin for Android"></a>Kotlin for Android</h2><h3 id="AndroidStudio集成Kotlin插件"><a href="#AndroidStudio集成Kotlin插件" class="headerlink" title="AndroidStudio集成Kotlin插件"></a>AndroidStudio集成Kotlin插件</h3><ol>
+<li><p>打开AndroidStudio的Preferences界面，选择Plugins，点击箭头所指按钮</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/plugins1.png" alt="Install JetBrains plugins"></p>
+</li>
+<li><p>输入Kotlin搜索插件</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/plugins2.png" alt="搜索Kotlin"></p>
+</li>
+<li><p>因为我已经安装过了，所以没有了Install按钮。</p>
+</li>
+<li><p>如果你按照如上步骤安装插件，你可能会发现下载的很慢。是不是很坑爹，既然下载的那么慢，你还啰嗦辣么久，😆，有些事总得自己捣鼓捣鼓。</p>
+</li>
+<li><p>使用离线安装Kotlin插件。<a href="https://plugins.jetbrains.com/plugin/6954-kotlin" target="_blank" rel="external">Kotlin插件下载地址</a>。下载带有“Studio”字样的文件，”IJ“是给IntelliJ IDEA使用的。</p>
+<p>(⊙o⊙)哦，记得使用迅雷等软件下载哦😂</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/QQ20170711-200501@2x.png" alt="kotlin离线下载"></p>
+</li>
+<li><p>根据下图离线安装，安装完成重启AndroidStudio即可。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/pugin%1Cs3.png" alt="Install plugins from disk"></p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/plugins4.png" alt="选择kotlin插件"></p>
+</li>
+</ol>
+<h3 id="Hello-Kotlin"><a href="#Hello-Kotlin" class="headerlink" title="Hello Kotlin"></a>Hello Kotlin</h3><p>像平常一样创建一个项目，如</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/QQ20170711-202047@2x.png" alt="MyKoltin"></p>
+<p>然后点击Code，选择Convert Java File to Kotlin File，即可把Java文件无缝转换为Kotlin文件</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/QQ20170711-202821@2x.png" alt="convert java to kotlin"></p>
+<p>转换后的kotlin文件</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/koltlin.png" alt="kotlin文件"></p>
+<p>现在我们点击同步按钮，并配置Kotlin，如下图</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/config.png" alt="configure"></p>
+<p>在下拉列表中选择最新最新的Kotlin版本，点击OK，最后点击右上角的Sync Now按钮。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/xuanzhe.png" alt="version"></p>
+<p>稍等片刻，就会自动打开项目级别和Module级别的build.gradle文件。如下图，kotlin配置完成</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/mykotlin.png" alt="MyKotlin build.gradle"></p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/app.png" alt="app build.gradle"></p>
+<p>不出意外的话，我们就可以运行看到Hello World了😆</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/MyKotlin-Run.png" alt="hello world"></p>
+<p>说好的Hello Kotlin呢？？？在app的build.gradle加入以下内容并同步项目。此拓展可以省去findViewById()，直接使用控件的id。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apply plugin: <span class="string">'kotlin-android-extensions'</span></div></pre></td></tr></table></figure>
+<p>现在我们就可以给TextView添加一个id —&gt; kotlin。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/id.png" alt="id"></p>
+<p>在MainActivity.kt文件中添加如下代码，我们的Hello Kotlin就完成了。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/hello%20kotlin.png" alt="hello kotlin"></p>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="86" src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe></contents>]]></content>
+      
+        
+        <tags>
+            
+            <tag> Android </tag>
+            
+            <tag> AndroidStudio </tag>
+            
+            <tag> Kotlin </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
       <title><![CDATA[记Android Studio自定义属性访问不了的问题]]></title>
       <url>/2017/07/07/%E8%AE%B0Android%20Studio%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7%E8%AE%BF%E9%97%AE%E4%B8%8D%E4%BA%86%E7%9A%84%E9%97%AE%E9%A2%98/</url>
       <content type="html"><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><contents>
