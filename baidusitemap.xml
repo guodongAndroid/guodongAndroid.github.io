@@ -3,10 +3,28 @@
 
 
     
+  <url>
+    <loc>http://sunxiaodou.com/2017/10/17/%E4%BD%BF%E7%94%A8Nexus%E6%90%AD%E5%BB%BA%E6%9C%AC%E5%9C%B0Maven%E4%BB%93%E5%BA%93/</loc>
+    <lastmod>2017-10-17T14:55:14.000Z</lastmod>
+    <data>
+        <display>
+        <title>使用Nexus搭建本地Maven仓库</title>
+        <pubTime>2017-10-16T16:00:00.000Z</pubTime>
+        
+        <tag>Nexus</tag>
+         
+        <tag>Maven</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
     
   <url>
     <loc>http://sunxiaodou.com/2017/08/02/Java%E9%80%9A%E8%BF%87ESL%E8%BF%9E%E6%8E%A5FreeSWITCH/</loc>
-    <lastmod>2017-09-14T08:49:36.000Z</lastmod>
+    <lastmod>2017-10-17T14:24:51.000Z</lastmod>
     <data>
         <display>
         <title>Java通过ESL连接FreeSWITCH</title>
@@ -26,6 +44,7 @@
     </data>
     </url>
 
+    
     
   <url>
     <loc>http://sunxiaodou.com/2017/09/14/%E8%AE%B0%E5%BD%93TextView.setSingleLine(true)%E6%97%B6%EF%BC%8C%E6%BB%91%E5%8A%A8TextView%E7%9A%84%E5%8C%BA%E5%9F%9F%EF%BC%8C%E5%AF%BC%E8%87%B4%E7%9A%84ViewPager%E4%B8%8D%E8%83%BD%E6%BB%91%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98/</loc>

@@ -179,7 +179,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AndroidStudio/">AndroidStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ESL/">ESL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FreeSWITCH/">FreeSWITCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Freeline/">Freeline</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InBound/">InBound</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kotlin/">Kotlin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ViewPager/">ViewPager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrollBy/">scrollBy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/view/">view</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/事件分发/">事件分发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度网盘/">百度网盘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义属性/">自定义属性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/跑马灯/">跑马灯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/迅雷/">迅雷</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AndroidStudio/">AndroidStudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ESL/">ESL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FreeSWITCH/">FreeSWITCH</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Freeline/">Freeline</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InBound/">InBound</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Kotlin/">Kotlin</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Maven/">Maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nexus/">Nexus</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TextView/">TextView</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ViewPager/">ViewPager</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/scrollBy/">scrollBy</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/view/">view</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/事件分发/">事件分发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度网盘/">百度网盘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/自定义属性/">自定义属性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/跑马灯/">跑马灯</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/迅雷/">迅雷</a></li></ul>
                     </div>
                 </section>
                 
@@ -239,6 +239,70 @@
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-使用Nexus搭建本地Maven仓库" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/10/17/使用Nexus搭建本地Maven仓库/" class="article-date">
+      <time datetime="2017-10-16T16:00:00.000Z" itemprop="datePublished">2017-10-17</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/10/17/使用Nexus搭建本地Maven仓库/">使用Nexus搭建本地Maven仓库</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+              使用Nexus搭建本地Maven仓库，AndroidStudio上传库到本地Maven并引用
+          
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maven/">Maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nexus/">Nexus</a></li></ul>
+    </div>
+
+      
+        <p class="article-more-link">
+          <a href="/2017/10/17/使用Nexus搭建本地Maven仓库/#more">阅读全文 >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -816,70 +880,10 @@
 
 
   
-    <article id="post-AndroidStudio中使用Aliyun Maven" class="article article-type-post" itemscope itemprop="blogPost">
   
-    <div class="article-meta">
-      <a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" class="article-date">
-      <time datetime="2017-07-07T04:47:52.000Z" itemprop="datePublished">2017-07-07</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/07/07/AndroidStudio中使用Aliyun Maven/">AndroidStudio中使用Aliyun Maven</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-          
-              AndroidStudio中使用Aliyun Maven
-          
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-
-      
-    <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li></ul>
-    </div>
-
-      
-        <p class="article-more-link">
-          <a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/#more">阅读全文 >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </div>
       <footer id="footer">

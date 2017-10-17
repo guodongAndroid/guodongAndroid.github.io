@@ -15,17 +15,27 @@
 
 
 
-<meta name="description" content="AndroidStudio中使用Aliyun Maven">
-<meta name="keywords" content="android,androidstudio,maven">
+<meta name="description" content="使用Nexus搭建本地Maven仓库，AndroidStudio上传库到本地Maven并引用">
+<meta name="keywords" content="Nexus,Maven">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:url" content="http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/index.html">
+<meta property="og:title" content="使用Nexus搭建本地Maven仓库">
+<meta property="og:url" content="http://sunxiaodou.com/2017/10/17/使用Nexus搭建本地Maven仓库/index.html">
 <meta property="og:site_name" content="一壶浊酒空对月">
-<meta property="og:description" content="AndroidStudio中使用Aliyun Maven">
-<meta property="og:updated_time" content="2017-07-07T06:54:58.000Z">
+<meta property="og:description" content="使用Nexus搭建本地Maven仓库，AndroidStudio上传库到本地Maven并引用">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_download.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_bin.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/start_nexus.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_manager.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/create_repository_a.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/select_recipe.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/create_repository_b.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/create_nexus_gradle.png">
+<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/uploadArchives.png">
+<meta property="og:updated_time" content="2017-10-17T14:55:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="AndroidStudio中使用Aliyun Maven">
-<meta name="twitter:description" content="AndroidStudio中使用Aliyun Maven">
+<meta name="twitter:title" content="使用Nexus搭建本地Maven仓库">
+<meta name="twitter:description" content="使用Nexus搭建本地Maven仓库，AndroidStudio上传库到本地Maven并引用">
+<meta name="twitter:image" content="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_download.png">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -57,7 +67,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>AndroidStudio中使用Aliyun Maven | 一壶浊酒空对月</title>
+<title>使用Nexus搭建本地Maven仓库 | 一壶浊酒空对月</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -238,11 +248,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-AndroidStudio中使用Aliyun Maven" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-使用Nexus搭建本地Maven仓库" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" class="article-date">
-      <time datetime="2017-07-07T04:47:52.000Z" itemprop="datePublished">2017-07-07</time>
+      <a href="/2017/10/17/使用Nexus搭建本地Maven仓库/" class="article-date">
+      <time datetime="2017-10-16T16:00:00.000Z" itemprop="datePublished">2017-10-17</time>
 </a>
 
 
@@ -257,7 +267,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      AndroidStudio中使用Aliyun Maven
+      使用Nexus搭建本地Maven仓库
     </h1>
   
 
@@ -268,7 +278,7 @@
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/androidstudio/">androidstudio</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Maven/">Maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nexus/">Nexus</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -281,11 +291,35 @@
         <script src="/assets/js/APlayer.min.js"> </script><contents>
 
 <blockquote>
-<p>转载请注明出处<br><a href="http://blog.csdn.net/guodongAndroid/article/details/74598095" target="_blank" rel="external">http://blog.csdn.net/guodongAndroid/article/details/74598095</a><br>本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
+<p>转载请注明出处</p>
+<p><a href="http://sunxiaodou.com/2017/08/02/Java通过ESL连接FreeSWITCH/">http://sunxiaodou.com/2017/10/17/使用Nexus搭建本地Maven仓库/</a></p>
+<p>本文出自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
 </blockquote>
-<h2 id="AndroidStudio中使用Aliyun-Maven"><a href="#AndroidStudio中使用Aliyun-Maven" class="headerlink" title="AndroidStudio中使用Aliyun Maven"></a>AndroidStudio中使用Aliyun Maven</h2><p>Aliyun Maven地址：<a href="http://maven.aliyun.com" target="_blank" rel="external">http://maven.aliyun.com</a></p>
-<p>在项目级别的build.gradle中添加如下Maven地址：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">buildscript &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:2.3.3'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    repositories &#123;</div><div class="line">        maven&#123; url <span class="string">'http://maven.aliyun.com/nexus/content/groups/public/'</span>&#125;</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="使用Nexus搭建本地Maven仓库"><a href="#使用Nexus搭建本地Maven仓库" class="headerlink" title="使用Nexus搭建本地Maven仓库"></a>使用Nexus搭建本地Maven仓库</h2><h3 id="安装Nexus"><a href="#安装Nexus" class="headerlink" title="安装Nexus"></a>安装Nexus</h3><p><a href="https://www.sonatype.com/download-oss-sonatype" target="_blank" rel="external">下载Nexus</a></p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_download.png" alt="nexus_download"></p>
+<p>下载Mac版本的，最新版本为3.6.0-02。解压后放在本地。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_bin.png" alt="nexus_bin"></p>
+<p>在终端里CD进入nexus的bin目录，运行<code>./nexus start</code></p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/start_nexus.png" alt="start_nexus"></p>
+<p>没有错误的话，此时nexus已经启动，可以在浏览器中输入<code>http://localhost:8081/</code>进行访问，nexus默认监听8081端口。出现以下界面表示nexus安装完成。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/nexus_manager.png" alt="nexus_manager"></p>
+<h3 id="创建本地仓库"><a href="#创建本地仓库" class="headerlink" title="创建本地仓库"></a>创建本地仓库</h3><p>在浏览器中点击Sign in按钮以登录nexus，默认用户名admin，默认密码admin123。根据以下步骤创建仓库。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/create_repository_a.png" alt="create_repository_a"></p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/select_recipe.png" alt="select_recipe"></p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/create_repository_b.png" alt="create_repository_b"></p>
+<p>点击Create repository按钮即可创建本地仓库。</p>
+<h3 id="AndroidStudio上传库到本地仓库并引用"><a href="#AndroidStudio上传库到本地仓库并引用" class="headerlink" title="AndroidStudio上传库到本地仓库并引用"></a>AndroidStudio上传库到本地仓库并引用</h3><h4 id="上传"><a href="#上传" class="headerlink" title="上传"></a>上传</h4><p>在我们的项目库下新建nexus_maven.gradle文件，并添加以下内容。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/create_nexus_gradle.png" alt="create_nexus_gradle"></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">plugin:</span> <span class="string">'maven'</span></div><div class="line"></div><div class="line">task androidJavadocs(<span class="string">type:</span> Javadoc) &#123;</div><div class="line">    source = android.sourceSets.main.java.srcDirs</div><div class="line">    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))</div><div class="line">&#125;</div><div class="line"></div><div class="line">task androidJavadocsJar(<span class="string">type:</span> Jar, <span class="string">dependsOn:</span> androidJavadocs) &#123;</div><div class="line">    classifier = <span class="string">'javadoc'</span></div><div class="line">    from androidJavadocs.destinationDir</div><div class="line">&#125;</div><div class="line"></div><div class="line">task androidSourcesJar(<span class="string">type:</span> Jar) &#123;</div><div class="line">    classifier = <span class="string">'sources'</span></div><div class="line">    from android.sourceSets.main.java.srcDirs</div><div class="line">&#125;</div><div class="line"></div><div class="line">artifacts &#123;</div><div class="line">    archives androidSourcesJar</div><div class="line">    archives androidJavadocsJar</div><div class="line">&#125;</div><div class="line"></div><div class="line">uploadArchives &#123;</div><div class="line">    repositories &#123;</div><div class="line">        mavenDeployer &#123;</div><div class="line">            repository(<span class="string">url:</span> <span class="string">"http://localhost:8081/repository/test/"</span>) &#123; <span class="comment">// 此处的test为本地仓库名称</span></div><div class="line">                authentication(<span class="string">userName:</span> <span class="string">"admin"</span>, <span class="string">password:</span> <span class="string">"admin123"</span>)</div><div class="line">            &#125;</div><div class="line">            pom.project &#123;</div><div class="line">                name <span class="string">'xxx'</span></div><div class="line">                version <span class="string">'0.0.1'</span></div><div class="line">                artifactId <span class="string">'xxx'</span></div><div class="line">                groupId <span class="string">'com.guodongandroid.test'</span></div><div class="line">                packaging <span class="string">'aar'</span></div><div class="line">                description <span class="string">'xxx xxx xxx'</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在我们库的build.gradle文件最后引用这个nexus_maven.gradle</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">from:</span> <span class="string">'nexus_maven.gradle'</span></div></pre></td></tr></table></figure>
+<p>最后执行上传操作。</p>
+<p><img src="http://om278gsrf.bkt.clouddn.com/nexus_install/uploadArchives.png" alt="uploadArchives"></p>
+<p>此时可以在本地仓库test中看到刚刚上传的文件。</p>
+<h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><p>在Project级别的build.gradle文件的allprojects中添加如下代码:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">maven &#123;</div><div class="line">   url <span class="string">'http://localhost:8081/repository/test/'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在Module级别的build.gradle文件中添加如下依赖：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.guodongandroid.test:xxx:0.0.1@aar'</span></div></pre></td></tr></table></figure>
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="86" src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe></contents>
       
     </div>
@@ -294,13 +328,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2017/07/07/AndroidStudio中使用Aliyun Maven/">AndroidStudio中使用Aliyun Maven</a></p>
+        <p><span>本文标题:</span><a href="/2017/10/17/使用Nexus搭建本地Maven仓库/">使用Nexus搭建本地Maven仓库</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">孫小逗</a></p>
-        <p><span>发布时间:</span>2017-07-07, 12:47:52</p>
-        <p><span>最后更新:</span>2017-07-07, 14:54:58</p>
+        <p><span>发布时间:</span>2017-10-17, 00:00:00</p>
+        <p><span>最后更新:</span>2017-10-17, 22:55:14</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2017/07/07/AndroidStudio中使用Aliyun Maven/" title="AndroidStudio中使用Aliyun Maven">http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/07/07/AndroidStudio中使用Aliyun Maven/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2017/10/17/使用Nexus搭建本地Maven仓库/" title="使用Nexus搭建本地Maven仓库">http://sunxiaodou.com/2017/10/17/使用Nexus搭建本地Maven仓库/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://sunxiaodou.com/2017/10/17/使用Nexus搭建本地Maven仓库/　　作者: 孫小逗" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -312,12 +346,12 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2017/07/07/使用秒级编译方案-Freeline/">
-                    使用秒级编译方案-Freeline
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/09/14/记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题/">
+                    记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题
                 </a>
             </div>
-        
         
     </nav>
 
@@ -327,7 +361,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#AndroidStudio中使用Aliyun-Maven"><span class="toc-number">1.</span> <span class="toc-text">AndroidStudio中使用Aliyun Maven</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Nexus搭建本地Maven仓库"><span class="toc-number">1.</span> <span class="toc-text">使用Nexus搭建本地Maven仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装Nexus"><span class="toc-number">1.1.</span> <span class="toc-text">安装Nexus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建本地仓库"><span class="toc-number">1.2.</span> <span class="toc-text">创建本地仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AndroidStudio上传库到本地仓库并引用"><span class="toc-number">1.3.</span> <span class="toc-text">AndroidStudio上传库到本地仓库并引用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#上传"><span class="toc-number">1.3.1.</span> <span class="toc-text">上传</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引用"><span class="toc-number">1.3.2.</span> <span class="toc-text">引用</span></a></li></ol></li></ol></li></ol>
         
     </div>
     <style>
@@ -363,7 +397,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"AndroidStudio中使用Aliyun Maven　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"使用Nexus搭建本地Maven仓库　| 一壶浊酒空对月　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -397,15 +431,15 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2017/07/07/使用秒级编译方案-Freeline/" title="上一篇: 使用秒级编译方案-Freeline">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+            <a href="/2017/09/14/记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题/" title="下一篇: 记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题">
+                <i class="fa fa-angle-right"></i>
+            </a>
         
     </div>
 
