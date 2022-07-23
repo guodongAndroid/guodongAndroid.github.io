@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android-EventBus修改纪实(二)-线程模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-EventBus修改纪实(二)-线程模型">
+<meta property="og:url" content="https://sunxiaodou.com/2022/06/02/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%BA%8C)-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="Android-EventBus修改纪实(二)-线程模型">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-23T02:03:34.524Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="eventbus">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/06/02/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%BA%8C)-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android-EventBus修改纪实(二)-线程模型 | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/06/02/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%BA%8C)-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android-EventBus修改纪实(二)-线程模型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-02 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-02T00:00:00+08:00">2022-06-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>25 分钟</span>
+            </span>
+            <div class="post-description">Android-EventBus修改纪实(二)-线程模型</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="android-eventbus修改纪实二"><a class="markdownIt-Anchor" href="#android-eventbus修改纪实二"></a> Android-EventBus修改纪实(二)</h1>
+<p>持续创作，加速成长！这是我参与「掘金日新计划 · 6 月更文挑战」的第 4 天，<a target="_blank" rel="noopener" href="https://juejin.cn/post/7099702781094674468">点击查看活动详情</a></p>
+<hr />
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>在上一篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104107150678917133">Android-EventBus修改纪实</a> 中笔者分析了 EventBus 黏性事件的发送流程并对 EventBus 进行增强实现了必达事件的支持，上一篇文章最后笔者没有实现以下方法：</p>
+<ul>
+<li>获取必达事件，</li>
+<li>移除必达事件，</li>
+<li>编写必达事件单元测试</li>
+</ul>
+<p>本篇文章补全上一篇文章未实现的部分，最后应上一篇文章中掘友的需求对 EventBus 的线程切换做下分析。</p>
+<h2 id="纪实"><a class="markdownIt-Anchor" href="#纪实"></a> 纪实</h2>
+<h3 id="getrendezvousevent"><a class="markdownIt-Anchor" href="#getrendezvousevent"></a> getRendezvousEvent</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 选择List存储必达事件，使用Pair封装必达事件的Key和Value</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;Pair&lt;Class&lt;?&gt;, Object&gt;&gt; rendezvousEvents;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; T <span class="title function_">getRendezvousEvent</span><span class="params">(Class&lt;T&gt; eventType)</span> &#123;</span><br><span class="line">    <span class="comment">// 对`rendezvousEvents`加锁</span></span><br><span class="line">    <span class="keyword">synchronized</span> (rendezvousEvents) &#123;</span><br><span class="line">        <span class="comment">// 遍历必达事件集合</span></span><br><span class="line">        <span class="keyword">for</span> (Pair&lt;Class&lt;?&gt;, Object&gt; next : rendezvousEvents) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 取出Key</span></span><br><span class="line">            Class&lt;?&gt; first = next.first;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 与入参进行比较</span></span><br><span class="line">            <span class="keyword">if</span> (eventType.equals(first)) &#123;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 把Value转换为入参的类型</span></span><br><span class="line">                <span class="keyword">return</span> eventType.cast(next.second);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过仿照 EventBus 中获取黏性事件的实现来写出获取必达事件的实现，在源码实现中首先对存储必达事件的集合 <code>rendezvousEvents</code> 进行加锁，防止并发修改必达事件集合，其次遍历必达集合，取出必达事件的 Key，即必达事件的 Class 对象，与入参的 Class 对象进行比较，如果相等，则取出必达事件的 Value，强制转换为入参类型。</p>
+<h3 id="removerendezvousevent"><a class="markdownIt-Anchor" href="#removerendezvousevent"></a> removeRendezvousEvent</h3>
+<p>有两个移除必达事件的方法，一个根据必达事件的 Class 对象进行移除，另外一个根据必达事件的实例进行移除，下面我们一一实现：</p>
+<h4 id="removerendezvouseventclasst-eventtype"><a class="markdownIt-Anchor" href="#removerendezvouseventclasst-eventtype"></a> removeRendezvousEvent(Class<T> eventType)</h4>
+<p>我们先实现根据必达事件的 Class 对象进行移除的方法，实现源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 选择List存储必达事件，使用Pair封装必达事件的Key和Value</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;Pair&lt;Class&lt;?&gt;, Object&gt;&gt; rendezvousEvents;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 入参必达事件的 Class 对象</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; T <span class="title function_">removeRendezvousEvent</span><span class="params">(Class&lt;T&gt; eventType)</span> &#123;</span><br><span class="line">    <span class="comment">// 对`rendezvousEvents`加锁</span></span><br><span class="line">    <span class="keyword">synchronized</span> (rendezvousEvents) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> rendezvousEvents.size();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 使用普通的 for 循环，避免产生 ConcurrentModificationException</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            Pair&lt;Class&lt;?&gt;, Object&gt; pair = rendezvousEvents.get(i);</span><br><span class="line">            Class&lt;?&gt; first = pair.first;</span><br><span class="line">            <span class="comment">// 比较必达事件的 Class 对象与入参是否相等</span></span><br><span class="line">            <span class="keyword">if</span> (eventType.equals(first)) &#123;</span><br><span class="line">                rendezvousEvents.remove(i);</span><br><span class="line">                <span class="keyword">return</span> eventType.cast(pair.second);</span><br><span class="line">            &#125;</span><br><span class="line">            i--;</span><br><span class="line">            size--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的源码中首先对 <code>rendezvousEvents</code> 进行加锁，在临界区内使用普通的 for 循环，而不使用增强的 forEach 循环遍历 <code>rendezvousEvents</code> 是避免发生同步修改异常 <code>ConcurrentModificationException</code>，虽然 <code>rendezvousEvents</code> 的实例是 <code>CopyOnWriteArrayList</code>。</p>
+<p>在循环体内，取出存储必达事件的 Class 对象与入参比较，判断是否相等，相等即移除此必达事件，同时返回必达事件的实例。</p>
+<p>不知读者有没有发现这里移除必达事件有什么问题？</p>
+<p>我们的 <code>rendezvousEvents</code> 是 List 集合结构，上面的实现中，我们是不是只移除了第一个必达事件方法就返回了，如何实现根据必达事件的 Class 对象移除必达事件相信读者可以自行修改实现，笔者这里就不实现了。</p>
+<h4 id="removerendezvouseventobject-event"><a class="markdownIt-Anchor" href="#removerendezvouseventobject-event"></a> removeRendezvousEvent(Object event)</h4>
+<p>接下来我们实现根据必达事件的实例进行移除，实现源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 选择List存储必达事件，使用Pair封装必达事件的Key和Value</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;Pair&lt;Class&lt;?&gt;, Object&gt;&gt; rendezvousEvents;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 入参必达事件的实例</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">removeRendezvousEvent</span><span class="params">(Object event)</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 对`rendezvousEvents`加锁</span></span><br><span class="line">    <span class="keyword">synchronized</span> (rendezvousEvents) &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> rendezvousEvents.size();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 使用普通的 for 循环，避免产生 ConcurrentModificationException</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; size; i++) &#123;</span><br><span class="line">            Pair&lt;Class&lt;?&gt;, Object&gt; pair = rendezvousEvents.get(i);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">second</span> <span class="operator">=</span> pair.second;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 比较必达事件的实例与入参是否相等</span></span><br><span class="line">            <span class="keyword">if</span> (event.equals(second)) &#123;</span><br><span class="line">                rendezvousEvents.remove(i);</span><br><span class="line">                result = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            i--;</span><br><span class="line">            size--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们根据 <code>removeRendezvousEvent(Class&lt;T&gt; eventType)</code> 的实现，很容易就可以实现根据必达事件的实例进行移除的逻辑，与 <code>removeRendezvousEvent(Class&lt;T&gt; eventType)</code> 的实现类似，首先对 <code>rendezvousEvents</code> 进行加锁，在临界区内使用普通的 for 循环，在循环体内，取出存储必达事件的实例与入参比较，判断是否相等，相等即移除此必达事件，同时把移除结果置为 True ，最后返回移除结果。</p>
+<p>至此，我们终于完成了对 EventBus 增加必达事件的所有逻辑。</p>
+<h3 id="单元测试"><a class="markdownIt-Anchor" href="#单元测试"></a> 单元测试</h3>
+<p>接下来让我们编写单元测试逻辑来测试我们必达事件的逻辑正确性吧。</p>
+<h4 id="eventbusstickyeventtest"><a class="markdownIt-Anchor" href="#eventbusstickyeventtest"></a> EventBusStickyEventTest</h4>
+<p>我们先看看 EventBus 中对黏性事件的单元测试用例，用例较多，笔者挑选几个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EventBusStickyEventTest</span> <span class="keyword">extends</span> <span class="title class_">AbstractEventBusTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试发送黏性事件的逻辑</span></span><br><span class="line">    <span class="comment">// 先发送黏性事件，再注册订阅者，然后断言最后一个事件与发送的黏性事件相等，最后断言最后一个订阅方法的线程是当前线程</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostSticky</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postSticky(<span class="string">&quot;Sticky&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Sticky&quot;</span>, lastEvent);</span><br><span class="line">        assertEquals(Thread.currentThread(), lastThread);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试没有黏性事件订阅方法时的逻辑</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostNonStickyRegisterSticky</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.post(<span class="string">&quot;NonSticky&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试注册与反注册订阅者对黏性事件的影响</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostStickyWithRegisterAndUnregister</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        eventBus.postSticky(<span class="string">&quot;Sticky&quot;</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Sticky&quot;</span>, lastEvent);</span><br><span class="line"></span><br><span class="line">        eventBus.unregister(<span class="built_in">this</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Sticky&quot;</span>, lastEvent);</span><br><span class="line">        assertEquals(<span class="number">2</span>, eventCount.intValue());</span><br><span class="line"></span><br><span class="line">        eventBus.postSticky(<span class="string">&quot;NewSticky&quot;</span>);</span><br><span class="line">        assertEquals(<span class="number">3</span>, eventCount.intValue());</span><br><span class="line">        assertEquals(<span class="string">&quot;NewSticky&quot;</span>, lastEvent);</span><br><span class="line"></span><br><span class="line">        eventBus.unregister(<span class="built_in">this</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="number">4</span>, eventCount.intValue());</span><br><span class="line">        assertEquals(<span class="string">&quot;NewSticky&quot;</span>, lastEvent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试获取黏性事件</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostStickyAndGet</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postSticky(<span class="string">&quot;Sticky&quot;</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Sticky&quot;</span>, eventBus.getStickyEvent(String.class));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试移除黏性事件</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostStickyRemoveEvent</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postSticky(<span class="string">&quot;Sticky&quot;</span>);</span><br><span class="line">        assertTrue(eventBus.removeStickyEvent(<span class="string">&quot;Sticky&quot;</span>));</span><br><span class="line">        assertNull(eventBus.getStickyEvent(String.class));</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="eventbusrendezvouseventtest"><a class="markdownIt-Anchor" href="#eventbusrendezvouseventtest"></a> EventBusRendezvousEventTest</h4>
+<p>我们可以根据 <code>EventBusStickyEventTest</code> 编写必达事件的测试用例，以下为笔者实现的测试用例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EventBusRendezvousEventTest</span> <span class="keyword">extends</span> <span class="title class_">AbstractEventBusTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testRendezvousSticky</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Rendezvous&quot;</span>, lastEvent);</span><br><span class="line">        assertEquals(Thread.currentThread(), lastThread);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousTwoEvents</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.postRendezvous(<span class="keyword">new</span> <span class="title class_">IntTestEvent</span>(<span class="number">7</span>));</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="number">2</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousTwoSubscribers</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.postRendezvous(<span class="keyword">new</span> <span class="title class_">IntTestEvent</span>(<span class="number">7</span>));</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        <span class="type">RendezvousIntTestSubscriber</span> <span class="variable">subscriber2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RendezvousIntTestSubscriber</span>();</span><br><span class="line">        eventBus.register(subscriber2);</span><br><span class="line">        assertEquals(<span class="number">3</span>, eventCount.intValue());</span><br><span class="line"></span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        assertEquals(<span class="number">4</span>, eventCount.intValue());</span><br><span class="line"></span><br><span class="line">        eventBus.postRendezvous(<span class="keyword">new</span> <span class="title class_">IntTestEvent</span>(<span class="number">8</span>));</span><br><span class="line">        assertEquals(<span class="number">6</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousRegisterNonRendezvous</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="keyword">new</span> <span class="title class_">NonRendezvousSubscriber</span>());</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostNonRendezvousRegisterRendezvous</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.post(<span class="string">&quot;NonRendezvous&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousTwice</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;NewRendezvous&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="number">2</span>, eventCount.intValue());</span><br><span class="line">        assertEquals(<span class="string">&quot;NewRendezvous&quot;</span>, lastEvent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousThenPostNormal</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.post(<span class="string">&quot;NonRendezvous&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="number">1</span>, eventCount.intValue());</span><br><span class="line">        assertEquals(<span class="string">&quot;Rendezvous&quot;</span>, lastEvent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousWithRegisterAndUnregister</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Rendezvous&quot;</span>, lastEvent);</span><br><span class="line"></span><br><span class="line">        eventBus.unregister(<span class="built_in">this</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Rendezvous&quot;</span>, lastEvent);</span><br><span class="line">        assertEquals(<span class="number">2</span>, eventCount.intValue());</span><br><span class="line"></span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;NewRendezvous&quot;</span>);</span><br><span class="line">        assertEquals(<span class="number">3</span>, eventCount.intValue());</span><br><span class="line">        assertEquals(<span class="string">&quot;NewRendezvous&quot;</span>, lastEvent);</span><br><span class="line"></span><br><span class="line">        eventBus.unregister(<span class="built_in">this</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertEquals(<span class="number">5</span>, eventCount.intValue());</span><br><span class="line">        assertEquals(<span class="string">&quot;NewRendezvous&quot;</span>, lastEvent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousAndGet</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        assertEquals(<span class="string">&quot;Rendezvous&quot;</span>, eventBus.getRendezvousEvent(String.class));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousRemoveClass</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.removeRendezvousEvent(String.class);</span><br><span class="line">        assertNull(eventBus.getRendezvousEvent(String.class));</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousRemoveEvent</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        assertTrue(eventBus.removeRendezvousEvent(<span class="string">&quot;Rendezvous&quot;</span>));</span><br><span class="line">        assertNull(eventBus.getRendezvousEvent(String.class));</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testPostRendezvousRemoveAll</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.postRendezvous(<span class="keyword">new</span> <span class="title class_">IntTestEvent</span>(<span class="number">77</span>));</span><br><span class="line">        eventBus.removeAllRendezvousEvents();</span><br><span class="line">        assertNull(eventBus.getRendezvousEvent(String.class));</span><br><span class="line">        assertNull(eventBus.getRendezvousEvent(IntTestEvent.class));</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testRemoveRendezvousEventInSubscriber</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        eventBus.register(<span class="keyword">new</span> <span class="title class_">RendezvousStickySubscriber</span>());</span><br><span class="line">        eventBus.postRendezvous(<span class="string">&quot;Rendezvous&quot;</span>);</span><br><span class="line">        eventBus.register(<span class="built_in">this</span>);</span><br><span class="line">        assertNull(lastEvent);</span><br><span class="line">        assertEquals(<span class="number">0</span>, eventCount.intValue());</span><br><span class="line">        assertNull(eventBus.getRendezvousEvent(String.class));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Subscribe(rendezvous = true)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(String event)</span> &#123;</span><br><span class="line">        trackEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Subscribe(rendezvous = true)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(IntTestEvent event)</span> &#123;</span><br><span class="line">        trackEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RendezvousStickySubscriber</span> &#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings(&quot;unused&quot;)</span></span><br><span class="line">        <span class="meta">@Subscribe(rendezvous = true)</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(String event)</span> &#123;</span><br><span class="line">            eventBus.removeRendezvousEvent(event);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NonRendezvousSubscriber</span> &#123;</span><br><span class="line">        <span class="meta">@Subscribe</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(String event)</span> &#123;</span><br><span class="line">            trackEvent(event);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Subscribe</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(IntTestEvent event)</span> &#123;</span><br><span class="line">            trackEvent(event);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RendezvousIntTestSubscriber</span> &#123;</span><br><span class="line">        <span class="meta">@Subscribe(rendezvous = true)</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onEvent</span><span class="params">(IntTestEvent event)</span> &#123;</span><br><span class="line">            trackEvent(event);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的测试用例源码中，笔者编写了 13 个测试用例，涉及发送一个必达事件，发送两个必达事件，发送必达事件与普通事件，注册订阅者与反注册对必达事件的影响，获取和移除必达事件等。</p>
+<h3 id="线程调度"><a class="markdownIt-Anchor" href="#线程调度"></a> 线程调度</h3>
+<h4 id="线程模型"><a class="markdownIt-Anchor" href="#线程模型"></a> 线程模型</h4>
+<p>目前 EventBus 对订阅方法支持 5 种线程模型的调度，分别是：</p>
+<ol>
+<li><code>ThreadMode.POSTING</code> // <strong>对于普通事件来说在事件发布线程来分发事件</strong></li>
+<li><code>ThreadMode.MAIN</code> // 在主线程来分发事件，根据是否在 Android 上使用，处理逻辑不同</li>
+<li><code>ThreadMode.MAIN_ORDERED</code> // 在主线程按顺序来分发事件</li>
+<li><code>ThreadMode.BACKGROUND</code> // 在后台线程来分发事件，根据是否在 Android 上使用，处理逻辑不同。使用单线程处理，尽量不要进行耗时操作以免阻塞后台线程</li>
+<li><code>ThreadMode.ASYNC</code> // 在异步线程来分发事件，使用线程池处理</li>
+</ol>
+<p>在上一篇文章中我们分析黏性事件发送的流程时，事件的发送都会调用 <code>postToSubscription</code> 方法，最终调用 <code>invokeSubscriber</code> 方法来反射调用订阅方法，下面再贴出 <code>postToSubscription</code> 的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">postToSubscription</span><span class="params">(Subscription subscription, Object event, <span class="type">boolean</span> isMainThread)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (subscription.subscriberMethod.threadMode) &#123;</span><br><span class="line">        <span class="comment">// 处理POSTING</span></span><br><span class="line">        <span class="keyword">case</span> POSTING:</span><br><span class="line">            <span class="comment">// 直接分发事件</span></span><br><span class="line">            invokeSubscriber(subscription, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">            <span class="comment">// 处理MAIN</span></span><br><span class="line">        <span class="keyword">case</span> MAIN:</span><br><span class="line">            <span class="comment">// 是否是主线程，在非 Android 平台上时，isMainThread 也是 true</span></span><br><span class="line">            <span class="keyword">if</span> (isMainThread) &#123;</span><br><span class="line">                invokeSubscriber(subscription, event);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 此时 mainThreadPoster != null，可以认为是在 Android 平台上</span></span><br><span class="line">                mainThreadPoster.enqueue(subscription, event);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 处理MAIN_ORDERED</span></span><br><span class="line">        <span class="keyword">case</span> MAIN_ORDERED:</span><br><span class="line">            <span class="comment">// 不管是否是主线程，总是先判断是否可以入队</span></span><br><span class="line">            <span class="keyword">if</span> (mainThreadPoster != <span class="literal">null</span>) &#123;</span><br><span class="line">                mainThreadPoster.enqueue(subscription, event);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// temporary: technically not correct as poster not decoupled from subscriber</span></span><br><span class="line">                <span class="comment">// 否则直接分发事件</span></span><br><span class="line">                invokeSubscriber(subscription, event);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 处理BACKGROUND</span></span><br><span class="line">        <span class="keyword">case</span> BACKGROUND:</span><br><span class="line">            <span class="comment">// 如果是主线程则入队，backgroundPoster使用单个后台线程依次分发事件，订阅方法应尽快返回以免阻塞后台线程</span></span><br><span class="line">            <span class="comment">// 在非 Android 平台上时，isMainThread 也是 true，即在非 Android 平台上时，始终在后台线程分发事件</span></span><br><span class="line">            <span class="keyword">if</span> (isMainThread) &#123;</span><br><span class="line">                backgroundPoster.enqueue(subscription, event);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 否则直接分发事件</span></span><br><span class="line">                invokeSubscriber(subscription, event);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 处理ASYNC</span></span><br><span class="line">        <span class="keyword">case</span> ASYNC:</span><br><span class="line">            <span class="comment">// 始终异步分发事件</span></span><br><span class="line">            asyncPoster.enqueue(subscription, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Unknown thread mode: &quot;</span> + subscription.subscriberMethod.threadMode);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="posting"><a class="markdownIt-Anchor" href="#posting"></a> POSTING</h4>
+<p>这是 <code>@Subscribe</code> 注解中线程模型的默认配置，对于该线程调度模型，这里需要注意：</p>
+<ol>
+<li><strong>对于普通事件来说，事件发布与订阅方法将在同一个线程，这是该线程调度模型的本意</strong></li>
+<li><strong>但是对于黏性事件和必达事件来说，事件发布与订阅方法可能不在同一个线程</strong></li>
+</ol>
+<p>比如以下代码示例：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MainActivity.kt</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">    </span><br><span class="line">    thread &#123;</span><br><span class="line">        <span class="comment">// 在子线程中发布黏性事件</span></span><br><span class="line">        EventBus.getDefault().postSticky(<span class="string">&quot;Event-1&quot;</span>)</span><br><span class="line">        Log.e(TAG, <span class="string">&quot;onCreate: postSticky-1, ThreadName = <span class="subst">$&#123;Thread.currentThread().name&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        runOnUiThread &#123;</span><br><span class="line">            <span class="comment">// 在主线程中注册订阅者</span></span><br><span class="line">            Log.e(TAG, <span class="string">&quot;onCreate: register, ThreadName = <span class="subst">$&#123;Thread.currentThread().name&#125;</span>&quot;</span>)</span><br><span class="line">            EventBus.getDefault().register(<span class="keyword">this</span>)</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 再在主线程发布一个黏性事件</span></span><br><span class="line">            Log.e(TAG, <span class="string">&quot;onCreate: postSticky-2, ThreadName = <span class="subst">$&#123;Thread.currentThread().name&#125;</span>&quot;</span>)</span><br><span class="line">            EventBus.getDefault().postSticky(<span class="string">&quot;Event-2&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 订阅方法 使用 POSTING 线程模型</span></span><br><span class="line"><span class="meta">@Subscribe(threadMode = ThreadMode.POSTING, sticky = true)</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">eventBusTest</span><span class="params">(event: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">    Log.e(TAG, <span class="string">&quot;eventBusTest: event = <span class="variable">$event</span>, ThreadName = <span class="subst">$&#123;Thread.currentThread().name&#125;</span>&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Logcat</span></span><br><span class="line">&gt;&gt; onCreate: postSticky-<span class="number">1</span>, ThreadName = Thread-<span class="number">290</span>   ①</span><br><span class="line">&gt;&gt; onCreate: register, ThreadName = main             ②</span><br><span class="line">&gt;&gt; eventBusTest: event = Event-<span class="number">1</span>, ThreadName = main  ③</span><br><span class="line">&gt;&gt; onCreate: postSticky-<span class="number">2</span>, ThreadName = main         ④</span><br><span class="line">&gt;&gt; eventBusTest: event = Event-<span class="number">2</span>, ThreadName = main  ⑤</span><br></pre></td></tr></table></figure>
+<p>在上述代码示例中，有一个使用 <code>POSTING</code> 线程模型的订阅方法，我们分析下示例代码：</p>
+<ol>
+<li>我们先在子线程中发布一个黏性事件 <code>Event-1</code>，</li>
+<li>然后切换到主线程去注册订阅者，</li>
+<li>最后在主线程再发布一个黏性事件 <code>Event-2</code>。</li>
+</ol>
+<p>接下来我们分析下 Logcat 的输出，一共 5 条日志输出，我们一一分析：</p>
+<ol>
+<li>第一条日志是在子线程发布第一个黏性事件时输出的，标识事件发布是在子线程：<strong>Thread-290</strong></li>
+<li>第二条日志是在主线程中注册订阅者时输出的，标识注册订阅者是在主线程</li>
+<li>第三条日志是订阅方法收到第一个黏性事件时输出的，标识订阅方法此时是在主线程</li>
+<li>第四条日志是在主线程中发布第二个黏性事件时输出的，标识事件发布是在主线程</li>
+<li>第五条日志是订阅方法收到第二个黏性事件时输出的，标识订阅方法此时是在主线程</li>
+</ol>
+<p>我们根据 Logcat 的日志输出发现订阅方法收到 <code>Event-1</code> 黏性事件是在 <code>main</code> 线程，这与 <code>POSTING</code> 线程模型的描述不符，再往下看收到 <code>Event-2</code> 黏性事件是在 <code>main</code> 线程，与 <code>POSTING</code> 线程模型的描述符合。</p>
+<p>以上发现与上一篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104107150678917133">Android-EventBus修改纪实</a> 中黏性事件的发送流程分析吻合：</p>
+<ol>
+<li>黏性事件发布时如果没有订阅者，那么黏性事件的发送将在订阅者 <code>register</code> 时发送</li>
+<li>黏性事件发布时有订阅者，那么已有的订阅者会收到黏性事件，发布后注册的订阅者会在 <code>register</code> 时收到</li>
+</ol>
+<p>最后得出结论：</p>
+<ol>
+<li><strong>谨慎把 <code>POSTING</code> 线程模型用于黏性事件和必达事件，此时 <code>POSTING</code> 线程模型将失效，订阅方法将在订阅者注册的线程中调用</strong></li>
+<li><strong>对于普通事件，使用 <code>POSTING</code> 线程模型时，最好不用进行耗时操作，以免阻塞事件发布线程</strong></li>
+</ol>
+<h4 id="main和main_ordered"><a class="markdownIt-Anchor" href="#main和main_ordered"></a> MAIN和MAIN_ORDERED</h4>
+<p><code>MAIN</code> 和 <code>MAIN_ORDERED</code> 线程模型都会在主线程分发事件，后者有个排序作用：</p>
+<ol>
+<li><code>MAIN</code> 线程模型首先尝试直接在主线程分发事件(这可能会阻塞事件发布线程)，如果不行再切换至主线程分发，</li>
+<li><code>MAIN_ORDERED</code> 线程模型不管当前线程是否是主线程，始终会切换至主线程依次分发，这保证不会阻塞事件发布线程。</li>
+</ol>
+<p><strong>不管使用哪种线程模型都不应在订阅方法中进行耗时操作。</strong></p>
+<h4 id="background"><a class="markdownIt-Anchor" href="#background"></a> BACKGROUND</h4>
+<p><code>BACKGROUND</code> 线程模式也需要注意普通事件与黏性事件和必达事件不同的分发逻辑：</p>
+<ol>
+<li>如果是普通事件，事件将始终在 EventBus 的单个后台线程中依次分发，</li>
+<li>如果是黏性事件或必达事件，事件可能不在 EventBus 的单个后台线程中依次分发，原因见 <code>POSTING</code> 线程模型。</li>
+</ol>
+<h4 id="async"><a class="markdownIt-Anchor" href="#async"></a> ASYNC</h4>
+<p><code>ASYNC</code> 线程模型都将异步的分发事件，在此线程模型下可以执行耗时操作，但也应该避免触发大量耗时操作，以限制并发线程数。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>本篇文章提供了一版在上一篇文章中必达事件未实现方法的实现，并对必达事件编写了单元测试，最后通过分析 EventBus 提供的 5 种线程模型，明白了 EventBus 是如何实现线程切换的。</p>
+<p>EventBus 对外提供了 5 种线程模型，方便使用者做事件的线程调度，但无论使用哪种线程模型，在订阅方法中都应该尽量避免进行耗时操作。</p>
+<p>不过我们最后没有分析线程切换的具体源码，下篇一定~~</p>
+<p>happy~~，希望可以帮你更好的使用 EventBus</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/01/Android/Android-EventBus修改纪实(一)-必达事件/" rel="bookmark">Android-EventBus修改纪实(一)-必达事件</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/03/Android/Android-EventBus修改纪实(三)-线程调度/" rel="bookmark">Android-EventBus修改纪实(三)-线程调度</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/04/Android/Android-EventBus修改纪实(四)-注解处理器/" rel="bookmark">Android-EventBus修改纪实(四)-注解处理器</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/01/Android中关于scrollBy的一点点心得/" rel="bookmark">Android中关于scrollBy的一点点心得</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2017/07/06/AndroidStudio中使用Aliyun Maven/" rel="bookmark">AndroidStudio中使用Aliyun Maven</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/06/02/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%BA%8C)-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" title="Android-EventBus修改纪实(二)-线程模型">https://sunxiaodou.com/2022/06/02/Android/Android-EventBus修改纪实(二)-线程模型/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/eventbus/" rel="tag"># eventbus</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/01/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%80)-%E5%BF%85%E8%BE%BE%E4%BA%8B%E4%BB%B6/" rel="prev" title="Android-EventBus修改纪实(一)-必达事件">
+      <i class="fa fa-chevron-left"></i> Android-EventBus修改纪实(一)-必达事件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/03/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%89)-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/" rel="next" title="Android-EventBus修改纪实(三)-线程调度">
+      Android-EventBus修改纪实(三)-线程调度 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android-eventbus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E%E4%BA%8C"><span class="nav-number">1.</span> <span class="nav-text"> Android-EventBus修改纪实(二)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%AA%E5%AE%9E"><span class="nav-number">1.2.</span> <span class="nav-text"> 纪实</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#getrendezvousevent"><span class="nav-number">1.2.1.</span> <span class="nav-text"> getRendezvousEvent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#removerendezvousevent"><span class="nav-number">1.2.2.</span> <span class="nav-text"> removeRendezvousEvent</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#removerendezvouseventclasst-eventtype"><span class="nav-number">1.2.2.1.</span> <span class="nav-text"> removeRendezvousEvent(Class eventType)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#removerendezvouseventobject-event"><span class="nav-number">1.2.2.2.</span> <span class="nav-text"> removeRendezvousEvent(Object event)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.2.3.</span> <span class="nav-text"> 单元测试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#eventbusstickyeventtest"><span class="nav-number">1.2.3.1.</span> <span class="nav-text"> EventBusStickyEventTest</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#eventbusrendezvouseventtest"><span class="nav-number">1.2.3.2.</span> <span class="nav-text"> EventBusRendezvousEventTest</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6"><span class="nav-number">1.2.4.</span> <span class="nav-text"> 线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.4.1.</span> <span class="nav-text"> 线程模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#posting"><span class="nav-number">1.2.4.2.</span> <span class="nav-text"> POSTING</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#main%E5%92%8Cmain_ordered"><span class="nav-number">1.2.4.3.</span> <span class="nav-text"> MAIN和MAIN_ORDERED</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#background"><span class="nav-number">1.2.4.4.</span> <span class="nav-text"> BACKGROUND</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#async"><span class="nav-number">1.2.4.5.</span> <span class="nav-text"> ASYNC</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">229k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:21</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : 'f312e0631713b90f6ee4c95d2d770ae4',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

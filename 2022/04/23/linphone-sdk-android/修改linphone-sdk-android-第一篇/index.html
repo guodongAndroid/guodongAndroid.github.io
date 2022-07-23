@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="修改linphone-sdk-android-第一篇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="修改linphone-sdk-android-第一篇">
+<meta property="og:url" content="https://sunxiaodou.com/2022/04/23/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%80%E7%AF%87/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="修改linphone-sdk-android-第一篇">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-23T02:03:34.532Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="linphone-sdk-android">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/04/23/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%80%E7%AF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>修改linphone-sdk-android-第一篇 | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/04/23/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%80%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          修改linphone-sdk-android-第一篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-23 00:00:00" itemprop="dateCreated datePublished" datetime="2022-04-23T00:00:00+08:00">2022-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linphone-sdk-android/" itemprop="url" rel="index"><span itemprop="name">linphone-sdk-android</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>24 分钟</span>
+            </span>
+            <div class="post-description">修改linphone-sdk-android-第一篇</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="修改linphone-sdk-android-上篇"><a class="markdownIt-Anchor" href="#修改linphone-sdk-android-上篇"></a> 修改linphone-sdk-android-上篇</h1>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>记录修改linphone-sdk-android过程，计划分为上、中、下三篇</p>
+<p>本文是上篇，本篇仅记录下书问题2的初步排查过程，尽量描述排查问题过程中的思路与方向</p>
+<p>余下两篇记录问题1、2的修改过程</p>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>接上文<a target="_blank" rel="noopener" href="https://juejin.cn/post/7087496636657565727">编译linphone-sdk-android</a></p>
+<p>项目中使用的linphone-sdk-android版本为4.5.x，使用过程中发现以下两个问题：</p>
+<ol>
+<li>打开音频编解码G722、G729时，发起呼叫的INVITE SDP中，没有G722、G729的RTP MAP，当时以为是linphone的bug，后面看源码及查资料发现可能不是bug，这里先按下不表</li>
+<li>使用sdk提供的JavaLogger输出日志时，伪代码：<code>mFactory.getLoggingService().addListener(mAndroidLoggingService);</code>，偶现JNI崩溃问题</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">    --------- beginning of crash</span><br><span class="line">2022-04-11 14:16:22.350 1142-1430/? A/libc: Fatal signal 6 (SIGABRT), code -6 in tid 1430 (RealLinphonePro)</span><br><span class="line">2022-04-11 14:16:22.441 3756-3756/? A/DEBUG: *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***</span><br><span class="line">2022-04-11 14:16:22.442 3756-3756/? A/DEBUG: Build fingerprint: &#x27;Android/rk3288/rk3288:7.1.2/NHG47K/builde03162201:userdebug/test-keys&#x27;</span><br><span class="line">2022-04-11 14:16:22.444 3756-3756/? A/DEBUG: Revision: &#x27;0&#x27;</span><br><span class="line">2022-04-11 14:16:22.446 3756-3756/? A/DEBUG: ABI: &#x27;arm&#x27;</span><br><span class="line">2022-04-11 14:16:22.447 3756-3756/? A/DEBUG: pid: 1142, tid: 1430, name: RealLinphonePro  &gt;&gt;&gt; com.guodong.android.linphone &lt;&lt;&lt;</span><br><span class="line">2022-04-11 14:16:22.448 3756-3756/? A/DEBUG: signal 6 (SIGABRT), code -6 (SI_TKILL), fault addr --------</span><br><span class="line">2022-04-11 14:16:22.454 3756-3756/? A/DEBUG: Abort message: &#x27;art/runtime/indirect_reference_table.cc:80] JNI ERROR (app bug): accessed deleted WeakGlobal 0x21ab&#x27;</span><br><span class="line">2022-04-11 14:16:22.456 3756-3756/? A/DEBUG:     r0 00000000  r1 00000596  r2 00000006  r3 00000008</span><br><span class="line">2022-04-11 14:16:22.457 3756-3756/? A/DEBUG:     r4 89aff978  r5 00000006  r6 89aff920  r7 0000010c</span><br><span class="line">2022-04-11 14:16:22.459 3756-3756/? A/DEBUG:     r8 00000043  r9 aaa7eef0  sl 0000000a  fp 89d04400</span><br><span class="line">2022-04-11 14:16:22.461 3756-3756/? A/DEBUG:     ip 0000000b  sp 89afef88  lr ab175857  pc ab1780c0  cpsr 600b0010</span><br><span class="line">2022-04-11 14:16:22.509 3756-3756/? A/DEBUG: backtrace:</span><br><span class="line">2022-04-11 14:16:22.511 3756-3756/? A/DEBUG:     #00 pc 0004a0c0  /system/lib/libc.so (tgkill+12)</span><br><span class="line">2022-04-11 14:16:22.512 3756-3756/? A/DEBUG:     #01 pc 00047853  /system/lib/libc.so (pthread_kill+34)</span><br><span class="line">2022-04-11 14:16:22.514 3756-3756/? A/DEBUG:     #02 pc 0001d8b5  /system/lib/libc.so (raise+10)</span><br><span class="line">2022-04-11 14:16:22.515 3756-3756/? A/DEBUG:     #03 pc 00019401  /system/lib/libc.so (__libc_android_abort+34)</span><br><span class="line">2022-04-11 14:16:22.517 3756-3756/? A/DEBUG:     #04 pc 00017048  /system/lib/libc.so (abort+4)</span><br><span class="line">2022-04-11 14:16:22.518 3756-3756/? A/DEBUG:     #05 pc 0031d8cd  /system/lib/libart.so (_ZN3art7Runtime5AbortEPKc+328)</span><br><span class="line">2022-04-11 14:16:22.520 3756-3756/? A/DEBUG:     #06 pc 000b5503  /system/lib/libart.so (_ZN3art10LogMessageD2Ev+1134)</span><br><span class="line">2022-04-11 14:16:22.521 3756-3756/? A/DEBUG:     #07 pc 001bd0ff  /system/lib/libart.so (_ZN3art22IndirectReferenceTable17AbortIfNoCheckJNIERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE+134)</span><br><span class="line">2022-04-11 14:16:22.523 3756-3756/? A/DEBUG:     #08 pc 0023ecaf  /system/lib/libart.so (_ZNK3art22IndirectReferenceTable10GetCheckedEPv+250)</span><br><span class="line">2022-04-11 14:16:22.525 3756-3756/? A/DEBUG:     #09 pc 0023c05b  /system/lib/libart.so (_ZN3art9JavaVMExt16DecodeWeakGlobalEPNS_6ThreadEPv+30)</span><br><span class="line">2022-04-11 14:16:22.526 3756-3756/? A/DEBUG:     #10 pc 00337679  /system/lib/libart.so (_ZNK3art6Thread13DecodeJObjectEP8_jobject+164)</span><br><span class="line">2022-04-11 14:16:22.528 3756-3756/? A/DEBUG:     #11 pc 00265843  /system/lib/libart.so (_ZN3art3JNI11NewLocalRefEP7_JNIEnvP8_jobject+406)</span><br><span class="line">2022-04-11 14:16:22.530 3756-3756/? A/DEBUG:     #12 pc 0060eff9  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (getLoggingService+88)</span><br><span class="line">2022-04-11 14:16:22.531 3756-3756/? A/DEBUG:     #13 pc 0061a977  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so</span><br><span class="line">2022-04-11 14:16:22.533 3756-3756/? A/DEBUG:     #14 pc 005ef911  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so</span><br><span class="line">2022-04-11 14:16:22.535 3756-3756/? A/DEBUG:     #15 pc 00025437  /data/app/com.guodong.android.linphone-1/lib/arm/libbctoolbox.so (bctbx_logv+182)</span><br><span class="line">2022-04-11 14:16:22.536 3756-3756/? A/DEBUG:     #16 pc 006f5061  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so</span><br><span class="line">2022-04-11 14:16:22.538 3756-3756/? A/DEBUG:     #17 pc 006f51d9  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (wake_lock_acquire+152)</span><br><span class="line">2022-04-11 14:16:22.539 3756-3756/? A/DEBUG:     #18 pc 006601c5  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so</span><br><span class="line">2022-04-11 14:16:22.541 3756-3756/? A/DEBUG:     #19 pc 00660b27  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (belle_sip_client_transaction_init+138)</span><br><span class="line">2022-04-11 14:16:22.542 3756-3756/? A/DEBUG:     #20 pc 006fb1d3  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (belle_sip_nict_new+30)</span><br><span class="line">2022-04-11 14:16:22.544 3756-3756/? A/DEBUG:     #21 pc 0065c3a7  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (belle_sip_provider_create_client_transaction+46)</span><br><span class="line">2022-04-11 14:16:22.546 3756-3756/? A/DEBUG:     #22 pc 0065dec3  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so</span><br><span class="line">2022-04-11 14:16:22.547 3756-3756/? A/DEBUG:     #23 pc 0065daf7  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (belle_sip_refresher_refresh+28)</span><br><span class="line">2022-04-11 14:16:22.549 3756-3756/? A/DEBUG:     #24 pc 005fac23  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (linphone_proxy_config_refresh_register+34)</span><br><span class="line">2022-04-11 14:16:22.550 3756-3756/? A/DEBUG:     #25 pc 005e9fc5  /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (linphone_core_refresh_registers+40)</span><br><span class="line">2022-04-11 14:16:22.552 3756-3756/? A/DEBUG:     #26 pc 019fc3bf  /data/app/com.guodong.android.linphone-1/oat/arm/base.odex (offset 0x18de000)</span><br><span class="line">2022-04-11 14:16:23.096 227-255/? I/AudioFlinger: BUFFER TIMEOUT: remove(4099) from active list on thread 0xabd03e00</span><br></pre></td></tr></table></figure>
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
+<h3 id="问题2"><a class="markdownIt-Anchor" href="#问题2"></a> 问题2</h3>
+<p>通过崩溃日志第27行<code>2022-04-11 14:16:22.530 3756-3756/? A/DEBUG: #12 pc 0060eff9 /data/app/com.guodong.android.linphone-1/lib/arm/liblinphone.so (getLoggingService+88)</code>可以判断崩溃是在<code>getLoggingService()</code>这个方法里</p>
+<p>如此需要先找到<code>getLoggingService()</code>方法的源码，先在Source Insight中搜索<code>getLoggingService()</code>，搜索一圈发现没有，猜想此方法应该是编译后自动生成的</p>
+<p>在Ubuntu编译环境里找找，通过<code>find</code>命令查找包含<code>getLoggingService</code>文本的文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> linphone-sdk/build/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">find . -<span class="built_in">type</span> f | xargs grep <span class="string">&quot;getLoggingService&quot;</span></span></span><br><span class="line">./WORK/android-armv7/Build/linphone/wrappers/java/src/linphone_jni.cc:JNIEXPORT jobject JNICALL getLoggingService(JNIEnv *env, LinphoneLoggingService *cptr, bool_t takeref) &#123;</span><br><span class="line">./WORK/android-armv7/Build/linphone/wrappers/java/src/linphone_jni.cc:	jobject j_logService = getLoggingService(env, (LinphoneLoggingService *)logService, TRUE);</span><br><span class="line">./WORK/android-armv7/Build/linphone/wrappers/java/src/linphone_jni.cc:	jobject jni_result = (jobject)getLoggingService(env, (LinphoneLoggingService *)linphone_logging_service_get(), TRUE);</span><br></pre></td></tr></table></figure>
+<p>找到了bingo~</p>
+<p>打开<code>linphone_jni.cc</code>，<code>getLoggingService()</code>方法体如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">JNIEXPORT jobject JNICALL <span class="title">getLoggingService</span><span class="params">(JNIEnv *env, LinphoneLoggingService *cptr, <span class="type">bool_t</span> takeref)</span> </span>&#123;</span><br><span class="line">	jobject jobj = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (cptr != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">		<span class="type">void</span> *up = <span class="built_in">belle_sip_object_data_get</span>((<span class="type">belle_sip_object_t</span> *)cptr, belle_sip_java_user_data_key);</span><br><span class="line">		LinphoneJavaBindings *ljb = (LinphoneJavaBindings *)<span class="built_in">linphone_factory_get_user_data</span>(<span class="built_in">linphone_factory_get</span>());</span><br><span class="line">		<span class="keyword">if</span> (!ljb) &#123;</span><br><span class="line">			ljb = <span class="keyword">new</span> <span class="built_in">LinphoneJavaBindings</span>(env);</span><br><span class="line">			<span class="built_in">linphone_factory_set_user_data</span>(<span class="built_in">linphone_factory_get</span>(), ljb);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		jclass linphone_logging_service_class = ljb-&gt;linphone_logging_service_class;</span><br><span class="line">		jmethodID linphone_logging_service_constructor = ljb-&gt;linphone_logging_service_class_constructor;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (up == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">			jobj = env-&gt;<span class="built_in">NewObject</span>(linphone_logging_service_class, linphone_logging_service_constructor, (jlong)cptr);</span><br><span class="line">			<span class="built_in">belle_sip_object_data_set</span>((<span class="type">belle_sip_object_t</span> *)cptr, belle_sip_java_user_data_key, (<span class="type">void</span>*)env-&gt;<span class="built_in">NewWeakGlobalRef</span>(jobj), <span class="literal">nullptr</span>);</span><br><span class="line">			<span class="keyword">if</span> (takeref)</span><br><span class="line">				<span class="built_in">linphone_logging_service_ref</span>(cptr);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			jobj = env-&gt;<span class="built_in">NewLocalRef</span>((jobject)up);</span><br><span class="line">			<span class="keyword">if</span> (jobj == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">				<span class="comment">// Delete weak ref ?</span></span><br><span class="line">				env-&gt;<span class="built_in">DeleteWeakGlobalRef</span>((jobject)up);</span><br><span class="line">				<span class="comment">// takes implicit local ref</span></span><br><span class="line">				jobj = env-&gt;<span class="built_in">NewObject</span>(linphone_logging_service_class, linphone_logging_service_constructor, (jlong)cptr);</span><br><span class="line">				<span class="built_in">belle_sip_object_data_set</span>((<span class="type">belle_sip_object_t</span> *)cptr, belle_sip_java_user_data_key, (<span class="type">void</span>*)env-&gt;<span class="built_in">NewWeakGlobalRef</span>(jobj), <span class="literal">nullptr</span>);</span><br><span class="line">				<span class="keyword">if</span> (takeref)</span><br><span class="line">					<span class="built_in">linphone_logging_service_ref</span>(cptr);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> jobj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>嗯，看起来没啥问题，也有判空处理，一时间摸不着头绪，先在<code>getLoggingService()</code>方法中加点日志输出看看吧</p>
+<p>前面说<code>linphone_jni.cc</code>是自动生成的，现在需要找到自动生成<code>linphone_jni.cc</code>的代码，根据崩溃日志可以发现<code>getLoggingService()</code>在<code>linphone.so</code>中，而源码中有<code>liblinphone</code>这个目录，先在这个目录下找找吧，通过<code>find</code>命令查找文件名中包含<code>jni</code>的文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> linphone-sdk/liblinphone/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">find . -name *jni*</span></span><br><span class="line">./coreapi/linphonecore_jni.cc</span><br><span class="line">./tools/lpc2xml_jni.cc</span><br><span class="line">./tools/xml2lpc_jni.cc</span><br><span class="line">./tools/my_jni.h</span><br><span class="line">./wrappers/java/jni.mustache</span><br></pre></td></tr></table></figure>
+<p>查找出来多个文件，既然<code>linphone_jni.cc</code>是自动生成的，所以可以确定<code>.cc</code>、<code>.h</code>后缀的几个文件肯定不是，排除后只剩下这个<code>jni.mustache</code>文件，打开文件<code>vim ./wrappers/java/jni.mustache</code>注释第一行就是<code>linphone_jni.cc</code>，太棒了，找到自动生成的代码了</p>
+<p>通过一些查看，并与<code>linphone_jni.cc</code>中的实现对比，锁定了以下代码即为自动生成的模板代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">290 &#123;&#123;#objects&#125;&#125;</span><br><span class="line">291 JNIEXPORT jobject JNICALL get&#123;&#123;className&#125;&#125;(JNIEnv *env, &#123;&#123;classCName&#125;&#125; *cptr, bool_t takeref) &#123;</span><br><span class="line">292         jobject jobj = nullptr;</span><br><span class="line">293 </span><br><span class="line">294         if (cptr != nullptr) &#123;</span><br><span class="line">295                 void *up = belle_sip_object_data_get((belle_sip_object_t *)cptr, belle_sip_java_user_data_key);</span><br><span class="line">296                 LinphoneJavaBindings *ljb = (LinphoneJavaBindings *)linphone_factory_get_user_data(linphone_factory_get());</span><br><span class="line">297                 if (!ljb) &#123;</span><br><span class="line">298                         ljb = new LinphoneJavaBindings(env);</span><br><span class="line">299                         linphone_factory_set_user_data(linphone_factory_get(), ljb);</span><br><span class="line">300                 &#125;</span><br><span class="line">301 </span><br><span class="line">302                 jclass &#123;&#123;cPrefix&#125;&#125;_class = ljb-&gt;&#123;&#123;cPrefix&#125;&#125;_class;</span><br><span class="line">303                 jmethodID &#123;&#123;cPrefix&#125;&#125;_constructor = ljb-&gt;&#123;&#123;cPrefix&#125;&#125;_class_constructor;</span><br><span class="line">304 </span><br><span class="line">305                 if (up == nullptr) &#123;</span><br><span class="line">306                         jobj = env-&gt;NewObject(&#123;&#123;cPrefix&#125;&#125;_class, &#123;&#123;cPrefix&#125;&#125;_constructor, (jlong)cptr);</span><br><span class="line">307                         belle_sip_object_data_set((belle_sip_object_t *)cptr, belle_sip_java_user_data_key, (void*)env-&gt;NewWeakGlobalRef(jobj), nullptr);</span><br><span class="line">308                         if (takeref)</span><br><span class="line">309                                 &#123;&#123;#refCountable&#125;&#125;&#123;&#123;cPrefix&#125;&#125;_ref(cptr);&#123;&#123;/refCountable&#125;&#125;</span><br><span class="line">310                 &#125; else &#123;</span><br><span class="line">311                         jobj = env-&gt;NewLocalRef((jobject)up);</span><br><span class="line">312                         if (jobj == nullptr) &#123;</span><br><span class="line">313                                 // Delete weak ref ?</span><br><span class="line">314                                 env-&gt;DeleteWeakGlobalRef((jobject)up);</span><br><span class="line">315                                 // takes implicit local ref</span><br><span class="line">316                                 jobj = env-&gt;NewObject(&#123;&#123;cPrefix&#125;&#125;_class, &#123;&#123;cPrefix&#125;&#125;_constructor, (jlong)cptr);</span><br><span class="line">317                                 belle_sip_object_data_set((belle_sip_object_t *)cptr, belle_sip_java_user_data_key, (void*)env-&gt;NewWeakGlobalRef(jobj), nullptr);</span><br><span class="line">318                                 if (takeref)</span><br><span class="line">319                                         &#123;&#123;#refCountable&#125;&#125;&#123;&#123;cPrefix&#125;&#125;_ref(cptr);&#123;&#123;/refCountable&#125;&#125;</span><br><span class="line">320                         &#125;</span><br><span class="line">321                 &#125;</span><br><span class="line">322         &#125;</span><br><span class="line">323         return jobj;</span><br><span class="line">324 &#125;</span><br></pre></td></tr></table></figure>
+<p>这里linphone-sdk使用了<a target="_blank" rel="noopener" href="https://github.com/janl/mustache.js">mustache</a>，还记得在上篇<a target="_blank" rel="noopener" href="https://juejin.cn/post/7087496636657565727">编译Linphone-SDK-Android</a>中有安装<code>pip3 install pystache</code>，<code>pystache</code>是<code>mustache</code>的Python实现，<code>mustache</code>的语法比较简单，在<code>github</code>上看一眼文档，再跟着源码比着葫芦画瓢，应该就差不多了</p>
+<p>好的，学习完<code>mustache</code>的语法，了解到高级用法可以传一个配置文件进行渲染，正好与<code>jni.mustache</code>同级目录中有个<code>genwrapper.py</code>文件，打开此文件，里面定义了很多类，其中有个<code>Jni</code>的类，里面有些字段与<code>jni.mustache</code>中的标签正好对应，就是它了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Jni</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">add_object</span>(<span class="params">self, javaClass</span>):</span><br><span class="line">        <span class="keyword">if</span> javaClass.className == <span class="string">&#x27;Factory&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        obj = &#123;</span><br><span class="line">            <span class="string">&#x27;jniPrefix&#x27;</span>: self.jni_package,</span><br><span class="line">            <span class="string">&#x27;jniPath&#x27;</span>: self.jni_path,</span><br><span class="line">            <span class="string">&#x27;cPrefix&#x27;</span>: javaClass.cPrefix,</span><br><span class="line">            <span class="string">&#x27;className&#x27;</span>: javaClass.className,</span><br><span class="line">            <span class="string">&#x27;classCName&#x27;</span>: javaClass.cName,</span><br><span class="line">            <span class="string">&#x27;classImplName&#x27;</span>: javaClass.classImplName,</span><br><span class="line">            <span class="string">&#x27;refCountable&#x27;</span>: javaClass.refCountable,</span><br><span class="line">            <span class="string">&#x27;notRefCountable&#x27;</span>: <span class="keyword">not</span> javaClass.refCountable,</span><br><span class="line">        &#125;</span><br><span class="line">        self.objects.append(obj)</span><br></pre></td></tr></table></figure>
+<p>happy~万事具备，现在可以修改源码，添加一些日志输出了</p>
+<p>因为在<code>jni.mustache</code>中模板方法<code>get&#123;&#123;className&#125;&#125;</code>是可以生成多个以<code>get</code>开头的方法，现在需要判断<code>&#123;&#123;className&#125;&#125;</code>是不是等于<code>LoggingService</code>，而在<a target="_blank" rel="noopener" href="https://github.com/janl/mustache.js">mustache</a>中没有发现比较字符串是否相同的语法，所以在<code>genwrapper.py</code>的<code>Jni</code>类中新增一个<code>isLoggingService</code>字段表示是否是<code>getLoggingService()</code>方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Jni</span>:</span><br><span class="line">	<span class="keyword">def</span> <span class="title function_">add_object</span>(<span class="params">self, javaClass</span>):</span><br><span class="line">        <span class="keyword">if</span> javaClass.className == <span class="string">&#x27;Factory&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        obj = &#123;</span><br><span class="line">            <span class="string">&#x27;jniPrefix&#x27;</span>: self.jni_package,</span><br><span class="line">            <span class="string">&#x27;jniPath&#x27;</span>: self.jni_path,</span><br><span class="line">            <span class="string">&#x27;cPrefix&#x27;</span>: javaClass.cPrefix,</span><br><span class="line">            <span class="string">&#x27;className&#x27;</span>: javaClass.className,</span><br><span class="line">            <span class="string">&#x27;classCName&#x27;</span>: javaClass.cName,</span><br><span class="line">            <span class="string">&#x27;classImplName&#x27;</span>: javaClass.classImplName,</span><br><span class="line">            <span class="string">&#x27;refCountable&#x27;</span>: javaClass.refCountable,</span><br><span class="line">            <span class="string">&#x27;notRefCountable&#x27;</span>: <span class="keyword">not</span> javaClass.refCountable,</span><br><span class="line">            <span class="string">&#x27;isLoggingService&#x27;</span>: javaClass.className == <span class="string">&#x27;LoggingService&#x27;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">        self.objects.append(obj)</span><br></pre></td></tr></table></figure>
+<p>然后修改<code>jni.mustache</code>文件，增加日志，输出<code>up</code>指针指向的地址，<code>up</code>指针转成<code>jobject</code>后与<code>NULL</code>、<code>nullptr</code>比较的结果，判断<code>up</code>是否已经被回收了</p>
+<p>这里说一下代码的大概意思，<code>up</code>指针从<code>belle_sip_object_data_get</code>方法中通过<code>belle_sip_java_user_data_key</code>这个Key获取，可以简单理解为Java中的Map；如果<code>up</code>为空，则调用Java方法创建一个对象，将创建的Java对象通过<code>NewWeakGlobalRef</code>方法转换为全局弱引用，再通过<code>belle_sip_object_data_set</code>方法保存起来；如果<code>up</code>不为空，则强转为<code>jobject</code>，判断<code>jobject</code>是否为空，为空则删除全局弱引用，再创建保存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;#objects&#125;&#125;</span><br><span class="line">JNIEXPORT jobject JNICALL get&#123;&#123;className&#125;&#125;(JNIEnv *env, &#123;&#123;classCName&#125;&#125; *cptr, bool_t takeref) &#123;</span><br><span class="line">	jobject jobj = nullptr;</span><br><span class="line"></span><br><span class="line">	if (cptr != nullptr) &#123;</span><br><span class="line">		void *up = belle_sip_object_data_get((belle_sip_object_t *)cptr, belle_sip_java_user_data_key);</span><br><span class="line">		LinphoneJavaBindings *ljb = (LinphoneJavaBindings *)linphone_factory_get_user_data(linphone_factory_get());</span><br><span class="line">		if (!ljb) &#123;</span><br><span class="line">			ljb = new LinphoneJavaBindings(env);</span><br><span class="line">			linphone_factory_set_user_data(linphone_factory_get(), ljb);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		jclass &#123;&#123;cPrefix&#125;&#125;_class = ljb-&gt;&#123;&#123;cPrefix&#125;&#125;_class;</span><br><span class="line">		jmethodID &#123;&#123;cPrefix&#125;&#125;_constructor = ljb-&gt;&#123;&#123;cPrefix&#125;&#125;_class_constructor;</span><br><span class="line"></span><br><span class="line">		&#123;&#123;#isLoggingService&#125;&#125;</span><br><span class="line">		#ifdef __ANDROID__</span><br><span class="line">		__android_log_print(ANDROID_LOG_DEBUG, &quot;guodongAndroid&quot;, &quot;up = %p&quot;, up);</span><br><span class="line">		</span><br><span class="line">		jobject temp_jobj1 = (jobject)up;</span><br><span class="line">		jboolean up_available1 = env-&gt;IsSameObject(temp_jobj1, NULL);</span><br><span class="line">		__android_log_print(ANDROID_LOG_DEBUG, &quot;guodongAndroid&quot;, &quot;up_available1 = %d&quot;, up_available1);</span><br><span class="line">		</span><br><span class="line">		jobject temp_jobj2 = (jobject)up;</span><br><span class="line">		jboolean up_available2 = env-&gt;IsSameObject(temp_jobj2, nullptr);</span><br><span class="line">		__android_log_print(ANDROID_LOG_DEBUG, &quot;guodongAndroid&quot;, &quot;up_available2 = %d&quot;, up_available2);</span><br><span class="line">		#endif /* __ANDROID__ */</span><br><span class="line">		&#123;&#123;/isLoggingService&#125;&#125;</span><br><span class="line"></span><br><span class="line">		if (up == nullptr) &#123;</span><br><span class="line">			jobj = env-&gt;NewObject(&#123;&#123;cPrefix&#125;&#125;_class, &#123;&#123;cPrefix&#125;&#125;_constructor, (jlong)cptr);</span><br><span class="line">			belle_sip_object_data_set((belle_sip_object_t *)cptr, belle_sip_java_user_data_key, (void*)env-&gt;NewWeakGlobalRef(jobj), nullptr);</span><br><span class="line">			if (takeref)</span><br><span class="line">				&#123;&#123;#refCountable&#125;&#125;&#123;&#123;cPrefix&#125;&#125;_ref(cptr);&#123;&#123;/refCountable&#125;&#125;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			jobj = env-&gt;NewLocalRef((jobject)up);</span><br><span class="line">			if (jobj == nullptr) &#123;</span><br><span class="line">				// Delete weak ref ?</span><br><span class="line">				env-&gt;DeleteWeakGlobalRef((jobject)up);</span><br><span class="line">				// takes implicit local ref</span><br><span class="line">				jobj = env-&gt;NewObject(&#123;&#123;cPrefix&#125;&#125;_class, &#123;&#123;cPrefix&#125;&#125;_constructor, (jlong)cptr);</span><br><span class="line">				belle_sip_object_data_set((belle_sip_object_t *)cptr, belle_sip_java_user_data_key, (void*)env-&gt;NewWeakGlobalRef(jobj), nullptr);</span><br><span class="line">				if (takeref)</span><br><span class="line">					&#123;&#123;#refCountable&#125;&#125;&#123;&#123;cPrefix&#125;&#125;_ref(cptr);&#123;&#123;/refCountable&#125;&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return jobj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>好的，修改完源码保存后，就可以编译了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> linphone-sdk/build/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cmake --build . --parallel 8</span></span><br></pre></td></tr></table></figure>
+<p>等待编译完成，拷贝出来编译好的<code>aar</code>，放到Android Studio中运行，查看Logcat输出</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/06/linphone-sdk-android/linphone-sdk-android网络检测分析/" rel="bookmark">linphone-sdk-android网络检测分析</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/26/linphone-sdk-android/修改linphone-sdk-android-第三篇/" rel="bookmark">修改linphone-sdk-android-第三篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/27/linphone-sdk-android/修改linphone-sdk-android-第四篇/" rel="bookmark">修改linphone-sdk-android-第四篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/24/linphone-sdk-android/修改linphone-sdk-android-第二篇/" rel="bookmark">修改linphone-sdk-android-第二篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/17/linphone-sdk-android/编译linphone-sdk-android/" rel="bookmark">编译linphone-sdk-android</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/04/23/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%80%E7%AF%87/" title="修改linphone-sdk-android-第一篇">https://sunxiaodou.com/2022/04/23/linphone-sdk-android/修改linphone-sdk-android-第一篇/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/linphone-sdk-android/" rel="tag"># linphone-sdk-android</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/17/linphone-sdk-android/%E7%BC%96%E8%AF%91linphone-sdk-android/" rel="prev" title="编译linphone-sdk-android">
+      <i class="fa fa-chevron-left"></i> 编译linphone-sdk-android
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/24/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%BA%8C%E7%AF%87/" rel="next" title="修改linphone-sdk-android-第二篇">
+      修改linphone-sdk-android-第二篇 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9linphone-sdk-android-%E4%B8%8A%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text"> 修改linphone-sdk-android-上篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text"> 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%982"><span class="nav-number">1.3.1.</span> <span class="nav-text"> 问题2</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">229k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:21</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : '64e86d20a595225150ee6c1e6748b91c',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

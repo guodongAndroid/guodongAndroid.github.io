@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="修改linphone-sdk-android-第三篇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="修改linphone-sdk-android-第三篇">
+<meta property="og:url" content="https://sunxiaodou.com/2022/04/26/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%89%E7%AF%87/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="修改linphone-sdk-android-第三篇">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+<meta property="og:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+<meta property="og:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+<meta property="og:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+<meta property="og:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+<meta property="og:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+<meta property="article:published_time" content="2022-04-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-23T02:03:34.533Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="linphone-sdk-android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.iana.org/assignments/_support/sort_none.gif">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/04/26/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%89%E7%AF%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>修改linphone-sdk-android-第三篇 | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/04/26/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%89%E7%AF%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          修改linphone-sdk-android-第三篇
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-04-26T00:00:00+08:00">2022-04-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linphone-sdk-android/" itemprop="url" rel="index"><span itemprop="name">linphone-sdk-android</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>24 分钟</span>
+            </span>
+            <div class="post-description">修改linphone-sdk-android-第三篇</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="修改linphone-sdk-android-下篇"><a class="markdownIt-Anchor" href="#修改linphone-sdk-android-下篇"></a> 修改linphone-sdk-android-下篇</h1>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>接上篇<a target="_blank" rel="noopener" href="https://juejin.cn/post/7089664949907095559">修改linphone-sdk-android-上篇</a></p>
+<p>接中篇<a target="_blank" rel="noopener" href="https://juejin.cn/post/7090172691617071118">修改linphone-sdk-android-中篇</a></p>
+<p>本文是下篇，本篇记录在上篇中提到的问题1排查过程及修复方案，尽量描述排查问题过程中的思路与方向</p>
+<p>上篇中说问题1当初认为是linphone的bug，后面看源码及查资料发现可能不是bug，本篇将记录个人的理解</p>
+<h2 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h2>
+<p>这里再描述下问题1：打开音频编解码G722、G729等时，发起呼叫的INVITE SDP中，没有G722、G729的<code>rtpmap</code></p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">m</span>=audio <span class="number">7078</span> RTP/AVP <span class="number">96</span> <span class="number">0</span> <span class="number">8</span> <span class="number">9</span> <span class="number">18</span> <span class="number">101</span> <span class="number">97</span></span><br><span class="line"><span class="attribute">a</span>=fmtp:<span class="number">18</span> annexb=yes</span><br><span class="line"><span class="attribute">a</span>=rtpmap:<span class="number">101</span> telephone-event/<span class="number">48000</span></span><br><span class="line"><span class="attribute">a</span>=rtpmap:<span class="number">97</span> telephone-event/<span class="number">8000</span></span><br><span class="line"><span class="attribute">a</span>=rtcp-fb:* trr-int <span class="number">1000</span></span><br><span class="line"><span class="attribute">a</span>=rtcp-fb:* ccm tmmbr</span><br></pre></td></tr></table></figure>
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
+<p>这里先了解下SDP协议，参考<a target="_blank" rel="noopener" href="https://www.3cx.com/blog/voip-howto/sdp-voip2/">The Session Description Protocol (SDP) (3cx.com)</a></p>
+<p><code>rtpmap</code>是<code>Session attribute lines</code>，即为会话属性行，是对<code>Payload Type</code>的补充说明，<code>Payload Type</code>既是<code>m=audio 7078 RTP/AVP 96 0 8 9 18 101 97</code>中<code>AVP</code>后面的数字，这些数字是音频编解码对应的代码，对应关系如下：</p>
+<p>下表源自<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/rtp-parameters/rtp-parameters.xhtml#rtp-parameters-1">Real-Time Transport Protocol (RTP) Parameters (iana.org)</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">PT <img data-src="https://www.iana.org/assignments/_support/sort_none.gif" alt="img" /></th>
+<th style="text-align:left">Encoding Name <img data-src="https://www.iana.org/assignments/_support/sort_none.gif" alt="img" /></th>
+<th style="text-align:left">Audio/Video (A/V) <img data-src="https://www.iana.org/assignments/_support/sort_none.gif" alt="img" /></th>
+<th style="text-align:left">Clock Rate (Hz) <img data-src="https://www.iana.org/assignments/_support/sort_none.gif" alt="img" /></th>
+<th style="text-align:left">Channels <img data-src="https://www.iana.org/assignments/_support/sort_none.gif" alt="img" /></th>
+<th style="text-align:left">Reference <img data-src="https://www.iana.org/assignments/_support/sort_none.gif" alt="img" /></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0</td>
+<td style="text-align:left">PCMU</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">Reserved</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">Reserved</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">GSM</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">4</td>
+<td style="text-align:left">G723</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/rtp-parameters/rtp-parameters.xhtml#Vineet_Kumar">Vineet_Kumar</a>][<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">DVI4</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">6</td>
+<td style="text-align:left">DVI4</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">16000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">LPC</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">8</td>
+<td style="text-align:left">PCMA</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">9</td>
+<td style="text-align:left">G722</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">10</td>
+<td style="text-align:left">L16</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">44100</td>
+<td style="text-align:left">2</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">11</td>
+<td style="text-align:left">L16</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">44100</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">12</td>
+<td style="text-align:left">QCELP</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">13</td>
+<td style="text-align:left">CN</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3389">RFC3389</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">14</td>
+<td style="text-align:left">MPA</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>][<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc2250">RFC2250</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">15</td>
+<td style="text-align:left">G728</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">16</td>
+<td style="text-align:left">DVI4</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">11025</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/rtp-parameters/rtp-parameters.xhtml#Joseph_Di_Pol">Joseph_Di_Pol</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">17</td>
+<td style="text-align:left">DVI4</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">22050</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/rtp-parameters/rtp-parameters.xhtml#Joseph_Di_Pol">Joseph_Di_Pol</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">18</td>
+<td style="text-align:left">G729</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left">8000</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">19</td>
+<td style="text-align:left">Reserved</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">20</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">21</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">22</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">23</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">A</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">24</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">25</td>
+<td style="text-align:left">CelB</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc2029">RFC2029</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">26</td>
+<td style="text-align:left">JPEG</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc2435">RFC2435</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">27</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">28</td>
+<td style="text-align:left">nv</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">29</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">30</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">31</td>
+<td style="text-align:left">H261</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc4587">RFC4587</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">32</td>
+<td style="text-align:left">MPV</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc2250">RFC2250</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">33</td>
+<td style="text-align:left">MP2T</td>
+<td style="text-align:left">AV</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc2250">RFC2250</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">34</td>
+<td style="text-align:left">H263</td>
+<td style="text-align:left">V</td>
+<td style="text-align:left">90000</td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/assignments/rtp-parameters/rtp-parameters.xhtml#Chunrong_Zhu">Chunrong_Zhu</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">35-71</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">?</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">72-76</td>
+<td style="text-align:left">Reserved for RTCP conflict avoidance</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+<tr>
+<td style="text-align:left">77-95</td>
+<td style="text-align:left">Unassigned</td>
+<td style="text-align:left">?</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">96-127</td>
+<td style="text-align:left">dynamic</td>
+<td style="text-align:left">?</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">[<a target="_blank" rel="noopener" href="https://www.iana.org/go/rfc3551">RFC3551</a>]</td>
+</tr>
+</tbody>
+</table>
+<p>从表中了解到，Payload Type(PT) code 0 - 95为静态类型，即code对应固定的codec(编解码器)，96 - 127为动态codec，即需要在SDP协商过程中确定</p>
+<p>接下来追踪下源码，看看SDP中为什么没有<code>rtpmap</code></p>
+<p>先找到<code>Java</code>层发起呼叫的代码，在<code>Core.java</code>中有4个发起呼叫的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line">Call <span class="title function_">invite</span><span class="params">(<span class="meta">@NonNull</span> String var1)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line">Call <span class="title function_">inviteAddress</span><span class="params">(<span class="meta">@NonNull</span> Address var1)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line">Call <span class="title function_">inviteAddressWithParams</span><span class="params">(<span class="meta">@NonNull</span> Address var1, <span class="meta">@NonNull</span> CallParams var2)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line">Call <span class="title function_">inviteWithParams</span><span class="params">(<span class="meta">@NonNull</span> String var1, <span class="meta">@NonNull</span> CallParams var2)</span>;</span><br></pre></td></tr></table></figure>
+<p>具体实现在<code>CoreImpl.java</code>中，查看这个<code>public Call inviteAddress(@NonNull Address addr);</code>方法吧</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">native</span> Call <span class="title function_">inviteAddress</span><span class="params">(<span class="type">long</span> nativePtr, Address addr)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> <span class="meta">@Nullable</span></span><br><span class="line"><span class="keyword">synchronized</span> <span class="keyword">public</span> Call <span class="title function_">inviteAddress</span><span class="params">(<span class="meta">@NonNull</span> Address addr)</span>  &#123;</span><br><span class="line">    <span class="keyword">return</span> (Call)inviteAddress(nativePtr, addr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Java</code>层调用了<code>native</code>层代码，打开编译后生成的<code>linphone_jni.cc</code>，找到<code>Java_org_linphone_core_CoreImpl_inviteAddress</code>方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">JNIEXPORT jobject JNICALL <span class="title">Java_org_linphone_core_CoreImpl_inviteAddress</span><span class="params">(JNIEnv *env, jobject thiz, jlong ptr, jobject addr)</span> </span>&#123;</span><br><span class="line">	LinphoneCore *cptr = (LinphoneCore*)ptr;</span><br><span class="line">	<span class="keyword">if</span> (cptr == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">		<span class="built_in">bctbx_error</span>(<span class="string">&quot;Java_org_linphone_core_CoreImpl_inviteAddress&#x27;s LinphoneCore C ptr is null!&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	LinphoneAddress* c_addr = <span class="literal">nullptr</span>;</span><br><span class="line">	<span class="keyword">if</span> (addr) c_addr = (LinphoneAddress*)<span class="built_in">GetObjectNativePtr</span>(env, addr);</span><br><span class="line">	</span><br><span class="line">	jobject jni_result = (jobject)<span class="built_in">getCall</span>(env, (LinphoneCall *)<span class="built_in">linphone_core_invite_address</span>(cptr, c_addr), TRUE);</span><br><span class="line">	<span class="keyword">return</span> jni_result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>native</code>层调用了<code>linphone_core_invite_address</code>这个方法，在IDE中，可以通过Ctrl+左键点击进行跳转，<code>linphone_core_invite_address</code>位于<code>linphonecore.c</code>中</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LinphoneCall * <span class="title">linphone_core_invite_address</span><span class="params">(LinphoneCore *lc, <span class="type">const</span> LinphoneAddress *addr)</span></span>&#123;</span><br><span class="line">	LinphoneCall *call;</span><br><span class="line">	LinphoneCallParams *p=<span class="built_in">linphone_core_create_call_params</span>(lc, <span class="literal">NULL</span>);</span><br><span class="line">	<span class="built_in">linphone_call_params_enable_video</span>(p, <span class="built_in">linphone_call_params_video_enabled</span>(p) &amp;&amp; !!lc-&gt;video_policy.automatically_initiate);</span><br><span class="line">	call=<span class="built_in">linphone_core_invite_address_with_params</span> (lc,addr,p);</span><br><span class="line">	<span class="built_in">linphone_call_params_unref</span>(p);</span><br><span class="line">	<span class="keyword">return</span> call;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>linphone_core_invite_address</code>方法中调用了<code>linphone_core_invite_address_with_params</code>发起呼叫，这个方法较长，删减一些不关心的代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LinphoneCall * <span class="title">linphone_core_invite_address_with_params</span><span class="params">(LinphoneCore *lc, <span class="type">const</span> LinphoneAddress *addr, <span class="type">const</span> LinphoneCallParams *params)</span></span>&#123;</span><br><span class="line">	<span class="type">const</span> <span class="type">char</span> *from=<span class="literal">NULL</span>;</span><br><span class="line">	LinphoneCall *call;</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">if</span> (!addr) &#123;</span><br><span class="line">		<span class="built_in">ms_error</span>(<span class="string">&quot;Can&#x27;t invite a NULL address&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	parsed_url2=<span class="built_in">linphone_address_new</span>(from);</span><br><span class="line">	call=<span class="built_in">linphone_call_new_outgoing</span>(lc,parsed_url2,addr,cp,proxy);</span><br><span class="line">    </span><br><span class="line">    <span class="type">bool</span> defer = Call::<span class="built_in">toCpp</span>(call)-&gt;<span class="built_in">initiateOutgoing</span>();</span><br><span class="line">	<span class="keyword">if</span> (!defer) &#123;</span><br><span class="line">		<span class="keyword">if</span> (Call::<span class="built_in">toCpp</span>(call)-&gt;<span class="built_in">startInvite</span>(<span class="literal">nullptr</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="comment">/* The call has already gone to error and released state, so do not return it */</span></span><br><span class="line">			call = <span class="literal">nullptr</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> call;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>linphone_core_invite_address_with_params</code>方法中调用<code>linphone_call_new_outgoing</code>方法创建<code>Call</code>对象，调用<code>initiateOutgoing</code>方法初始化发起呼叫并设置当前状态为<code>OutgoingInit</code>，接下来调用<code>startInvite</code>方法发起呼叫，<code>startInvite</code>方法位于<code>call.cpp</code>中，在其中又调用<code>getActiveSession</code>方法获取<code>CallSession</code>，调用<code>CallSession::startInvite</code>方法</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">Call::startInvite</span> <span class="params">(<span class="type">const</span> Address *destination)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">getActiveSession</span>()-&gt;<span class="built_in">startInvite</span>(destination, <span class="string">&quot;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>CallSession::startInvite</code>方法位于<code>call-session.cpp</code>中，在这个方法中找了半天，没见有与SDP发送相关的逻辑，先去头文件中看看方法原型吧</p>
+<p>找了半天也是有点收获的，分析出调用<code>addAdditionalLocalBody</code>去组装自定义扩展头数据</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">CallSession::startInvite</span> <span class="params">(<span class="type">const</span> Address *destination, <span class="type">const</span> string &amp;subject, <span class="type">const</span> Content *content)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">L_D</span>();</span><br><span class="line">	d-&gt;subject = subject;</span><br><span class="line">	<span class="comment">/* Try to be best-effort in giving real local or routable contact address */</span></span><br><span class="line">	d-&gt;<span class="built_in">setContactOp</span>();</span><br><span class="line">	string destinationStr;</span><br><span class="line">	<span class="type">char</span> *realUrl = <span class="literal">nullptr</span>;</span><br><span class="line">	<span class="keyword">if</span> (destination)</span><br><span class="line">		destinationStr = destination-&gt;<span class="built_in">asString</span>();</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		realUrl = <span class="built_in">linphone_address_as_string</span>(d-&gt;log-&gt;to);</span><br><span class="line">		destinationStr = realUrl;</span><br><span class="line">		<span class="built_in">ms_free</span>(realUrl);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">char</span> *from = <span class="built_in">linphone_address_as_string</span>(d-&gt;log-&gt;from);</span><br><span class="line">	<span class="comment">/* Take a ref because sal_call() may destroy the CallSession if no SIP transport is available */</span></span><br><span class="line">	shared_ptr&lt;CallSession&gt; ref = <span class="built_in">getSharedFromThis</span>();</span><br><span class="line">	<span class="keyword">if</span> (content)</span><br><span class="line">		d-&gt;op-&gt;<span class="built_in">setLocalBody</span>(*content);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// If a custom Content has been set in the call params, create a multipart body for the INVITE</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span>&amp; content : d-&gt;params-&gt;<span class="built_in">getCustomContents</span>()) &#123;</span><br><span class="line">		d-&gt;op-&gt;<span class="built_in">addAdditionalLocalBody</span>(content);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> result = d-&gt;op-&gt;<span class="built_in">call</span>(from, destinationStr, subject);</span><br><span class="line">	<span class="built_in">ms_free</span>(from);</span><br><span class="line">	<span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> ((d-&gt;state != CallSession::State::Error) &amp;&amp; (d-&gt;state != CallSession::State::Released)) &#123;</span><br><span class="line">			<span class="comment">// sal_call() may invoke call_failure() and call_released() SAL callbacks synchronously,</span></span><br><span class="line">			<span class="comment">// in which case there is no need to perform a state change here.</span></span><br><span class="line">			d-&gt;<span class="built_in">setState</span>(CallSession::State::Error, <span class="string">&quot;Call failed&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">linphone_call_log_set_call_id</span>(d-&gt;log, d-&gt;op-&gt;<span class="built_in">getCallId</span>().<span class="built_in">c_str</span>()); <span class="comment">/* Must be known at that time */</span></span><br><span class="line">		d-&gt;<span class="built_in">setState</span>(CallSession::State::OutgoingProgress, <span class="string">&quot;Outgoing call in progress&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>CallSession::startInvite</code>方法原型为，</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="type">int</span> <span class="title">startInvite</span> <span class="params">(<span class="type">const</span> Address *destination, <span class="type">const</span> std::string &amp;subject = <span class="string">&quot;&quot;</span>, <span class="type">const</span> Content *content = <span class="literal">nullptr</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>是个<code>virtual</code>虚函数，说明有函数复写，在IDE中搜索发现<code>MediaSession</code>类继承自<code>CallSession</code>，好的，找到<code>MediaSession</code>复写的<code>startInvite</code>方法，方法较长，删除一些不关心的代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">MediaSession::startInvite</span> <span class="params">(<span class="type">const</span> Address *destination, <span class="type">const</span> string &amp;subject, <span class="type">const</span> Content *content)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">L_D</span>();</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 删除不关心的代码</span></span><br><span class="line"></span><br><span class="line">	d-&gt;op-&gt;<span class="built_in">setLocalMediaDescription</span>(d-&gt;localDesc);</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> result = CallSession::<span class="built_in">startInvite</span>(destination, subject, content);</span><br><span class="line">	<span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (d-&gt;state == CallSession::State::Error)</span><br><span class="line">			d-&gt;<span class="built_in">stopStreams</span>();</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>MediaSession::startInvite</code>中调用<code>setLocalMediaDescription</code>方法组装本地媒体描述信息，最后再调用父类的<code>CallSession::startInvite</code>方法继续发起呼叫，好的，现在只关心<code>setLocalMediaDescription</code>方法，其中<code>op</code>是<code>SalCallOp</code>，在IDE中打开<code>call-op.cpp</code>，找到<code>setLocalMediaDescription</code>方法，删减一些不关心的代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">SalCallOp::setLocalMediaDescription</span> <span class="params">(SalMediaDescription *desc)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (desc) &#123;</span><br><span class="line">		<span class="built_in">sal_media_description_ref</span>(desc);</span><br><span class="line">		belle_sip_error_code error;</span><br><span class="line">		<span class="type">belle_sdp_session_description_t</span> *sdp = <span class="built_in">media_description_to_sdp</span>(desc);</span><br><span class="line">		vector&lt;<span class="type">char</span>&gt; buffer = <span class="built_in">marshalMediaDescription</span>(sdp, error);</span><br><span class="line">		<span class="built_in">belle_sip_object_unref</span>(sdp);</span><br><span class="line">		<span class="keyword">if</span> (error != BELLE_SIP_OK)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">		mLocalBody.<span class="built_in">setContentType</span>(ContentType::Sdp);</span><br><span class="line">		mLocalBody.<span class="built_in">setBody</span>(<span class="built_in">move</span>(buffer));</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		mLocalBody = <span class="built_in">Content</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这里终于发现与SDP相关的方法了<code>media_description_to_sdp</code>，继续查看<code>media_description_to_sdp</code>方法，此方法位于<code>sal_sdp.c</code>中，方法较长，主要是组装SDP协议数据，比如设置版本、创建源信息，创建会话等，这里删减一些不关心的代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">belle_sdp_session_description_t</span> * <span class="title">media_description_to_sdp</span><span class="params">(<span class="type">const</span> SalMediaDescription *desc)</span> </span>&#123;</span><br><span class="line">	<span class="type">belle_sdp_session_description_t</span>* session_desc=<span class="built_in">belle_sdp_session_description_new</span>();</span><br><span class="line">	<span class="type">bool_t</span> inet6;</span><br><span class="line">	<span class="type">belle_sdp_origin_t</span>* origin;</span><br><span class="line">	<span class="type">int</span> i;</span><br><span class="line">	<span class="type">char</span> *escaped_username = <span class="built_in">belle_sip_uri_to_escaped_username</span>(desc-&gt;username);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ( <span class="built_in">strchr</span> ( desc-&gt;addr,<span class="string">&#x27;:&#x27;</span> ) !=<span class="literal">NULL</span> ) &#123;</span><br><span class="line">		inet6=<span class="number">1</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> inet6=<span class="number">0</span>;</span><br><span class="line">	<span class="built_in">belle_sdp_session_description_set_version</span> ( session_desc,<span class="built_in">belle_sdp_version_create</span> ( <span class="number">0</span> ) );</span><br><span class="line"></span><br><span class="line">	origin = <span class="built_in">belle_sdp_origin_create</span> ( escaped_username</span><br><span class="line">									  ,desc-&gt;session_id</span><br><span class="line">									  ,desc-&gt;session_ver</span><br><span class="line">									  ,<span class="string">&quot;IN&quot;</span></span><br><span class="line">									  , inet6 ? <span class="string">&quot;IP6&quot;</span> :<span class="string">&quot;IP4&quot;</span></span><br><span class="line">									  ,desc-&gt;addr );</span><br><span class="line">	<span class="built_in">bctbx_free</span>(escaped_username);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">belle_sdp_session_description_set_origin</span> ( session_desc,origin );</span><br><span class="line"></span><br><span class="line">	<span class="built_in">belle_sdp_session_description_set_session_name</span> ( session_desc,</span><br><span class="line">		<span class="built_in">belle_sdp_session_name_create</span> ( desc-&gt;name[<span class="number">0</span>]!=<span class="string">&#x27;\0&#x27;</span> ? desc-&gt;name : <span class="string">&quot;Talk&quot;</span> ) );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 删减不关心的代码</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> ( i=<span class="number">0</span>; i&lt;desc-&gt;nb_streams; i++ ) &#123;</span><br><span class="line">		<span class="built_in">stream_description_to_sdp</span>(session_desc, desc, &amp;desc-&gt;streams[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> session_desc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析<code>media_description_to_sdp</code>方法找到在<code>stream_description_to_sdp</code>方法中组装数据流信息到SDP协议中，<code>stream_description_to_sdp</code>方法非常长，此方法主要是组装SDP协议中编解码相关的信息，这里删除大部分不关心的代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">stream_description_to_sdp</span> <span class="params">( <span class="type">belle_sdp_session_description_t</span> *session_desc, <span class="type">const</span> SalMediaDescription *md, <span class="type">const</span> SalStreamDescription *stream )</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 删减不关心的代码</span></span><br><span class="line"></span><br><span class="line">	media_desc = <span class="built_in">belle_sdp_media_description_create</span> ( <span class="built_in">sal_stream_description_get_type_as_string</span>(stream)</span><br><span class="line">				 ,stream-&gt;rtp_port</span><br><span class="line">				 ,<span class="number">1</span></span><br><span class="line">				 ,<span class="built_in">sal_media_proto_to_string</span> ( stream-&gt;proto )</span><br><span class="line">				 ,<span class="literal">NULL</span> );</span><br><span class="line">    <span class="comment">// 看到payloads字段</span></span><br><span class="line">	<span class="keyword">if</span> (stream-&gt;payloads) &#123;</span><br><span class="line">		<span class="keyword">for</span> ( pt_it=stream-&gt;payloads; pt_it!=<span class="literal">NULL</span>; pt_it=pt_it-&gt;next ) &#123;</span><br><span class="line">			pt= ( PayloadType* ) pt_it-&gt;data;</span><br><span class="line">			mime_param= <span class="built_in">belle_sdp_mime_parameter_create</span> ( pt-&gt;mime_type</span><br><span class="line">					, <span class="built_in">payload_type_get_number</span> ( pt )</span><br><span class="line">					, pt-&gt;clock_rate</span><br><span class="line">					, pt-&gt;channels&gt;<span class="number">0</span> ? pt-&gt;channels : <span class="number">-1</span> );</span><br><span class="line">			<span class="built_in">belle_sdp_mime_parameter_set_parameters</span> ( mime_param,pt-&gt;recv_fmtp );</span><br><span class="line">			<span class="keyword">if</span> ( stream-&gt;ptime&gt;<span class="number">0</span> ) &#123;</span><br><span class="line">				<span class="built_in">belle_sdp_mime_parameter_set_ptime</span> ( mime_param,stream-&gt;ptime );</span><br><span class="line">			&#125;</span><br><span class="line">            <span class="comment">// 锁定此方法</span></span><br><span class="line">			<span class="built_in">belle_sdp_media_description_append_values_from_mime_parameter</span> ( media_desc,mime_param );</span><br><span class="line">			<span class="built_in">belle_sip_object_unref</span> ( mime_param );</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">/* to comply with SDP we cannot have an empty payload type number list */</span></span><br><span class="line">		<span class="comment">/* as it happens only when mline is declined with a zero port, it does not matter to put whatever codec*/</span></span><br><span class="line">		<span class="type">belle_sip_list_t</span>* format = <span class="built_in">belle_sip_list_append</span>(<span class="literal">NULL</span>,<span class="number">0</span>);</span><br><span class="line">		<span class="built_in">belle_sdp_media_set_media_formats</span>(<span class="built_in">belle_sdp_media_description_get_media</span>(media_desc),format);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组装自定义sdp属性</span></span><br><span class="line">	<span class="keyword">if</span> (stream-&gt;custom_sdp_attributes) &#123;</span><br><span class="line">		<span class="type">belle_sdp_session_description_t</span> *custom_desc = (<span class="type">belle_sdp_session_description_t</span> *)stream-&gt;custom_sdp_attributes;</span><br><span class="line">		<span class="type">belle_sip_list_t</span> *l = <span class="built_in">belle_sdp_session_description_get_attributes</span>(custom_desc);</span><br><span class="line">		<span class="type">belle_sip_list_t</span> *elem;</span><br><span class="line">		<span class="keyword">for</span> (elem = l; elem != <span class="literal">NULL</span>; elem = elem-&gt;next) &#123;</span><br><span class="line">			<span class="built_in">belle_sdp_media_description_add_attribute</span>(media_desc, (<span class="type">belle_sdp_attribute_t</span> *)elem-&gt;data);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 删减不关心的代码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在<code>stream_description_to_sdp</code>方法中看到<code>payload</code>字段，马上就要找到了happy~</p>
+<p>经过分析，锁定<code>belle_sdp_media_description_append_values_from_mime_parameter</code>方法，分析此方法，在其中找到组装<code>rtpmap</code>的源码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">belle_sdp_media_description_append_values_from_mime_parameter</span><span class="params">(<span class="type">belle_sdp_media_description_t</span>* media_description, <span class="type">const</span> <span class="type">belle_sdp_mime_parameter_t</span>* mime_parameter)</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> BELLE_SDP_FORCE_RTP_MAP <span class="comment">/* defined to for RTP map even for static codec*/</span></span></span><br><span class="line">	<span class="keyword">if</span> (!<span class="built_in">mime_parameter_is_static</span>(mime_parameter)) &#123;</span><br><span class="line">		<span class="comment">/*dynamic payload*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">belle_sdp_mime_parameter_get_channel_count</span>(mime_parameter)&gt;<span class="number">1</span>) &#123;</span><br><span class="line">			<span class="built_in">snprintf</span>(atribute_value,MAX_FMTP_LENGTH,<span class="string">&quot;%i %s/%i/%i&quot;</span></span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_media_format</span>(mime_parameter)</span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_type</span>(mime_parameter)</span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_rate</span>(mime_parameter)</span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_channel_count</span>(mime_parameter));</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">snprintf</span>(atribute_value,MAX_FMTP_LENGTH,<span class="string">&quot;%i %s/%i&quot;</span></span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_media_format</span>(mime_parameter)</span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_type</span>(mime_parameter)</span><br><span class="line">					,<span class="built_in">belle_sdp_mime_parameter_get_rate</span>(mime_parameter));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">belle_sdp_media_description_set_attribute_value</span>(media_description,<span class="string">&quot;rtpmap&quot;</span>,atribute_value);</span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> BELLE_SDP_FORCE_RTP_MAP</span></span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// always include fmtp parameters if available</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">belle_sdp_mime_parameter_get_parameters</span>(mime_parameter)) &#123;</span><br><span class="line">		<span class="built_in">snprintf</span>(atribute_value,MAX_FMTP_LENGTH,<span class="string">&quot;%i %s&quot;</span></span><br><span class="line">				,<span class="built_in">belle_sdp_mime_parameter_get_media_format</span>(mime_parameter)</span><br><span class="line">				,<span class="built_in">belle_sdp_mime_parameter_get_parameters</span>(mime_parameter));</span><br><span class="line">		<span class="built_in">belle_sdp_media_description_set_attribute_value</span>(media_description,<span class="string">&quot;fmtp&quot;</span>,atribute_value);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里先分析下<code>mime_parameter_is_static</code>方法是干什么的？查看以下源码发现，噢~~，原来是用于判断编解码是否是静态类型(前面提到的Payload Type)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="keyword">struct</span> <span class="title class_">static_payload</span> static_payload_list [] =&#123;</span><br><span class="line">	<span class="comment">/*audio*/</span></span><br><span class="line">	&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="string">&quot;PCMU&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">3</span>,<span class="number">1</span>,<span class="string">&quot;GSM&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">4</span>,<span class="number">1</span>,<span class="string">&quot;G723&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">5</span>,<span class="number">1</span>,<span class="string">&quot;DVI4&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">6</span>,<span class="number">1</span>,<span class="string">&quot;DVI4&quot;</span>,<span class="number">16000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">7</span>,<span class="number">1</span>,<span class="string">&quot;LPC&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">8</span>,<span class="number">1</span>,<span class="string">&quot;PCMA&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">9</span>,<span class="number">1</span>,<span class="string">&quot;G722&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">10</span>,<span class="number">2</span>,<span class="string">&quot;L16&quot;</span>,<span class="number">44100</span>&#125;,</span><br><span class="line">	&#123;<span class="number">11</span>,<span class="number">1</span>,<span class="string">&quot;L16&quot;</span>,<span class="number">44100</span>&#125;,</span><br><span class="line">	&#123;<span class="number">12</span>,<span class="number">1</span>,<span class="string">&quot;QCELP&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">13</span>,<span class="number">1</span>,<span class="string">&quot;CN&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">14</span>,<span class="number">1</span>,<span class="string">&quot;MPA&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">15</span>,<span class="number">1</span>,<span class="string">&quot;G728&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">16</span>,<span class="number">1</span>,<span class="string">&quot;DVI4&quot;</span>,<span class="number">11025</span>&#125;,</span><br><span class="line">	&#123;<span class="number">17</span>,<span class="number">1</span>,<span class="string">&quot;DVI4&quot;</span>,<span class="number">22050</span>&#125;,</span><br><span class="line">	&#123;<span class="number">18</span>,<span class="number">1</span>,<span class="string">&quot;G729&quot;</span>,<span class="number">8000</span>&#125;,</span><br><span class="line">	<span class="comment">/*video*/</span></span><br><span class="line">	&#123;<span class="number">25</span>,<span class="number">0</span>,<span class="string">&quot;CelB&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">26</span>,<span class="number">0</span>,<span class="string">&quot;JPEG&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">28</span>,<span class="number">0</span>,<span class="string">&quot;nv&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">31</span>,<span class="number">0</span>,<span class="string">&quot;H261&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">32</span>,<span class="number">0</span>,<span class="string">&quot;MPV&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">33</span>,<span class="number">0</span>,<span class="string">&quot;MP2T&quot;</span>,<span class="number">90000</span>&#125;,</span><br><span class="line">	&#123;<span class="number">34</span>,<span class="number">0</span>,<span class="string">&quot;H263&quot;</span>,<span class="number">90000</span>&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">mime_parameter_is_static</span><span class="params">(<span class="type">const</span> <span class="type">belle_sdp_mime_parameter_t</span> *param)</span></span>&#123;</span><br><span class="line">	<span class="type">const</span> <span class="keyword">struct</span> <span class="title class_">static_payload</span>* iterator;</span><br><span class="line">	<span class="type">size_t</span> i;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (iterator = static_payload_list,i=<span class="number">0</span>;i&lt;payload_list_elements;i++,iterator++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (iterator-&gt;number == param-&gt;media_format &amp;&amp;</span><br><span class="line">			<span class="built_in">strcasecmp</span>(iterator-&gt;type,param-&gt;type)==<span class="number">0</span> &amp;&amp;</span><br><span class="line">			iterator-&gt;channel_count==param-&gt;channel_count &amp;&amp;</span><br><span class="line">			iterator-&gt;rate==param-&gt;rate ) &#123;</span><br><span class="line">			<span class="keyword">return</span> TRUE;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> FALSE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在再来分析下<code>belle_sdp_media_description_append_values_from_mime_parameter</code>方法的意思，大意如下：如果没有定义<code>BELLE_SDP_FORCE_RTP_MAP</code>这个宏就执行<code>if (!mime_parameter_is_static(mime_parameter))</code>判断编解码是否是静态类型，如果定义了就不判断是否是静态类型</p>
+<p>总结一下就是如果没有定义<code>BELLE_SDP_FORCE_RTP_MAP</code>这个宏，就不组装静态类型编解码的<code>rtpmap</code>信息，只组装动态类型编解码的<code>rtpmap</code>信息，终于找到源头了，真是拨云见日呀</p>
+<p>到这里还没完，既然是根据宏定义做的判断，肯定在编译的时候可以配置，先看看能不能找到定义宏的地方，在IDE中全局搜索，在<code>belle-sip</code>下的<code>CMakeList.txt</code>中发现</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">option</span>(ENABLE_RTP_MAP_ALWAYS_IN_SDP <span class="string">&quot;Always include rtpmap in SDP.&quot;</span> <span class="keyword">OFF</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(ENABLE_RTP_MAP_ALWAYS_IN_SDP) </span><br><span class="line">	<span class="keyword">set</span>(BELLE_SDP_FORCE_RTP_MAP <span class="number">1</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure>
+<p>bingo~，真的是到最后了</p>
+<p>最后在编译时增加编译配置项</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">cd</span> linphone-sdk/build/</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cmake -DENABLE_RTP_MAP_ALWAYS_IN_SDP=ON ..</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cmake --build . --parallel 8</span></span><br></pre></td></tr></table></figure>
+<p>重新编译后拷贝到AS中运行，发起呼叫查看Logcat输出</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>在源码中看到通过<code>BELLE_SDP_FORCE_RTP_MAP</code>这个宏控制是否在SDP中包含静态类型编解码的<code>rtpmap</code>信息，个人猜测是静态类型的编解码信息，是协议中固定的，任何遵循协议的实现方，都可以根据静态类型编解码对应的<code>code</code>解析出相应的<code>rtpmap</code>信息，所以在SDP中去掉静态类型编解码器的<code>rtpmap</code>信息，同时也可以减少发送数据包的大小，减轻网络压力</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/06/linphone-sdk-android/linphone-sdk-android网络检测分析/" rel="bookmark">linphone-sdk-android网络检测分析</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/23/linphone-sdk-android/修改linphone-sdk-android-第一篇/" rel="bookmark">修改linphone-sdk-android-第一篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/27/linphone-sdk-android/修改linphone-sdk-android-第四篇/" rel="bookmark">修改linphone-sdk-android-第四篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/24/linphone-sdk-android/修改linphone-sdk-android-第二篇/" rel="bookmark">修改linphone-sdk-android-第二篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/04/17/linphone-sdk-android/编译linphone-sdk-android/" rel="bookmark">编译linphone-sdk-android</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/04/26/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%B8%89%E7%AF%87/" title="修改linphone-sdk-android-第三篇">https://sunxiaodou.com/2022/04/26/linphone-sdk-android/修改linphone-sdk-android-第三篇/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/linphone-sdk-android/" rel="tag"># linphone-sdk-android</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/24/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E4%BA%8C%E7%AF%87/" rel="prev" title="修改linphone-sdk-android-第二篇">
+      <i class="fa fa-chevron-left"></i> 修改linphone-sdk-android-第二篇
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/27/linphone-sdk-android/%E4%BF%AE%E6%94%B9linphone-sdk-android-%E7%AC%AC%E5%9B%9B%E7%AF%87/" rel="next" title="修改linphone-sdk-android-第四篇">
+      修改linphone-sdk-android-第四篇 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9linphone-sdk-android-%E4%B8%8B%E7%AF%87"><span class="nav-number">1.</span> <span class="nav-text"> 修改linphone-sdk-android-下篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text"> 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text"> 分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.4.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">229k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:21</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : 'd0ccbb9c8b9c086fffa72011ecef0d19',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

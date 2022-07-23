@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android-EventBus修改纪实(二)-线程调度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-EventBus修改纪实(三)-线程调度">
+<meta property="og:url" content="https://sunxiaodou.com/2022/06/03/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%89)-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="Android-EventBus修改纪实(二)-线程调度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202206031222025.png">
+<meta property="og:image" content="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202206031249615.png">
+<meta property="article:published_time" content="2022-06-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-23T02:03:34.523Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="eventbus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202206031222025.png">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/06/03/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%89)-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android-EventBus修改纪实(三)-线程调度 | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/06/03/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%89)-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android-EventBus修改纪实(三)-线程调度
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-03 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-03T00:00:00+08:00">2022-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>20 分钟</span>
+            </span>
+            <div class="post-description">Android-EventBus修改纪实(二)-线程调度</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="android-eventbus修改纪实三"><a class="markdownIt-Anchor" href="#android-eventbus修改纪实三"></a> Android-EventBus修改纪实(三)</h1>
+<p>持续创作，加速成长！这是我参与「掘金日新计划 · 6 月更文挑战」的第 5 天，<a target="_blank" rel="noopener" href="https://juejin.cn/post/7099702781094674468">点击查看活动详情</a></p>
+<hr />
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>在上一篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104536485428199437">Android-EventBus修改纪实(二)</a> 中笔者简单分析了 EventBus 提供的 5 种线程模型的作用及各模型的使用场景与注意事项，特别是在 <code>POSTING</code> 线程模型下，要谨慎的使用黏性事件和必达事件。</p>
+<p>上一篇中未对线程模型的具体实现做分析，本篇文章分析下线程模型是如何做线程调度的。</p>
+<p><strong>本篇文章只讨论发布普通事件的线程调度，粘性事件和必达事件的线程调度与普通事件略有不同。</strong></p>
+<h2 id="线程模型"><a class="markdownIt-Anchor" href="#线程模型"></a> 线程模型</h2>
+<p>先简单回顾下上篇文章中关于线程模型的分析：</p>
+<ul>
+<li>POSTING：对于普通事件来说，事件发布与订阅方法将在同一个线程，这是该线程调度模型的本意</li>
+<li>MAIN：在主线程来分发事件，根据是否在 Android 上使用，处理逻辑不同</li>
+<li>MAIN_ORDER：在主线程依次分发事件</li>
+<li>BACKGROUND：在后台线程来分发事件，根据是否在 Android 上使用，处理逻辑不同。使用单线程处理，尽量不要进行耗时操作以免阻塞后台线程</li>
+<li>ASYNC：在异步线程来分发事件，使用线程池处理</li>
+</ul>
+<h2 id="事件分发器"><a class="markdownIt-Anchor" href="#事件分发器"></a> 事件分发器</h2>
+<p>EventBus 使用 <strong>事件分发器</strong> 对事件进行线程调度，除 <code>POSTING</code> 线程模型外，其他 4 种线程模型都有 <strong>事件分发器</strong> 的身影，<strong>事件分发器</strong> 主要在<code>postToSubscription</code> 方法中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">postToSubscription</span><span class="params">(Subscription subscription, Object event, <span class="type">boolean</span> isMainThread)</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (subscription.subscriberMethod.threadMode) &#123;</span><br><span class="line">        <span class="comment">// 处理POSTING</span></span><br><span class="line">        <span class="keyword">case</span> POSTING:</span><br><span class="line">            <span class="comment">// 直接分发事件</span></span><br><span class="line">            invokeSubscriber(subscription, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">            <span class="comment">// 处理MAIN</span></span><br><span class="line">        <span class="keyword">case</span> MAIN:</span><br><span class="line">            <span class="comment">// 是否是主线程，在非 Android 平台上时，isMainThread 也是 true</span></span><br><span class="line">            <span class="keyword">if</span> (isMainThread) &#123;</span><br><span class="line">                invokeSubscriber(subscription, event);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 此时 mainThreadPoster != null，可以认为是在 Android 平台上</span></span><br><span class="line">                mainThreadPoster.enqueue(subscription, event);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 处理MAIN_ORDERED</span></span><br><span class="line">        <span class="keyword">case</span> MAIN_ORDERED:</span><br><span class="line">            <span class="comment">// 不管是否是主线程，总是先判断是否可以入队</span></span><br><span class="line">            <span class="keyword">if</span> (mainThreadPoster != <span class="literal">null</span>) &#123;</span><br><span class="line">                mainThreadPoster.enqueue(subscription, event);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// temporary: technically not correct as poster not decoupled from subscriber</span></span><br><span class="line">                <span class="comment">// 否则直接分发事件</span></span><br><span class="line">                invokeSubscriber(subscription, event);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 处理BACKGROUND</span></span><br><span class="line">        <span class="keyword">case</span> BACKGROUND:</span><br><span class="line">            <span class="comment">// 如果是主线程则入队，backgroundPoster使用单个后台线程依次分发事件，订阅方法应尽快返回以免阻塞后台线程</span></span><br><span class="line">            <span class="comment">// 在非 Android 平台上时，isMainThread 也是 true，即在非 Android 平台上时，始终在后台线程分发事件</span></span><br><span class="line">            <span class="keyword">if</span> (isMainThread) &#123;</span><br><span class="line">                backgroundPoster.enqueue(subscription, event);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 否则直接分发事件</span></span><br><span class="line">                invokeSubscriber(subscription, event);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 处理ASYNC</span></span><br><span class="line">        <span class="keyword">case</span> ASYNC:</span><br><span class="line">            <span class="comment">// 始终异步分发事件</span></span><br><span class="line">            asyncPoster.enqueue(subscription, event);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Unknown thread mode: &quot;</span> + subscription.subscriberMethod.threadMode);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>postToSubscription</code> 方法中可以看出各线程模型对应分别对应哪种 <strong>事件分发器</strong>：</p>
+<ul>
+<li>MAIN，MAIN_ORDERED：mainThreadPoster，<code>mainThreadPoster</code> 在Android 平台上的类型是 <code>HandlerPoster</code></li>
+<li>BACKGROUND：backgroundPoster，<code>backgroundPoster</code> 的类型是 <code>BackgroundPoster</code></li>
+<li>ASYNC：asyncPoster，<code>asyncPoster</code> 的类型是 <code>AsyncPoster</code></li>
+</ul>
+<p>以上事件发布器都实现了 <code>Poster</code> 接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Poster</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 待发布事件入队</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> subscription 订阅者和订阅方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> event        待发布事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">enqueue</span><span class="params">(Subscription subscription, Object event)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Poster</code> 接口是对事件分发器行为的抽象。</p>
+<p>从 <code>Poster</code> 接口中唯一的接口方法名称 <code>enqueue</code> 来看，可以大概猜测到事件分发器的实现思想为：<strong>事件循环机制</strong>。</p>
+<p>既然是 <strong>事件循环</strong>，接口方法名称又是 <code>enqueue</code>，猜测有队列相关的实现。</p>
+<h2 id="待发布事件队列"><a class="markdownIt-Anchor" href="#待发布事件队列"></a> 待发布事件队列</h2>
+<p>每个事件分发器都有一个待发布事件队列，将待发布的事件存储在队列中，待发布事件队列是通过一种先进先出(FIFO)的单向链表实现的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">PendingPostQueue</span> &#123;</span><br><span class="line">    <span class="comment">// 链表头部元素</span></span><br><span class="line">    <span class="keyword">private</span> PendingPost head; <span class="comment">// 真链表</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 链表尾部元素</span></span><br><span class="line">    <span class="keyword">private</span> PendingPost tail; <span class="comment">// 假链表，真链表尾部元素的引用</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入链表尾部</span></span><br><span class="line">    <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">enqueue</span><span class="params">(PendingPost pendingPost)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (pendingPost == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>(<span class="string">&quot;null cannot be enqueued&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 尾部元素不为空，认为链表中有数据</span></span><br><span class="line">        <span class="keyword">if</span> (tail != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 新的元素插入链表尾部</span></span><br><span class="line">            tail.next = pendingPost;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 更新尾部元素引用</span></span><br><span class="line">            tail = pendingPost;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (head == <span class="literal">null</span>) &#123;</span><br><span class="line">            head = tail = pendingPost;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Head present, but no tail&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 通知所有等待的线程，用于`poll(int)`中`wait()`</span></span><br><span class="line">        notifyAll();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 链表头部出队</span></span><br><span class="line">    <span class="keyword">synchronized</span> PendingPost <span class="title function_">poll</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> head;</span><br><span class="line">        <span class="keyword">if</span> (head != <span class="literal">null</span>) &#123;</span><br><span class="line">            head = head.next;</span><br><span class="line">            <span class="keyword">if</span> (head == <span class="literal">null</span>) &#123;</span><br><span class="line">                tail = <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pendingPost;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 链表头部出队</span></span><br><span class="line">    <span class="keyword">synchronized</span> PendingPost <span class="title function_">poll</span><span class="params">(<span class="type">int</span> maxMillisToWait)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="keyword">if</span> (head == <span class="literal">null</span>) &#123;</span><br><span class="line">            wait(maxMillisToWait);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> poll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>待发布事件队列中有两个字段，其中 <code>head</code> 是真链表，标识链表的头部元素，<code>tail</code> 是假链表，它是真链表尾部元素的引用，标识链表的尾部元素，它的作用是方便在链表尾部插入元素，元素数据中有 <code>next</code> 字段指向下一个元素，下图展示了元素入队时真假链表的变化情况：</p>
+<p><strong>箭头向右表示元素入队</strong></p>
+<p><img data-src="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202206031222025.png" alt="image-20220603122155865" /></p>
+<ol>
+<li>初始时，<code>head</code> 和 <code>tail</code> 均为 <code>null</code>，</li>
+<li>当第一个元素入队时，<code>head</code> 和 <code>tail</code> 均为 <code>event1</code>，</li>
+<li>当第二个元素入队时，<code>event2</code> 插入 <code>head</code> 的尾部，<code>tail</code> 的引用更新为 <code>event2</code></li>
+<li>当第三个元素入队时，<code>event3</code> 插入 <code>head</code> 的尾部，<code>tail</code> 的引用更新为 <code>event3</code></li>
+</ol>
+<p>当插入更多元素时依次类推，<code>head</code> 为链表的头部元素，<code>tail</code> 为链表的尾部元素。</p>
+<p>元素出队的情况，正好与元素入队相反，下图展示了元素出队时真假链表的变化情况：</p>
+<p><strong>箭头向左表示元素出队</strong></p>
+<p><img data-src="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202206031249615.png" alt="image-20220603124949865" /></p>
+<ol>
+<li>当链表中有三个元素时，出队一个元素，即取出 <code>head</code> 头部元素 <code>event1</code>，然后把 <code>head</code> 的 <code>next</code> 元素 <code>event2</code> 指向为 <code>head</code>，判断 <code>head</code> 是否为 <code>null</code>，如果是，则认为链表中没有数据，将 <code>head</code> 和 <code>tail</code> 均置为 <code>null</code>, 否则 <code>tail</code> 尾部元素不变</li>
+<li>当链表中有两个元素时，出队一个元素，即取出 <code>head</code> 头部元素 <code>event2</code>，然后把 <code>head</code> 的 <code>next</code> 元素 <code>event3</code> 指向为 <code>head</code>，判断 <code>head</code> 是否为 <code>null</code>，如果是，则认为链表中没有数据，将 <code>head</code> 和 <code>tail</code> 均置为 <code>null</code>, 否则 <code>tail</code> 尾部元素不变</li>
+<li>当链表中有一个元素时，出队一个元素，即取出 <code>head</code> 头部元素 <code>event3</code>，然后把 <code>head</code> 的 <code>next</code> 元素 <code>null</code> 指向为 <code>head</code>，判断 <code>head</code> 是否为 <code>null</code>，如果是，则认为链表中没有数据，将 <code>head</code> 和 <code>tail</code> 均置为 <code>null</code>, 否则 <code>tail</code> 尾部元素不变</li>
+</ol>
+<h2 id="待发布事件队列元素"><a class="markdownIt-Anchor" href="#待发布事件队列元素"></a> 待发布事件队列元素</h2>
+<p>待发布事件队列的元素是 <code>PendingPost</code>，它是单向链表结构，也是订阅者和订阅方法与事件的包装类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">PendingPost</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> List&lt;PendingPost&gt; pendingPostPool = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;PendingPost&gt;();</span><br><span class="line"></span><br><span class="line">    Object event;</span><br><span class="line">    Subscription subscription;</span><br><span class="line">    PendingPost next;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 私有构造方法</span></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">PendingPost</span><span class="params">(Object event, Subscription subscription)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.event = event;</span><br><span class="line">        <span class="built_in">this</span>.subscription = subscription;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取一个元素</span></span><br><span class="line">    <span class="keyword">static</span> PendingPost <span class="title function_">obtainPendingPost</span><span class="params">(Subscription subscription, Object event)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (pendingPostPool) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> pendingPostPool.size();</span><br><span class="line">            <span class="keyword">if</span> (size &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> pendingPostPool.remove(size - <span class="number">1</span>);</span><br><span class="line">                pendingPost.event = event;</span><br><span class="line">                pendingPost.subscription = subscription;</span><br><span class="line">                pendingPost.next = <span class="literal">null</span>;</span><br><span class="line">                <span class="keyword">return</span> pendingPost;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">PendingPost</span>(event, subscription);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 释放一个元素</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">releasePendingPost</span><span class="params">(PendingPost pendingPost)</span> &#123;</span><br><span class="line">        pendingPost.event = <span class="literal">null</span>;</span><br><span class="line">        pendingPost.subscription = <span class="literal">null</span>;</span><br><span class="line">        pendingPost.next = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">synchronized</span> (pendingPostPool) &#123;</span><br><span class="line">            <span class="comment">// Don&#x27;t let the pool grow indefinitely</span></span><br><span class="line">            <span class="keyword">if</span> (pendingPostPool.size() &lt; <span class="number">10000</span>) &#123;</span><br><span class="line">                pendingPostPool.add(pendingPost);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看了 <code>PendingPost</code> 的源码，笔者想到了 Android 中 <code>Message</code> 的实现，我们在 Android 中使用 Handler 发消息时，是不是也经常使用 <code>handler.obtainMessage()</code> 或者使用 <code>Message.obtain()</code> 去获取一个 Message 的实例，Handler 使用完 Message 后会自动调用 <code>Message#recycle()</code> 方法回收利用这个 Message 实例，正好对应 <code>PendingPost#releasePendingPost()</code> 方法。<code>Message</code> 使用了「享元模式」达到循环利用对象，避免重复创建的目的，看来 <code>PendingPost</code> 也是使用了「享元模式」，在第一篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104107150678917133">Android-EventBus修改纪实</a> 中我们也提到 <code>FindState</code> 也是使用了「享元模式」。</p>
+<h2 id="handlerposter"><a class="markdownIt-Anchor" href="#handlerposter"></a> HandlerPoster</h2>
+<p><code>HandlerPoster</code> 用于 <code>MAIN</code> 和 <code>MAIN_ORDERED</code> 线程模型，将事件分发到主线程处理。</p>
+<p><code>HandlerPoster</code> 继承自 <code>Handler</code> 传入 <code>MainLooper</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HandlerPoster</span> <span class="keyword">extends</span> <span class="title class_">Handler</span> <span class="keyword">implements</span> <span class="title class_">Poster</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 待发布事件队列</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PendingPostQueue queue;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 单轮最大处理时长，默认10毫秒</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> maxMillisInsideHandleMessage;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EventBus eventBus;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 是否活跃，可以理解为队列是否还有数据，并发修改由 this 守护</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> handlerActive;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HandlerPoster</span><span class="params">(EventBus eventBus, Looper looper, <span class="type">int</span> maxMillisInsideHandleMessage)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(looper);</span><br><span class="line">        <span class="built_in">this</span>.eventBus = eventBus;</span><br><span class="line">        <span class="built_in">this</span>.maxMillisInsideHandleMessage = maxMillisInsideHandleMessage;</span><br><span class="line">        queue = <span class="keyword">new</span> <span class="title class_">PendingPostQueue</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件入队</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">enqueue</span><span class="params">(Subscription subscription, Object event)</span> &#123;</span><br><span class="line">        <span class="comment">// 获取队列元素(事件包装类型)</span></span><br><span class="line">        <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> PendingPost.obtainPendingPost(subscription, event);</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">            <span class="comment">// 元素入队</span></span><br><span class="line">            queue.enqueue(pendingPost);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 不活跃时，发送一个空的消息给当前Handler</span></span><br><span class="line">            <span class="keyword">if</span> (!handlerActive) &#123;</span><br><span class="line">                handlerActive = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">if</span> (!sendMessage(obtainMessage())) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">EventBusException</span>(<span class="string">&quot;Could not send handler message&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分发事件</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleMessage</span><span class="params">(Message msg)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">rescheduled</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取处理此轮消息的开始时间</span></span><br><span class="line">            <span class="type">long</span> <span class="variable">started</span> <span class="operator">=</span> SystemClock.uptimeMillis();</span><br><span class="line">            <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">                <span class="comment">// 不加锁，快速取出头部元素，类似使用双重校验锁获取单例</span></span><br><span class="line">                <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> queue.poll();</span><br><span class="line">                <span class="keyword">if</span> (pendingPost == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 如果为空再加锁获取头部元素</span></span><br><span class="line">                    <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                        <span class="comment">// Check again, this time in synchronized</span></span><br><span class="line">                        pendingPost = queue.poll();</span><br><span class="line">                        <span class="keyword">if</span> (pendingPost == <span class="literal">null</span>) &#123;</span><br><span class="line">                            <span class="comment">// 还是为空，重置活跃状态，退出循环</span></span><br><span class="line">                            handlerActive = <span class="literal">false</span>;</span><br><span class="line">                            <span class="keyword">return</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 分发事件，调用订阅方法</span></span><br><span class="line">                eventBus.invokeSubscriber(pendingPost);</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 每次分发事件后都判断本轮事件分发耗时是否超过单轮最大处理时长，避免 while 死循环阻塞主线程</span></span><br><span class="line">                <span class="type">long</span> <span class="variable">timeInMethod</span> <span class="operator">=</span> SystemClock.uptimeMillis() - started;</span><br><span class="line">                <span class="keyword">if</span> (timeInMethod &gt;= maxMillisInsideHandleMessage) &#123;</span><br><span class="line">                    <span class="comment">// 超过单轮最大处理时长，重新发送一个空的消息给当前Handler等待调度</span></span><br><span class="line">                    <span class="keyword">if</span> (!sendMessage(obtainMessage())) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">EventBusException</span>(<span class="string">&quot;Could not send handler message&quot;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    rescheduled = <span class="literal">true</span>;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            handlerActive = rescheduled;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>HandlerPoster</code> 实现 <code>Poster</code> 接口中的 <code>enqueue</code> 方法用于事件入队，在 <code>handleMessage</code> 方法中调用 <code>EventBus#invokeSubscriber</code> 方法传入待发布事件队列元素分发事件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">invokeSubscriber</span><span class="params">(PendingPost pendingPost)</span> &#123;</span><br><span class="line">    <span class="type">Object</span> <span class="variable">event</span> <span class="operator">=</span> pendingPost.event;</span><br><span class="line">    <span class="type">Subscription</span> <span class="variable">subscription</span> <span class="operator">=</span> pendingPost.subscription;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 此处回收元素</span></span><br><span class="line">    PendingPost.releasePendingPost(pendingPost);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断订阅关系是否活跃</span></span><br><span class="line">    <span class="keyword">if</span> (subscription.active) &#123;</span><br><span class="line">        <span class="comment">// 反射调用订阅方法</span></span><br><span class="line">        invokeSubscriber(subscription, event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>HandlerPoster</code> 为避免阻塞主线程，默认单轮事件分发最多执行 <strong>10 毫秒</strong>，即 10 毫秒内可以分发多个事件，多个订阅方法的执行耗时之和超时 10 毫秒后，就会停止本轮事件分发，重新发送一个空消息给 Handler 等待执行下轮事件分发。这里的处理思路，我们可以借鉴。</p>
+<h2 id="backgroundposter"><a class="markdownIt-Anchor" href="#backgroundposter"></a> BackgroundPoster</h2>
+<p><code>BackgroundPoster</code> 用于 <code>BACKGROUND</code> 线程模型，将事件分发到后台线程。</p>
+<p><code>BackgroundPoster</code> 实现了 <code>Runnable</code> 接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">BackgroundPoster</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span>, Poster &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 待发布事件队列</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PendingPostQueue queue;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EventBus eventBus;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 是否活跃，可以理解为队列是否还有数据，volatile 禁止重排序，保证多线程可见性</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">boolean</span> executorRunning;</span><br><span class="line"></span><br><span class="line">    BackgroundPoster(EventBus eventBus) &#123;</span><br><span class="line">        <span class="built_in">this</span>.eventBus = eventBus;</span><br><span class="line">        queue = <span class="keyword">new</span> <span class="title class_">PendingPostQueue</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件入队</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">enqueue</span><span class="params">(Subscription subscription, Object event)</span> &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 获取队列元素(事件包装类型)</span></span><br><span class="line">        <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> PendingPost.obtainPendingPost(subscription, event);</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 元素入队</span></span><br><span class="line">            queue.enqueue(pendingPost);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 不活跃时，由线程池执行此 Runnable</span></span><br><span class="line">            <span class="keyword">if</span> (!executorRunning) &#123;</span><br><span class="line">                executorRunning = <span class="literal">true</span>;</span><br><span class="line">                eventBus.getExecutorService().execute(<span class="built_in">this</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件分发</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">                    <span class="comment">// 最长等待1000毫秒，取出头部元素</span></span><br><span class="line">                    <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> queue.poll(<span class="number">1000</span>);</span><br><span class="line">                    <span class="keyword">if</span> (pendingPost == <span class="literal">null</span>) &#123;</span><br><span class="line">                        <span class="comment">// 如果为空再加锁获取头部元素</span></span><br><span class="line">                        <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                            <span class="comment">// Check again, this time in synchronized</span></span><br><span class="line">                            pendingPost = queue.poll();</span><br><span class="line">                            <span class="keyword">if</span> (pendingPost == <span class="literal">null</span>) &#123;</span><br><span class="line">                                <span class="comment">// 还是为空，重置活跃状态，退出循环</span></span><br><span class="line">                                executorRunning = <span class="literal">false</span>;</span><br><span class="line">                                <span class="keyword">return</span>;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    </span><br><span class="line">                    <span class="comment">// 分发事件，调用订阅方法</span></span><br><span class="line">                    eventBus.invokeSubscriber(pendingPost);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                eventBus.getLogger().log(Level.WARNING, Thread.currentThread().getName() + <span class="string">&quot; was interruppted&quot;</span>, e);</span><br><span class="line">				<span class="comment">// 忽略中断事件</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 此时已退出 while 循环，即认为待发布事件队列为空</span></span><br><span class="line">            executorRunning = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>BackgroundPoster</code> 同样实现了 <code>Poster</code> 接口中的 <code>enqueue</code> 方法用于事件入队，不过 <code>BackgroundPoster</code> 使用线程池进行事件分发，所以在 <code>run</code> 方法中调用 <code>EventBus#invokeSubscriber</code> 方法传入待发布事件队列元素分发事件。</p>
+<p><code>BackgroundPoster</code> 在处理时间分发时，第一次获取元素时调用了 <code>poll(int)</code> 方法，如果队列为空，最长等待1000毫秒后再次取头部元素，为何要这样实现？</p>
+<p>这里笔者猜测是想提高事件分发效率与线程利用率，因为 <code>BackgroundPoster</code> 是在子线程中分发事件，如果队列为空，可以接收最长等待1000毫秒后再次取头部元素，减小在第二次加锁取头部元素还为空的几率，及减小线程切换导致的资源开销，充分利用线程资源，提高事件分发效率。</p>
+<p><code>BackgroundPoster</code> 默认使用 EventBus 中的线程池 <code>CachedThreadPool</code>，<strong>在事件分发时，<code>BackgroundPoster</code> 忽略了 <code>InterruptedException</code> ，即没有响应线程中断，如果我们使用自定义的线程池，我们在外边关闭线程池后，这可能导致事件分发还在继续。</strong></p>
+<p>最后，<code>BACKGROUND</code> 线程模型描述中说使用单线程进行事件分发，为何在 <code>BackgroundPoster</code> 中却是使用的线程池呢？</p>
+<p>其实这个问题我们很容易就解答了。因为在 <code>BackgroundPoster</code> 中使用了 <code>executorRunning</code> 变量，这个变量保证执行单轮事件分发时，都使用线程池中的一个线程，单轮事件分发完成后，新的一轮事件分发可能就使用其他的线程了。</p>
+<h2 id="asyncposter"><a class="markdownIt-Anchor" href="#asyncposter"></a> AsyncPoster</h2>
+<p><code>AsyncPoster</code> 用于 <code>ASYNC</code> 线程模型，将事件分发到异步线程。</p>
+<p><code>AsyncPoster</code> 实现了 <code>Runnable</code> 和 <code>Poster</code> 接口，使用线程池实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AsyncPoster</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span>, Poster &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 待发布事件队列</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> PendingPostQueue queue;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EventBus eventBus;</span><br><span class="line"></span><br><span class="line">    AsyncPoster(EventBus eventBus) &#123;</span><br><span class="line">        <span class="built_in">this</span>.eventBus = eventBus;</span><br><span class="line">        queue = <span class="keyword">new</span> <span class="title class_">PendingPostQueue</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件入队</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">enqueue</span><span class="params">(Subscription subscription, Object event)</span> &#123;</span><br><span class="line">        <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> PendingPost.obtainPendingPost(subscription, event);</span><br><span class="line">        queue.enqueue(pendingPost);</span><br><span class="line">        <span class="comment">// 由线程池执行此 Runnable</span></span><br><span class="line">        eventBus.getExecutorService().execute(<span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事件分发</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">PendingPost</span> <span class="variable">pendingPost</span> <span class="operator">=</span> queue.poll();</span><br><span class="line">        <span class="keyword">if</span>(pendingPost == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;No pending post available&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        eventBus.invokeSubscriber(pendingPost);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>AsyncPoster</code> 的实现比较简单，调用 <code>enqueue</code> 方法将事件入队并交由线程池进行事件分发，<code>run</code> 方法处理事件分发。</p>
+<p><code>AsyncPoster</code> 默认使用 EventBus 中的线程池 <code>CachedThreadPool</code>，<code>CachedThreadPool</code> 没有核心线程，允许创建 <code>Integer.MAX_VALUE</code> 个工作线程且线程空闲时的存活时长为 60 秒，如果发布多个耗时较短的事件或多个耗时较长的时间，都会导致创建多个工作线程而浪费资源。</p>
+<p>至此，EventBus 的线程调度分析完成。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>本文对 EventBus 的线程调度进行了分析，最后我们做下总结：</p>
+<h3 id="pendingpostqueue"><a class="markdownIt-Anchor" href="#pendingpostqueue"></a> PendingPostQueue</h3>
+<p>在 <code>PendingPostQueue</code> 中，我们学到了如何使用单链表实现先进先出(FIFO)队列。</p>
+<h3 id="pendingpost"><a class="markdownIt-Anchor" href="#pendingpost"></a> PendingPost</h3>
+<p>在 <code>PendingPost</code> 中，我们学到了「享元模式」的使用以及如何定义单链表数据结构。</p>
+<h3 id="handlerposter-2"><a class="markdownIt-Anchor" href="#handlerposter-2"></a> HandlerPoster</h3>
+<p>在 <code>HandlerPoster</code> 中判断单轮事件分发最大处理时长机制，及时让出主线程的执行权，避免阻塞主线程；不过这个机制适用于耗时短的订阅方法，如果订阅方法耗时较长，一样会阻塞主线程。</p>
+<h3 id="backgroundposter-2"><a class="markdownIt-Anchor" href="#backgroundposter-2"></a> BackgroundPoster</h3>
+<p>在 <code>BackgroundPoster</code> 中调用 <code>poll(int)</code> 提高事件分发效率和线程利用率，不过 <code>BackgroundPoster</code> 忽略了线程中断异常，使用自定义线程池时需要注意这里，最后我们解答了 <code>BACKGROUND</code> 线程模型描述中说使用单线程进行事件分发，而 <code>BackgroundPoster</code> 却是使用的线程池问题。</p>
+<h3 id="asyncposter-2"><a class="markdownIt-Anchor" href="#asyncposter-2"></a> AsyncPoster</h3>
+<p><code>AsyncPoster</code> 比较简单，一般简单的地方反而意味着是比较危险的，我们通常会看不到它的危险性，因为我们认为它足够简单。</p>
+<h3 id="poster"><a class="markdownIt-Anchor" href="#poster"></a> Poster</h3>
+<p><code>Poster</code> 说一下吧，设计框架时尽量使用接口或抽象类。</p>
+<p>最后，还是那句话：<strong>无论使用哪种线程模型，在订阅方法中都应该尽量避免进行耗时操作。</strong></p>
+<p>happy~，希望可以帮你更好的使用 EventBus</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/01/Android/Android-EventBus修改纪实(一)-必达事件/" rel="bookmark">Android-EventBus修改纪实(一)-必达事件</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/02/Android/Android-EventBus修改纪实(二)-线程模型/" rel="bookmark">Android-EventBus修改纪实(二)-线程模型</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/04/Android/Android-EventBus修改纪实(四)-注解处理器/" rel="bookmark">Android-EventBus修改纪实(四)-注解处理器</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/01/Android中关于scrollBy的一点点心得/" rel="bookmark">Android中关于scrollBy的一点点心得</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2017/07/06/AndroidStudio中使用Aliyun Maven/" rel="bookmark">AndroidStudio中使用Aliyun Maven</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/06/03/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%89)-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/" title="Android-EventBus修改纪实(三)-线程调度">https://sunxiaodou.com/2022/06/03/Android/Android-EventBus修改纪实(三)-线程调度/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/eventbus/" rel="tag"># eventbus</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/02/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%BA%8C)-%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" rel="prev" title="Android-EventBus修改纪实(二)-线程模型">
+      <i class="fa fa-chevron-left"></i> Android-EventBus修改纪实(二)-线程模型
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/04/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E5%9B%9B)-%E6%B3%A8%E8%A7%A3%E5%A4%84%E7%90%86%E5%99%A8/" rel="next" title="Android-EventBus修改纪实(四)-注解处理器">
+      Android-EventBus修改纪实(四)-注解处理器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android-eventbus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E%E4%B8%89"><span class="nav-number">1.</span> <span class="nav-text"> Android-EventBus修改纪实(三)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text"> 线程模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%88%86%E5%8F%91%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text"> 事件分发器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%85%E5%8F%91%E5%B8%83%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97"><span class="nav-number">1.4.</span> <span class="nav-text"> 待发布事件队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%85%E5%8F%91%E5%B8%83%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97%E5%85%83%E7%B4%A0"><span class="nav-number">1.5.</span> <span class="nav-text"> 待发布事件队列元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#handlerposter"><span class="nav-number">1.6.</span> <span class="nav-text"> HandlerPoster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#backgroundposter"><span class="nav-number">1.7.</span> <span class="nav-text"> BackgroundPoster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#asyncposter"><span class="nav-number">1.8.</span> <span class="nav-text"> AsyncPoster</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.9.</span> <span class="nav-text"> 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pendingpostqueue"><span class="nav-number">1.9.1.</span> <span class="nav-text"> PendingPostQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pendingpost"><span class="nav-number">1.9.2.</span> <span class="nav-text"> PendingPost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#handlerposter-2"><span class="nav-number">1.9.3.</span> <span class="nav-text"> HandlerPoster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#backgroundposter-2"><span class="nav-number">1.9.4.</span> <span class="nav-text"> BackgroundPoster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncposter-2"><span class="nav-number">1.9.5.</span> <span class="nav-text"> AsyncPoster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#poster"><span class="nav-number">1.9.6.</span> <span class="nav-text"> Poster</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">229k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:21</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : '397df83aed0024b699586a5dfa2453f7',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

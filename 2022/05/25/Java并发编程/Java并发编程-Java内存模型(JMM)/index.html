@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Java并发编程-Java内存模型(JMM)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java并发编程-Java内存模型(JMM)">
+<meta property="og:url" content="https://sunxiaodou.com/2022/05/25/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B(JMM)/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="Java并发编程-Java内存模型(JMM)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202205251421708.png">
+<meta property="article:published_time" content="2022-05-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-23T02:03:34.528Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="concurrent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202205251421708.png">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/05/25/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B(JMM)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java并发编程-Java内存模型(JMM) | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/05/25/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B(JMM)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java并发编程-Java内存模型(JMM)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-25 00:00:00" itemprop="dateCreated datePublished" datetime="2022-05-25T00:00:00+08:00">2022-05-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description">Java并发编程-Java内存模型(JMM)</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="java并发编程-java内存模型jmm"><a class="markdownIt-Anchor" href="#java并发编程-java内存模型jmm"></a> Java并发编程-Java内存模型(JMM)</h1>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>在上一章 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7098882471810301959">Java并发编程-Android的UI框架为什么是单线程的？</a> 中笔者介绍了并发编程线程安全「三大恶」：「可见性」、「原子性」以及「有序性」</p>
+<p>广义上来说，并发编程问题笔者归纳为：是由于后续操作看不到前面操作的结果而引发的</p>
+<p>首先「大恶-可见性」顾名思义，即线程B能否看见线程A对共享变量的操作结果</p>
+<p>其次「二恶-原子性」CPU 指令/操作被中断/分割，广义上看笔者认为也是可见性问题，比如线程 A 修改共享变量 <code>x += 1</code> 时被中断，去执行线程 B <code>x = 40</code> ，线程 A 恢复执行时可能看不到 <code>x</code> 已经被修改为 40</p>
+<p>最后「三恶-有序性」指的是程序按照代码的先后顺序执行，即先执行 <code>x = 40</code> ，后续读取 <code>x == 40</code> 一定为真，如果有各种优化导致指令重排序，后续读取 <code>x == 40</code> 时可能不为真</p>
+<p>总而言之，并发编程的问题大部分都是「可见性」问题</p>
+<h2 id="java内存模型jmm"><a class="markdownIt-Anchor" href="#java内存模型jmm"></a> Java内存模型(JMM)</h2>
+<p>在上一章中笔者介绍了导致「可见性」的原因是缓存，导致「有序性」的原因是各种优化(编译时、处理器以及运行时)，首先笔者想到的是禁用缓存和禁止各种优化操作，在 Java 中如何禁用缓存和禁止各种优化呢？</p>
+<h3 id="happens-before"><a class="markdownIt-Anchor" href="#happens-before"></a> Happens-Before</h3>
+<p>Java 内存模型是通过各种操作来定义的<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup>，包括对变量的读 / 写操作，监视器锁的加锁和释放操作，以及线程的启动和合并操作。JMM 为程序中所有的操作定义了一个偏序关系<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>，称之为 Happens-Before。要想保证执行操作 B 的线程看到操作 A 的结果（无论 A 和 B 是否在同一个线程中执行），那么在 A 和 B 之间必须满足 Happens-Before 关系。如果两个操作之间缺乏 Happens-Before 关系，那么 JVM 可以对它们任意的重排序。</p>
+<p>Happens-Before 的规则包括：</p>
+<h4 id="规则一程序顺序"><a class="markdownIt-Anchor" href="#规则一程序顺序"></a> 规则一：程序顺序</h4>
+<p>这条规则比较符合我们的直觉，在单线程中代码的顺序即程序的执行顺序：<code>int x = 40</code> 将在 <code>int y = 41</code> 之前执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">40</span>;</span><br><span class="line">    <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> <span class="number">41</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="规则二监视器锁"><a class="markdownIt-Anchor" href="#规则二监视器锁"></a> 规则二：监视器锁<sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup></h4>
+<p>监视器锁即内置锁(synchronized)，在监视器锁上的解锁操作必须在同一个监视器锁的加锁操作之前执行，这条规则比较好理解，现实世界中的锁在关锁前必须处于打开状态</p>
+<p><img data-src="https://guodongandroid.coding.net/p/typora/d/typora/git/raw/master/img/202205251421708.png" alt="image-20220525142109393" /></p>
+<h4 id="规则三volatile-变量"><a class="markdownIt-Anchor" href="#规则三volatile-变量"></a> 规则三：volatile 变量<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup><sup class="footnote-ref"><a href="#fn5" id="fnref5">[5]</a></sup></h4>
+<p>对 volatile 变量的写入操作必须在对该变量的读取操作之前执行。</p>
+<p>这条规则不大好理解，以下代码与文字摘自 <a target="_blank" rel="noopener" href="https://www.infoq.cn/article/java-memory-model-4">深入理解Java内存模型（四）——volatile</a></p>
+<blockquote>
+<p>理解 volatile 特性的一个好方法是：把对 volatile 变量的单个读/写，看成是使用同一个监视器锁对这些单个读/写操作做了同步<sup class="footnote-ref"><a href="#fn6" id="fnref6">[6]</a></sup></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VolatileFeaturesExample</span> &#123;</span><br><span class="line">    <span class="keyword">volatile</span> <span class="type">long</span> <span class="variable">vl</span> <span class="operator">=</span> <span class="number">0L</span>;  <span class="comment">// 使用 volatile 声明 64 位的 long 型变量</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(<span class="type">long</span> l)</span> &#123;</span><br><span class="line">        vl = l;   <span class="comment">// 单个 volatile 变量的写</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getAndIncrement</span> <span class="params">()</span> &#123;</span><br><span class="line">        vl++;    <span class="comment">// 复合（多个）volatile 变量的读 / 写</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> vl;   <span class="comment">// 单个 volatile 变量的读</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设有多个线程分别调用上面程序的三个方法，这个程序在语意上和下面程序等价：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">VolatileFeaturesExample</span> &#123;</span><br><span class="line">    <span class="type">long</span> <span class="variable">vl</span> <span class="operator">=</span> <span class="number">0L</span>;               <span class="comment">// 64 位的 long 型普通变量</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(<span class="type">long</span> l)</span> &#123;     <span class="comment">// 对单个的普通 变量的写用同一个监视器同步</span></span><br><span class="line">        vl = l;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getAndIncrement</span> <span class="params">()</span> &#123; <span class="comment">// 普通方法调用</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">temp</span> <span class="operator">=</span> get();           <span class="comment">// 调用已同步的读方法</span></span><br><span class="line">        temp += <span class="number">1L</span>;                  <span class="comment">// 普通写操作</span></span><br><span class="line">        set(temp);                   <span class="comment">// 调用已同步的写方法</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">long</span> <span class="title function_">get</span><span class="params">()</span> &#123; </span><br><span class="line">        <span class="keyword">return</span> vl; <span class="comment">// 对单个的普通变量的读用同一个监视器同步</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上面示例程序所示，对一个 volatile 变量的单个读 / 写操作，与对一个普通变量的读 / 写操作使用同一个监视器锁来同步，它们之间的执行效果相同。</p>
+<p>从内存语义的角度来说，volatile 与监视器锁有相同的效果：volatile 写和监视器的释放有相同的内存语义；volatile 读与监视器的获取有相同的内存语义。</p>
+<p>简而言之，volatile 变量自身具有下列特性：</p>
+<ul>
+<li>可见性。对一个 volatile 变量的读，总是能看到（任意线程）对这个 volatile 变量最后的写入。</li>
+<li>原子性：对任意单个 volatile 变量的读 / 写具有原子性，但类似于 volatile++ 这种复合操作不具有原子性。</li>
+</ul>
+<h4 id="规则四线程启动"><a class="markdownIt-Anchor" href="#规则四线程启动"></a> 规则四：线程启动</h4>
+<p>在线程上对 Thread.start 的调用必须在该线程中执行任何操作之前执行。</p>
+<p>这条规则比较好理解，即线程 A 启动操作先执行，然后再执行线程 A 内的操作，换言之，线程 A 启动前的操作结果对线程 A 中的操作可见，参考下面的示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="comment">// 线程中的操作, 可以看到线程启动前对共享变量的操作结果</span></span><br><span class="line">    System.out.println(x);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程启动前操作共享变量</span></span><br><span class="line">x = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程启动</span></span><br><span class="line">thread.start();</span><br></pre></td></tr></table></figure>
+<h4 id="规则五线程结束"><a class="markdownIt-Anchor" href="#规则五线程结束"></a> 规则五：线程结束</h4>
+<p>线程中的任何操作都必须在其他线程检测到该线程已经结束之前执行，或者从 Thread.join 中成功返回，或者在调用 Thread.isAlive 时返回 false。</p>
+<p>这条规则也比较好理解，即线程结束前，线程内的任何操作都已经执行，换言之，线程结束后，线程内的操作结果对后续操作可见，参考下面的示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">    <span class="comment">// 线程中的操作, 可以看到线程启动前对共享变量的操作结果</span></span><br><span class="line">    System.out.println(x);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 线程中操作共享变量</span></span><br><span class="line">    x = <span class="number">20</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程启动前操作共享变量</span></span><br><span class="line">x = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程启动</span></span><br><span class="line">thread.start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程join, 等待线程结束</span></span><br><span class="line">thread.join();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 线程中对共享变量的操作结果此处可见</span></span><br><span class="line">System.out.println(x);</span><br></pre></td></tr></table></figure>
+<h4 id="规则六线程中断"><a class="markdownIt-Anchor" href="#规则六线程中断"></a> 规则六：线程中断</h4>
+<p>当一个线程在另一个线程上调用 interrupt 时，必须在被中断线程检测到 interrupt 调用之前执行（通过抛出 InterruptedException，或者调用 isInterrupted 和 interrupted）。</p>
+<p>这条规则笔者不太理解，只是理解了表面意思即：线程 A 对线程 B interrupt 的调用，必须在线程 B 检测到中断事件之前执行。</p>
+<h4 id="规则七终结器"><a class="markdownIt-Anchor" href="#规则七终结器"></a> 规则七：终结器</h4>
+<p>对象的构造函数必须在启动该对象的终结器<sup class="footnote-ref"><a href="#fn7" id="fnref7">[7]</a></sup>之前完成。</p>
+<p>这条规则好理解，可以理解为 Android Activity 的生命周期，这里说的构造函数与终结器就是对象的生命周期，调用终结器之前，对象必须已经初始化。</p>
+<h4 id="规则八传递性"><a class="markdownIt-Anchor" href="#规则八传递性"></a> 规则八：传递性</h4>
+<p>如果操作 A 在操作 B 之前执行，并且操作 B 在操作 C 之前执行，那么操作 A 必须在 操作 C 之前执行。</p>
+<p>看到这条规则，笔者竟然首先想到了《秦时明月》中《白马非马》辩论：白马 == 传家宝，黑马 == 传家宝，传家宝 == 传家宝，白马 == 黑马；扯远了。</p>
+<p>这条规则可以理解为大小关系，比如：a 大于 b，b 大于 c，那么 a 一定大于 c。</p>
+<p>传递性规则可以与其他规则结合起来使用，达到意想不到的效果。</p>
+<h4 id="小结"><a class="markdownIt-Anchor" href="#小结"></a> 小结<sup class="footnote-ref"><a href="#fn1" id="fnref1:1">[1:1]</a></sup></h4>
+<p>上述规则虽然只满足偏序关系，但同步操作，如锁的获取与释放等操作，以及 volatile 变量的读取与写入操作，都满足全序关系。因此，在描述 Happens-Before 关系时，可以使用 “后续的锁获取操作” 和 “后续的 volatile 变量的读取操作” 等表达术语。</p>
+<h3 id="final-域"><a class="markdownIt-Anchor" href="#final-域"></a> final 域</h3>
+<p>在 Java 中，不管是在写类、写变量还是写方法时，大部分程序员可能都会忽视 <strong>final 关键字</strong> 的作用，从而导致一些不可预见的问题，在 Kotlin 中类和方法默认是 final 的，声明变量时建议使用 val 修饰而不是 var。</p>
+<p>在 Java 中基于 final 关键字修饰的变量在多线程中也有不可变的特性，建议尽量优先考虑使用 final 来修饰变量。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>Java 内存模型就是对 JVM 的一种规范，其中 Happens-Before 定义了与程序员相关的一些规则，可以理解为 Happens-Before 规则是底层对程序员暴露的一些接口，程序员正确的使用这些接口可以编写出正确的代码。</p>
+<p>Happens-Before 规则可以说是强制规定了代码的一些执行顺序，同时表达出 <strong>后续操作可以看见前面一个操作的结果</strong></p>
+<p>对 Java 内存模型的学习，有助于分析解决遇到的线程安全问题，理解线程安全问题出现的原因，以及重塑自己的编程思想。</p>
+<p>笔者认为最重要的是重塑自己的编程思想，俗话说 “读书破万卷, 下笔如有神”，理解原理，掌握规则，重塑思想后，才能在编码时写出 “Bug”(狗头保命)。</p>
+<p>Java 并发编程属实难，笔者水平有限，如有错误之处，还请不吝赐教。</p>
+<h2 id="说明与参考文献"><a class="markdownIt-Anchor" href="#说明与参考文献"></a> 说明与参考文献</h2>
+<hr class="footnotes-sep" />
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p>《Java并发编程实战-第十六章》 <a href="#fnref1" class="footnote-backref">↩︎</a> <a href="#fnref1:1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>偏序关系 π 是集合上的一种关系，具有反对称、自反和传递属性 <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p>显示锁与内置锁在加锁和解锁等操作上有相同的内存语义 <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p>原子变量与 volatile 变量在读/写操作上有相同的语义 <a href="#fnref4" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn5" class="footnote-item"><p><a target="_blank" rel="noopener" href="http://ifeve.com/jmm-faq-volatile/">Java内存模型FAQ（十）volatile是干什么用的</a> <a href="#fnref5" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn6" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.infoq.cn/article/java-memory-model-4">深入理解Java内存模型（四）——volatile</a> <a href="#fnref6" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn7" class="footnote-item"><p>即 finalize() 方法 <a href="#fnref7" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/18/Java并发编程/Java并发编程-Android的UI框架为什么是单线程的/" rel="bookmark">Java并发编程-Android的UI框架为什么是单线程的？</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/07/19/Java并发编程/Java并发编程-发布与逸出/" rel="bookmark">Java并发编程-发布与逸出</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/01/Android中关于scrollBy的一点点心得/" rel="bookmark">Android中关于scrollBy的一点点心得</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2017/07/06/AndroidStudio中使用Aliyun Maven/" rel="bookmark">AndroidStudio中使用Aliyun Maven</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/21/Android事件分发、拦截与处理的理解/" rel="bookmark">Android事件分发、拦截与处理的理解</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/05/25/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B(JMM)/" title="Java并发编程-Java内存模型(JMM)">https://sunxiaodou.com/2022/05/25/Java并发编程/Java并发编程-Java内存模型(JMM)/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/concurrent/" rel="tag"># concurrent</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/23/Kotlin/Kotlin-KCP%E7%9A%84%E5%BA%94%E7%94%A8-%E4%BF%AE%E6%94%B9SDK%E7%89%88%E6%9C%AC%E5%8F%B7/" rel="prev" title="Kotlin-KCP的应用-修改SDK版本号">
+      <i class="fa fa-chevron-left"></i> Kotlin-KCP的应用-修改SDK版本号
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/29/Kotlin/Kotlin-%E5%8D%8F%E7%A8%8B%E4%B8%BA%E7%BA%BF%E7%A8%8B%E6%A1%86%E6%9E%B6%E8%80%8C%E7%94%9F%EF%BC%9F/" rel="next" title="Kotlin-协程为线程框架而生？">
+      Kotlin-协程为线程框架而生？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8Bjmm"><span class="nav-number">1.</span> <span class="nav-text"> Java并发编程-Java内存模型(JMM)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8Bjmm"><span class="nav-number">1.2.</span> <span class="nav-text"> Java内存模型(JMM)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#happens-before"><span class="nav-number">1.2.1.</span> <span class="nav-text"> Happens-Before</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E4%B8%80%E7%A8%8B%E5%BA%8F%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.2.1.1.</span> <span class="nav-text"> 规则一：程序顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E4%BA%8C%E7%9B%91%E8%A7%86%E5%99%A8%E9%94%81"><span class="nav-number">1.2.1.2.</span> <span class="nav-text"> 规则二：监视器锁[3]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E4%B8%89volatile-%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.1.3.</span> <span class="nav-text"> 规则三：volatile 变量[4][5]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%9B%9B%E7%BA%BF%E7%A8%8B%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.1.4.</span> <span class="nav-text"> 规则四：线程启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E4%BA%94%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9D%9F"><span class="nav-number">1.2.1.5.</span> <span class="nav-text"> 规则五：线程结束</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%85%AD%E7%BA%BF%E7%A8%8B%E4%B8%AD%E6%96%AD"><span class="nav-number">1.2.1.6.</span> <span class="nav-text"> 规则六：线程中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E4%B8%83%E7%BB%88%E7%BB%93%E5%99%A8"><span class="nav-number">1.2.1.7.</span> <span class="nav-text"> 规则七：终结器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E5%85%AB%E4%BC%A0%E9%80%92%E6%80%A7"><span class="nav-number">1.2.1.8.</span> <span class="nav-text"> 规则八：传递性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">1.2.1.9.</span> <span class="nav-text"> 小结[1:1]</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#final-%E5%9F%9F"><span class="nav-number">1.2.2.</span> <span class="nav-text"> final 域</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E%E4%B8%8E%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.4.</span> <span class="nav-text"> 说明与参考文献</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">229k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:21</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : '174c6f2b0e6ceee5fbd5c8eadc83b773',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

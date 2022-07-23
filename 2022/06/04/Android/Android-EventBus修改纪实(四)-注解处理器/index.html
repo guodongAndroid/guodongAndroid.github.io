@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android-EventBus修改纪实(四)-注解处理器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-EventBus修改纪实(四)-注解处理器">
+<meta property="og:url" content="https://sunxiaodou.com/2022/06/04/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E5%9B%9B)-%E6%B3%A8%E8%A7%A3%E5%A4%84%E7%90%86%E5%99%A8/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="Android-EventBus修改纪实(四)-注解处理器">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-23T02:03:34.524Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="eventbus">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/06/04/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E5%9B%9B)-%E6%B3%A8%E8%A7%A3%E5%A4%84%E7%90%86%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android-EventBus修改纪实(四)-注解处理器 | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/06/04/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E5%9B%9B)-%E6%B3%A8%E8%A7%A3%E5%A4%84%E7%90%86%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android-EventBus修改纪实(四)-注解处理器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-04 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-04T00:00:00+08:00">2022-06-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>27 分钟</span>
+            </span>
+            <div class="post-description">Android-EventBus修改纪实(四)-注解处理器</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="android-eventbus修改纪实四-注解处理器"><a class="markdownIt-Anchor" href="#android-eventbus修改纪实四-注解处理器"></a> Android-EventBus修改纪实(四)-注解处理器</h1>
+<p>持续创作，加速成长！这是我参与「掘金日新计划 · 6 月更文挑战」的第 6 天，<a target="_blank" rel="noopener" href="https://juejin.cn/post/7099702781094674468">点击查看活动详情</a></p>
+<hr />
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>本文是 EventBus 修改纪实的第四篇，笔者在写第一篇文章时只是想记录下修改 EventBus 的过程，分享解决问题和查看源码的思路，没想到不知不觉会写这么多，“天下无不散之筵席”，本文将分析 EventBus 注解处理器的流程，也是 EventBus 修改纪实的最后一篇文章。</p>
+<h2 id="纪实"><a class="markdownIt-Anchor" href="#纪实"></a> 纪实</h2>
+<p>EventBus 的注解处理器程序只有一个类 <code>EventBusAnnotationProcessor</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SupportedAnnotationTypes(&quot;com.yarward.org.greenrobot.eventbus.Subscribe&quot;)</span></span><br><span class="line"><span class="meta">@SupportedOptions(value = &#123;&quot;eventBusIndex&quot;, &quot;verbose&quot;&#125;)</span></span><br><span class="line"><span class="meta">@IncrementalAnnotationProcessor(AGGREGATING)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EventBusAnnotationProcessor</span> <span class="keyword">extends</span> <span class="title class_">AbstractProcessor</span> &#123;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>EventBusAnnotationProcessor</code> 上有三个注解，下面一一介绍：</p>
+<ul>
+<li><code>@SupportedAnnotationTypes</code> 注解标识该注解处理器只处理 <code>@Subscribe</code> 注解，</li>
+<li><code>@SupportedOptions</code> 注解标识改注解处理器可以有两个参数，<code>eventBusIndex</code> 标识要生成 Index 类的全量限定名称，<code>verbose</code> 主要用于日志输出</li>
+<li><code>@IncrementalAnnotationProcessor</code> 注解方便构建增量注解处理器</li>
+</ul>
+<h3 id="process"><a class="markdownIt-Anchor" href="#process"></a> process</h3>
+<p>接下来分析处理流程，处理流程主要在 <code>process</code> 方法中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">OPTION_EVENT_BUS_INDEX</span> <span class="operator">=</span> <span class="string">&quot;eventBusIndex&quot;</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">OPTION_VERBOSE</span> <span class="operator">=</span> <span class="string">&quot;verbose&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// annotations 是 `@Subscribe` 注解集合</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">process</span><span class="params">(Set&lt;? extends TypeElement&gt; annotations, RoundEnvironment env)</span> &#123;</span><br><span class="line">    <span class="comment">// 获取日志输出器</span></span><br><span class="line">    <span class="type">Messager</span> <span class="variable">messager</span> <span class="operator">=</span> processingEnv.getMessager();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 获取 `eventBusIndex` 参数</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">index</span> <span class="operator">=</span> processingEnv.getOptions().get(OPTION_EVENT_BUS_INDEX);</span><br><span class="line">        <span class="keyword">if</span> (index == <span class="literal">null</span>) &#123;</span><br><span class="line">            messager.printMessage(Diagnostic.Kind.ERROR, <span class="string">&quot;No option &quot;</span> + OPTION_EVENT_BUS_INDEX +</span><br><span class="line">                                  <span class="string">&quot; passed to annotation processor&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 获取 `verbose` 参数</span></span><br><span class="line">        verbose = Boolean.parseBoolean(processingEnv.getOptions().get(OPTION_VERBOSE));</span><br><span class="line">        <span class="type">int</span> <span class="variable">lastPeriod</span> <span class="operator">=</span> index.lastIndexOf(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">        <span class="comment">// 获取 eventBusIndex 的包名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">indexPackage</span> <span class="operator">=</span> lastPeriod != -<span class="number">1</span> ? index.substring(<span class="number">0</span>, lastPeriod) : <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        round++;</span><br><span class="line">        <span class="keyword">if</span> (verbose) &#123;</span><br><span class="line">            messager.printMessage(Diagnostic.Kind.NOTE, <span class="string">&quot;Processing round &quot;</span> + round + <span class="string">&quot;, new annotations: &quot;</span> +</span><br><span class="line">                                  !annotations.isEmpty() + <span class="string">&quot;, processingOver: &quot;</span> + env.processingOver());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (env.processingOver()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!annotations.isEmpty()) &#123;</span><br><span class="line">                messager.printMessage(Diagnostic.Kind.ERROR,</span><br><span class="line">                                      <span class="string">&quot;Unexpected processing state: annotations still available after processing over&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (annotations.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (writerRoundDone) &#123;</span><br><span class="line">            messager.printMessage(Diagnostic.Kind.ERROR,</span><br><span class="line">                                  <span class="string">&quot;Unexpected processing state: annotations still available after writing.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 收集订阅者和订阅方法</span></span><br><span class="line">        collectSubscribers(annotations, env, messager);</span><br><span class="line">        <span class="comment">// 检查是否可以为订阅者生成 Index</span></span><br><span class="line">        checkForSubscribersToSkip(messager, indexPackage);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!methodsByClass.isEmpty()) &#123;</span><br><span class="line">            <span class="comment">// 生成 Index 文件</span></span><br><span class="line">            createInfoIndexFile(index);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            messager.printMessage(Diagnostic.Kind.WARNING, <span class="string">&quot;No @Subscribe annotations found&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        writerRoundDone = <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</span><br><span class="line">        <span class="comment">// IntelliJ does not handle exceptions nicely, so log and print a message</span></span><br><span class="line">        e.printStackTrace();</span><br><span class="line">        messager.printMessage(Diagnostic.Kind.ERROR, <span class="string">&quot;Unexpected error in EventBusAnnotationProcessor: &quot;</span> + e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="collectsubscribers"><a class="markdownIt-Anchor" href="#collectsubscribers"></a> collectSubscribers</h3>
+<p>我们首先分析是如何收集订阅者和订阅方法的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定义集合，实际上是 Map&lt;TypeElement, List&lt;ExecutableElement&gt;&gt;</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ListMap&lt;TypeElement, ExecutableElement&gt; methodsByClass = <span class="keyword">new</span> <span class="title class_">ListMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// annotations 是 `@Subscribe ` 注解集合</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">collectSubscribers</span><span class="params">(Set&lt;? extends TypeElement&gt; annotations, RoundEnvironment env, Messager messager)</span> &#123;</span><br><span class="line">    <span class="comment">// 遍历 `@Subscribe` 注解集合</span></span><br><span class="line">    <span class="keyword">for</span> (TypeElement annotation : annotations) &#123;</span><br><span class="line">        <span class="comment">// 获取有 `@Subscribe` 注解的元素集合</span></span><br><span class="line">        Set&lt;? <span class="keyword">extends</span> <span class="title class_">Element</span>&gt; elements = env.getElementsAnnotatedWith(annotation);</span><br><span class="line">        <span class="keyword">for</span> (Element element : elements) &#123;</span><br><span class="line">            <span class="comment">// 判断是不是可执行的元素，一般表示是 Java 方法</span></span><br><span class="line">            <span class="keyword">if</span> (element <span class="keyword">instanceof</span> ExecutableElement) &#123;</span><br><span class="line">                <span class="type">ExecutableElement</span> <span class="variable">method</span> <span class="operator">=</span> (ExecutableElement) element;</span><br><span class="line">                <span class="comment">// 检查是否是订阅方法</span></span><br><span class="line">                <span class="keyword">if</span> (checkHasNoErrors(method, messager)) &#123;</span><br><span class="line">                    <span class="type">TypeElement</span> <span class="variable">classElement</span> <span class="operator">=</span> (TypeElement) method.getEnclosingElement();</span><br><span class="line">                    <span class="comment">// 添加进 Map 集合</span></span><br><span class="line">                    methodsByClass.putElement(classElement, method);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                messager.printMessage(Diagnostic.Kind.ERROR, <span class="string">&quot;@Subscribe is only valid for methods&quot;</span>, element);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先遍历 <code>@Subscribe</code> 注解集合，通过 <code>getElementsAnnotatedWith</code> 获取有 <code>@Subscribe</code> 注解的元素集合，然后遍历元素集合，在遍历元素集合时判断元素是否是 <code>ExecutableElement</code>，即当前元素是不是方法，如何是方法再通过 <code>checkHasNoErrors</code> 检查此方法是否符合订阅方法的规范：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">checkHasNoErrors</span><span class="params">(ExecutableElement element, Messager messager)</span> &#123;</span><br><span class="line">    <span class="comment">// 判断是否是静态方法</span></span><br><span class="line">    <span class="keyword">if</span> (element.getModifiers().contains(Modifier.STATIC)) &#123;</span><br><span class="line">        messager.printMessage(Diagnostic.Kind.ERROR, <span class="string">&quot;Subscriber method must not be static&quot;</span>, element);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是否是公开方法</span></span><br><span class="line">    <span class="keyword">if</span> (!element.getModifiers().contains(Modifier.PUBLIC)) &#123;</span><br><span class="line">        messager.printMessage(Diagnostic.Kind.ERROR, <span class="string">&quot;Subscriber method must be public&quot;</span>, element);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是否只有一个入参</span></span><br><span class="line">    List&lt;? <span class="keyword">extends</span> <span class="title class_">VariableElement</span>&gt; parameters = ((ExecutableElement) element).getParameters();</span><br><span class="line">    <span class="keyword">if</span> (parameters.size() != <span class="number">1</span>) &#123;</span><br><span class="line">        messager.printMessage(Diagnostic.Kind.ERROR, <span class="string">&quot;Subscriber method must have exactly 1 parameter&quot;</span>, element);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>检查方法比较简单，需要满足以下条件：</p>
+<ul>
+<li>必须不能是静态方法</li>
+<li>必须是公开方法</li>
+<li>方法有且仅有一个入参</li>
+</ul>
+<p><strong>注意这里没有判断是否是桥接方法和合成方法，因为注解处理器处于编译期，桥接方法和合成方法应该经过 javac 编译后才会有。</strong></p>
+<p>最后把符合订阅方法规范的方法收集起来，存储在 <code>methodsByClass</code> 中，<code>methodsByClass</code> 是 greenrobot 自定义的，其实际类型是 <code>Map&lt;TypeElement, List&lt;ExecutableElement&gt;&gt;</code>，以订阅者为 Key，订阅者中的订阅方法集合为 Value。</p>
+<h3 id="checkforsubscriberstoskip"><a class="markdownIt-Anchor" href="#checkforsubscriberstoskip"></a> checkForSubscribersToSkip</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">checkForSubscribersToSkip</span><span class="params">(Messager messager, String myPackage)</span> &#123;</span><br><span class="line">    <span class="comment">// 遍历 订阅者</span></span><br><span class="line">    <span class="keyword">for</span> (TypeElement skipCandidate : methodsByClass.keySet()) &#123;</span><br><span class="line">        <span class="type">TypeElement</span> <span class="variable">subscriberClass</span> <span class="operator">=</span> skipCandidate;</span><br><span class="line">        <span class="comment">// 循环判断订阅者及其父类</span></span><br><span class="line">        <span class="keyword">while</span> (subscriberClass != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 判断订阅者是否可见</span></span><br><span class="line">            <span class="keyword">if</span> (!isVisible(myPackage, subscriberClass)) &#123;</span><br><span class="line">                <span class="comment">// 若不可见，则添加进跳过订阅者集合，退出 while 循环</span></span><br><span class="line">                <span class="type">boolean</span> <span class="variable">added</span> <span class="operator">=</span> classesToSkip.add(skipCandidate);</span><br><span class="line">                <span class="keyword">if</span> (added) &#123;</span><br><span class="line">                    String msg;</span><br><span class="line">                    <span class="keyword">if</span> (subscriberClass.equals(skipCandidate)) &#123;</span><br><span class="line">                        msg = <span class="string">&quot;Falling back to reflection because class is not public&quot;</span>;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        msg = <span class="string">&quot;Falling back to reflection because &quot;</span> + skipCandidate +</span><br><span class="line">                            <span class="string">&quot; has a non-public super class&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    messager.printMessage(Diagnostic.Kind.NOTE, msg, subscriberClass);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 获取订阅者中的订阅方法集合</span></span><br><span class="line">            List&lt;ExecutableElement&gt; methods = methodsByClass.get(subscriberClass);</span><br><span class="line">            <span class="keyword">if</span> (methods != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 循环判断是否根据订阅方法跳过订阅者</span></span><br><span class="line">                <span class="keyword">for</span> (ExecutableElement method : methods) &#123;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">skipReason</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">                    <span class="type">VariableElement</span> <span class="variable">param</span> <span class="operator">=</span> method.getParameters().get(<span class="number">0</span>);</span><br><span class="line">                    <span class="type">TypeMirror</span> <span class="variable">typeMirror</span> <span class="operator">=</span> getParamTypeMirror(param, messager);</span><br><span class="line">                    <span class="comment">// 判断订阅方法的入参是否是声明类型，即不是基本类型；或者是声明类型但不是类或接口</span></span><br><span class="line">                    <span class="keyword">if</span> (!(typeMirror <span class="keyword">instanceof</span> DeclaredType) ||</span><br><span class="line">                        !(((DeclaredType) typeMirror).asElement() <span class="keyword">instanceof</span> TypeElement)) &#123;</span><br><span class="line">                        skipReason = <span class="string">&quot;event type cannot be processed&quot;</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (skipReason == <span class="literal">null</span>) &#123;</span><br><span class="line">                        <span class="type">TypeElement</span> <span class="variable">eventTypeElement</span> <span class="operator">=</span> (TypeElement) ((DeclaredType) typeMirror).asElement();</span><br><span class="line">                        <span class="comment">// 判断 Event 是否可见</span></span><br><span class="line">                        <span class="keyword">if</span> (!isVisible(myPackage, eventTypeElement)) &#123;</span><br><span class="line">                            skipReason = <span class="string">&quot;event type is not public&quot;</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (skipReason != <span class="literal">null</span>) &#123;</span><br><span class="line">                        <span class="comment">// 添加进跳过订阅者集合，退出 for 循环</span></span><br><span class="line">                        <span class="type">boolean</span> <span class="variable">added</span> <span class="operator">=</span> classesToSkip.add(skipCandidate);</span><br><span class="line">                        <span class="keyword">if</span> (added) &#123;</span><br><span class="line">                            <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;Falling back to reflection because &quot;</span> + skipReason;</span><br><span class="line">                            <span class="keyword">if</span> (!subscriberClass.equals(skipCandidate)) &#123;</span><br><span class="line">                                msg += <span class="string">&quot; (found in super class for &quot;</span> + skipCandidate + <span class="string">&quot;)&quot;</span>;</span><br><span class="line">                            &#125;</span><br><span class="line">                            messager.printMessage(Diagnostic.Kind.NOTE, msg, param);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 移动至父类</span></span><br><span class="line">            subscriberClass = getSuperclass(subscriberClass);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先调用 <code>isVisible</code> 方法判断订阅者是否可见：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">isVisible</span><span class="params">(String myPackage, TypeElement typeElement)</span> &#123;</span><br><span class="line">    <span class="comment">// 获取描述符集合</span></span><br><span class="line">    Set&lt;Modifier&gt; modifiers = typeElement.getModifiers();</span><br><span class="line">    <span class="type">boolean</span> visible;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断是否是 PUBLIC</span></span><br><span class="line">    <span class="keyword">if</span> (modifiers.contains(Modifier.PUBLIC)) &#123;</span><br><span class="line">        visible = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 判断是否是 PRIVATE 或者 PROTECTED</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED)) &#123;</span><br><span class="line">        visible = <span class="literal">false</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 其他情况</span></span><br><span class="line">        <span class="comment">// 获取元素的包名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">subscriberPackage</span> <span class="operator">=</span> getPackageElement(typeElement).getQualifiedName().toString();</span><br><span class="line">        <span class="comment">// 若 Index 类包名为空，则根据元素包名的长度判断，否则比较 Index 类和元素是否在同一个包下</span></span><br><span class="line">        <span class="keyword">if</span> (myPackage == <span class="literal">null</span>) &#123;</span><br><span class="line">            visible = subscriberPackage.length() == <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            visible = myPackage.equals(subscriberPackage);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> visible;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果订阅者符合以下条件即认为可见：</p>
+<ul>
+<li>订阅者含有 public 修饰符</li>
+<li>Index 类包名为空时，订阅者包名长度为 0，</li>
+<li>Index 类包名不为空，订阅者和 Index 类同属一个包下</li>
+</ul>
+<p>如果订阅者不符合可见性条件，则添加进 <code>classesToSkip</code> 集合，后续生成 Index 类时会忽略此这些订阅者。</p>
+<p>如果订阅者符合可见性条件，接下来判断订阅方法是否符合规范：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (ExecutableElement method : methods) &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">skipReason</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="type">VariableElement</span> <span class="variable">param</span> <span class="operator">=</span> method.getParameters().get(<span class="number">0</span>);</span><br><span class="line">    <span class="type">TypeMirror</span> <span class="variable">typeMirror</span> <span class="operator">=</span> getParamTypeMirror(param, messager);</span><br><span class="line">    <span class="comment">// 判断订阅方法的入参是否是声明类型，即不是基本类型；或者是声明类型但不是类或接口</span></span><br><span class="line">    <span class="keyword">if</span> (!(typeMirror <span class="keyword">instanceof</span> DeclaredType) ||</span><br><span class="line">        !(((DeclaredType) typeMirror).asElement() <span class="keyword">instanceof</span> TypeElement)) &#123;</span><br><span class="line">        skipReason = <span class="string">&quot;event type cannot be processed&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (skipReason == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">TypeElement</span> <span class="variable">eventTypeElement</span> <span class="operator">=</span> (TypeElement) ((DeclaredType) typeMirror).asElement();</span><br><span class="line">        <span class="comment">// 判断 Event 是否可见</span></span><br><span class="line">        <span class="keyword">if</span> (!isVisible(myPackage, eventTypeElement)) &#123;</span><br><span class="line">            skipReason = <span class="string">&quot;event type is not public&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (skipReason != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 添加进跳过订阅者集合，退出 for 循环</span></span><br><span class="line">        <span class="type">boolean</span> <span class="variable">added</span> <span class="operator">=</span> classesToSkip.add(skipCandidate);</span><br><span class="line">        <span class="keyword">if</span> (added) &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> <span class="string">&quot;Falling back to reflection because &quot;</span> + skipReason;</span><br><span class="line">            <span class="keyword">if</span> (!subscriberClass.equals(skipCandidate)) &#123;</span><br><span class="line">                msg += <span class="string">&quot; (found in super class for &quot;</span> + skipCandidate + <span class="string">&quot;)&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            messager.printMessage(Diagnostic.Kind.NOTE, msg, param);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>遍历订阅方法，判断订阅方法的入参如果不是声明类型，即不是基本类型；或者入参是声明类型但不是类或接口，则将订阅者添加进跳过订阅者集合并退出 for 循环，否则再判断入参是否可见，若是不可见，则将订阅者添加进跳过订阅者集合并退出 for 循环。</p>
+<p>最后获取当前订阅者的父类，循环判断父类是否也符合以上规范，若是父类不符合以上规范，则将当前订阅者添加进跳过订阅者集合并退出 for 循环。</p>
+<h3 id="createinfoindexfile"><a class="markdownIt-Anchor" href="#createinfoindexfile"></a> createInfoIndexFile</h3>
+<p>收集和过滤完订阅者后，接下来就可以生成 Index 类了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">createInfoIndexFile</span><span class="params">(String index)</span> &#123;</span><br><span class="line">    <span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">JavaFileObject</span> <span class="variable">sourceFile</span> <span class="operator">=</span> processingEnv.getFiler().createSourceFile(index);</span><br><span class="line">        <span class="type">int</span> <span class="variable">period</span> <span class="operator">=</span> index.lastIndexOf(<span class="string">&#x27;.&#x27;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">myPackage</span> <span class="operator">=</span> period &gt; <span class="number">0</span> ? index.substring(<span class="number">0</span>, period) : <span class="literal">null</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">clazz</span> <span class="operator">=</span> index.substring(period + <span class="number">1</span>);</span><br><span class="line">        writer = <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(sourceFile.openWriter());</span><br><span class="line">        <span class="comment">// 包名不为空，写入包名</span></span><br><span class="line">        <span class="keyword">if</span> (myPackage != <span class="literal">null</span>) &#123;</span><br><span class="line">            writer.write(<span class="string">&quot;package &quot;</span> + myPackage + <span class="string">&quot;;\n\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 导包</span></span><br><span class="line">        writer.write(<span class="string">&quot;import com.yarward.org.greenrobot.eventbus.meta.SimpleSubscriberInfo;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;import com.yarward.org.greenrobot.eventbus.meta.SubscriberMethodInfo;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;import com.yarward.org.greenrobot.eventbus.meta.SubscriberInfo;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;import com.yarward.org.greenrobot.eventbus.meta.SubscriberInfoIndex;\n\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;import com.yarward.org.greenrobot.eventbus.ThreadMode;\n\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;import java.util.HashMap;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;import java.util.Map;\n\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;/** This class is generated by EventBus, do not edit. */\n&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 类声明，实现 `SubscriberInfoIndex` 接口</span></span><br><span class="line">        writer.write(<span class="string">&quot;public class &quot;</span> + clazz + <span class="string">&quot; implements SubscriberInfoIndex &#123;\n&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 静态字段声明</span></span><br><span class="line">        writer.write(<span class="string">&quot;    private static final Map&lt;Class&lt;?&gt;, SubscriberInfo&gt; SUBSCRIBER_INDEX;\n\n&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 静态代码块</span></span><br><span class="line">        writer.write(<span class="string">&quot;    static &#123;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;        SUBSCRIBER_INDEX = new HashMap&lt;Class&lt;?&gt;, SubscriberInfo&gt;();\n\n&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 写入 Index</span></span><br><span class="line">        writeIndexLines(writer, myPackage);</span><br><span class="line">        writer.write(<span class="string">&quot;    &#125;\n\n&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 静态方法</span></span><br><span class="line">        writer.write(<span class="string">&quot;    private static void putIndex(SubscriberInfo info) &#123;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;        SUBSCRIBER_INDEX.put(info.getSubscriberClass(), info);\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;    &#125;\n\n&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 实现 `SubscriberInfoIndex` 接口方法</span></span><br><span class="line">        writer.write(<span class="string">&quot;    @Override\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;    public SubscriberInfo getSubscriberInfo(Class&lt;?&gt; subscriberClass) &#123;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;        SubscriberInfo info = SUBSCRIBER_INDEX.get(subscriberClass);\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;        if (info != null) &#123;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;            return info;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;        &#125; else &#123;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;            return null;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;        &#125;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;    &#125;\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&#125;\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Could not write source for &quot;</span> + index, e);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (writer != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                writer.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                <span class="comment">//Silent</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>createInfoIndexFile</code> 方法比较简单，主要是模板代码，生成 Index 的逻辑主要在 <code>writeIndexLines</code> 中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">writeIndexLines</span><span class="params">(BufferedWriter writer, String myPackage)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="comment">// 遍历订阅者</span></span><br><span class="line">    <span class="keyword">for</span> (TypeElement subscriberTypeElement : methodsByClass.keySet()) &#123;</span><br><span class="line">        <span class="comment">// 判断是否忽略当前订阅者</span></span><br><span class="line">        <span class="keyword">if</span> (classesToSkip.contains(subscriberTypeElement)) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取订阅者类名，是内部类时包含外部类的类名</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">subscriberClass</span> <span class="operator">=</span> getClassString(subscriberTypeElement, myPackage);</span><br><span class="line">        <span class="comment">// 再次判断订阅者是否可见</span></span><br><span class="line">        <span class="keyword">if</span> (isVisible(myPackage, subscriberTypeElement)) &#123;</span><br><span class="line">            writeLine(writer, <span class="number">2</span>,</span><br><span class="line">                      <span class="string">&quot;putIndex(new SimpleSubscriberInfo(&quot;</span> + subscriberClass + <span class="string">&quot;.class,&quot;</span>,</span><br><span class="line">                      <span class="string">&quot;true,&quot;</span>, <span class="string">&quot;new SubscriberMethodInfo[] &#123;&quot;</span>);</span><br><span class="line">            <span class="comment">// 获取当前订阅者中订阅方法集合</span></span><br><span class="line">            List&lt;ExecutableElement&gt; methods = methodsByClass.get(subscriberTypeElement);</span><br><span class="line">            <span class="comment">// 生成订阅方法信息</span></span><br><span class="line">            writeCreateSubscriberMethods(writer, methods, <span class="string">&quot;new SubscriberMethodInfo&quot;</span>, myPackage);</span><br><span class="line">            writer.write(<span class="string">&quot;        &#125;));\n\n&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            writer.write(<span class="string">&quot;        // Subscriber not visible to index: &quot;</span> + subscriberClass + <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>writeIndexLines</code> 方法也比较简单，遍历之前收集的订阅者集合，首先判断是否忽略当前订阅者，随后获取订阅者类名，如果是内部类则包含外部类的类名，然后再次判断当前订阅者是否可见，如果可见则生成 <code>SimpleSubscriberInfo</code> 对象添加进 Index。</p>
+<p><code>SimpleSubscriberInfo</code> 是 Index 元素，其构造方法有三个入参，第一个入参是：订阅者 Class 对象，第二个入参是：是否检查父类，默认为 true，第三个参数是：订阅方法信息数组。</p>
+<p>接下来调用 <code>writeCreateSubscriberMethods</code> 方法生成订阅方法信息 <code>SubscriberMethodInfo</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">writeCreateSubscriberMethods</span><span class="params">(BufferedWriter writer, List&lt;ExecutableElement&gt; methods,</span></span><br><span class="line"><span class="params">                                          String callPrefix, String myPackage)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="comment">// 遍历订阅方法集合</span></span><br><span class="line">    <span class="keyword">for</span> (ExecutableElement method : methods) &#123;</span><br><span class="line">        List&lt;? <span class="keyword">extends</span> <span class="title class_">VariableElement</span>&gt; parameters = method.getParameters();</span><br><span class="line">        <span class="type">TypeMirror</span> <span class="variable">paramType</span> <span class="operator">=</span> getParamTypeMirror(parameters.get(<span class="number">0</span>), <span class="literal">null</span>);</span><br><span class="line">        <span class="type">TypeElement</span> <span class="variable">paramElement</span> <span class="operator">=</span> (TypeElement) processingEnv.getTypeUtils().asElement(paramType);</span><br><span class="line">        <span class="comment">// 获取订阅方法名称</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> method.getSimpleName().toString();</span><br><span class="line">        <span class="comment">// 获取 Event 事件 Class 对象</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">eventClass</span> <span class="operator">=</span> getClassString(paramElement, myPackage) + <span class="string">&quot;.class&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取 `Subscribe` 注解</span></span><br><span class="line">        <span class="type">Subscribe</span> <span class="variable">subscribe</span> <span class="operator">=</span> method.getAnnotation(Subscribe.class);</span><br><span class="line">        List&lt;String&gt; parts = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        parts.add(callPrefix + <span class="string">&quot;(\&quot;&quot;</span> + methodName + <span class="string">&quot;\&quot;,&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">lineEnd</span> <span class="operator">=</span> <span class="string">&quot;),&quot;</span>;</span><br><span class="line">        <span class="comment">// 获取 `Subscribe` 注解的参数，并根据参数生成 `SubscriberMethodInfo` 的入参</span></span><br><span class="line">        <span class="keyword">if</span> (subscribe.priority() == <span class="number">0</span> &amp;&amp; !subscribe.sticky()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (subscribe.threadMode() == ThreadMode.POSTING) &#123;</span><br><span class="line">                parts.add(eventClass + lineEnd);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                parts.add(eventClass + <span class="string">&quot;,&quot;</span>);</span><br><span class="line">                parts.add(<span class="string">&quot;ThreadMode.&quot;</span> + subscribe.threadMode().name() + lineEnd);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            parts.add(eventClass + <span class="string">&quot;,&quot;</span>);</span><br><span class="line">            parts.add(<span class="string">&quot;ThreadMode.&quot;</span> + subscribe.threadMode().name() + <span class="string">&quot;,&quot;</span>);</span><br><span class="line">            parts.add(subscribe.priority() + <span class="string">&quot;,&quot;</span>);</span><br><span class="line">            <span class="comment">// 此处是笔者对必达事件的处理</span></span><br><span class="line">            <span class="comment">// begin - 添加必达事件</span></span><br><span class="line">            parts.add(subscribe.sticky() + <span class="string">&quot;,&quot;</span>);</span><br><span class="line">            parts.add(subscribe.rendezvous() + lineEnd);</span><br><span class="line">            <span class="comment">// end - 添加必达事件</span></span><br><span class="line">        &#125;</span><br><span class="line">        writeLine(writer, <span class="number">3</span>, parts.toArray(<span class="keyword">new</span> <span class="title class_">String</span>[parts.size()]));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (verbose) &#123;</span><br><span class="line">            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, <span class="string">&quot;Indexed @Subscribe at &quot;</span> +</span><br><span class="line">                                                     method.getEnclosingElement().getSimpleName() + <span class="string">&quot;.&quot;</span> + methodName +</span><br><span class="line">                                                     <span class="string">&quot;(&quot;</span> + paramElement.getSimpleName() + <span class="string">&quot;)&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>遍历当前订阅者中所有的订阅方法，首先订阅方法的名称，入参 Event 事件的 Class 对象，然后获取 <code>@Subscribe</code> 注解的参数，并根据注解的参数生成 <code>SubscriberMethodInfo</code> 的入参，<strong>这里有笔者对必达事件的处理(注意：这里处理有Bug，不知读者有没有看出来呢？)</strong>，最后调用 <code>writeLine</code> 完整的生成 <code>SubscriberMethodInfo</code> 方法。</p>
+<p>至此，EventBus 注解处理器的流程分析完毕，下面是生成的 Index 类示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EventBusTestsIndex</span> <span class="keyword">implements</span> <span class="title class_">SubscriberInfoIndex</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, SubscriberInfo&gt; SUBSCRIBER_INDEX;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        SUBSCRIBER_INDEX = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;Class&lt;?&gt;, SubscriberInfo&gt;();</span><br><span class="line"></span><br><span class="line">        putIndex(<span class="keyword">new</span> <span class="title class_">SimpleSubscriberInfo</span>(EventBusMainThreadTest.class, <span class="literal">true</span>, <span class="keyword">new</span> <span class="title class_">SubscriberMethodInfo</span>[] &#123;</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">SubscriberMethodInfo</span>(<span class="string">&quot;onEventMainThread&quot;</span>, String.class, ThreadMode.MAIN),</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">putIndex</span><span class="params">(SubscriberInfo info)</span> &#123;</span><br><span class="line">        SUBSCRIBER_INDEX.put(info.getSubscriberClass(), info);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> SubscriberInfo <span class="title function_">getSubscriberInfo</span><span class="params">(Class&lt;?&gt; subscriberClass)</span> &#123;</span><br><span class="line">        <span class="type">SubscriberInfo</span> <span class="variable">info</span> <span class="operator">=</span> SUBSCRIBER_INDEX.get(subscriberClass);</span><br><span class="line">        <span class="keyword">if</span> (info != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> info;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<ul>
+<li>在第一篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104107150678917133">Android-EventBus修改纪实</a> 文章中笔者记录了为 EventBus 增加 <strong>必达事件</strong> 的过程，</li>
+<li>在第二篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104536485428199437">Android-EventBus修改纪实(二)</a> 文章中笔者对第一篇文章中未实现的部分进行了补充，并简单介绍了 EventBus 提供的线程模型及使用注意事项，</li>
+<li>在第三篇 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7104912340851621901">Android-EventBus修改纪实(三)</a> 文章中笔者详细分析了 EventBus 的线程调度过程及使用注意事项，</li>
+<li>在第四篇文章中笔者详细分析了 EventBus 注解处理器生成 Index 类的流程，第一篇文章中添加 <strong>必达事件</strong> 时没有修改注解处理器，在本文中也进行了简单的描述。</li>
+</ul>
+<p>本文分析订阅者是否符合规范时，有一处根据订阅方法检查过滤订阅者，如果订阅者中有一个方法不符合规范，整个订阅者都要跳过，这里你认为是否合理呢？</p>
+<p>大家求同存异，欢迎交流。</p>
+<p>happy~，希望可以帮你更好的使用 EventBus</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/01/Android/Android-EventBus修改纪实(一)-必达事件/" rel="bookmark">Android-EventBus修改纪实(一)-必达事件</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/03/Android/Android-EventBus修改纪实(三)-线程调度/" rel="bookmark">Android-EventBus修改纪实(三)-线程调度</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/06/02/Android/Android-EventBus修改纪实(二)-线程模型/" rel="bookmark">Android-EventBus修改纪实(二)-线程模型</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/01/Android中关于scrollBy的一点点心得/" rel="bookmark">Android中关于scrollBy的一点点心得</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2017/07/06/AndroidStudio中使用Aliyun Maven/" rel="bookmark">AndroidStudio中使用Aliyun Maven</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/06/04/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E5%9B%9B)-%E6%B3%A8%E8%A7%A3%E5%A4%84%E7%90%86%E5%99%A8/" title="Android-EventBus修改纪实(四)-注解处理器">https://sunxiaodou.com/2022/06/04/Android/Android-EventBus修改纪实(四)-注解处理器/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/eventbus/" rel="tag"># eventbus</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/06/03/Android/Android-EventBus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E(%E4%B8%89)-%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6/" rel="prev" title="Android-EventBus修改纪实(三)-线程调度">
+      <i class="fa fa-chevron-left"></i> Android-EventBus修改纪实(三)-线程调度
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/05/Android/Android-WebView%E8%BD%AF%E9%94%AE%E7%9B%98%E9%81%AE%E6%8C%A1%E8%BE%93%E5%85%A5%E6%A1%86%E4%BC%98%E5%8C%96%E7%BA%AA%E5%AE%9E/" rel="next" title="Android-WebView软键盘遮挡输入框优化纪实">
+      Android-WebView软键盘遮挡输入框优化纪实 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android-eventbus%E4%BF%AE%E6%94%B9%E7%BA%AA%E5%AE%9E%E5%9B%9B-%E6%B3%A8%E8%A7%A3%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text"> Android-EventBus修改纪实(四)-注解处理器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%AA%E5%AE%9E"><span class="nav-number">1.2.</span> <span class="nav-text"> 纪实</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#process"><span class="nav-number">1.2.1.</span> <span class="nav-text"> process</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#collectsubscribers"><span class="nav-number">1.2.2.</span> <span class="nav-text"> collectSubscribers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checkforsubscriberstoskip"><span class="nav-number">1.2.3.</span> <span class="nav-text"> checkForSubscribersToSkip</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#createinfoindexfile"><span class="nav-number">1.2.4.</span> <span class="nav-text"> createInfoIndexFile</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">229k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:21</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : '14a276bd0db04419e11926ca324bcd1d',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
