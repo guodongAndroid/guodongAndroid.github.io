@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android-自定义View-仿某米的触摸屏测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android-自定义View-仿某米的触摸屏测试">
+<meta property="og:url" content="https://sunxiaodou.com/2022/07/28/Android/TouchView/touch-view/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="Android-自定义View-仿某米的触摸屏测试">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/mi.jpg">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/touch-view-scope.png">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/touch-view-rectf.png">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/touch-view.png">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/touch-view-line.png">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/touch-view-cross.png">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/android/touch-view/touch-view-complete.png">
+<meta property="article:published_time" content="2022-07-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-08-07T08:01:49.516Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="view">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sunxiaodou.com/imgs/android/touch-view/mi.jpg">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/07/28/Android/TouchView/touch-view/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android-自定义View-仿某米的触摸屏测试 | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/07/28/Android/TouchView/touch-view/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android-自定义View-仿某米的触摸屏测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-07-28 00:00:00" itemprop="dateCreated datePublished" datetime="2022-07-28T00:00:00+08:00">2022-07-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-07 16:01:49" itemprop="dateModified" datetime="2022-08-07T16:01:49+08:00">2022-08-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>28 分钟</span>
+            </span>
+            <div class="post-description">Android-自定义View-仿某米的触摸屏测试</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="android-自定义view-仿某米的触摸屏测试"><a class="markdownIt-Anchor" href="#android-自定义view-仿某米的触摸屏测试"></a> Android-自定义View-仿某米的触摸屏测试</h1>
+<p>携手创作，共同成长！这是我参与「掘金日新计划 · 8 月更文挑战」的第 1 天，<a target="_blank" rel="noopener" href="https://juejin.cn/post/7123120819437322247">点击查看活动详情</a></p>
+<hr />
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>因项目需求变更，公司内的工厂测试程序重写，之前的触摸屏测试已不符合项目需求，遂对比了某米和某为的触摸屏测试效果，个人觉得某米的效果不错，虽然最后没有被采纳，但是这不妨碍我们实现一下某米的触摸屏测试。可能因机型不同，打开某米的触摸屏测试的方式也不尽相同，读者请自行百度相应机型的方式。</p>
+<img data-src="/imgs/android/touch-view/mi.jpg" alt="mi" style="zoom:30%;" />
+<p>某米的触摸屏测试如上图所示，我们简单分析一下：</p>
+<ul>
+<li>屏幕四周、垂直居中和水平居中有绘制单元格，触摸后会重绘颜色。</li>
+<li>屏幕两个对角线有类似于管道的图案，此图案重绘只能从绘制 X 号的地方开始，一直到管道对端的 X 号地方为止，如果期间手指触摸超出管道的范围即失败。</li>
+<li>手指触摸在单元格与管道内的区域滑动时，屏幕会显示滑动轨迹，如果超出区域，则轨迹消失。</li>
+<li>所有单元格与两条管道重绘完毕则测试完成。</li>
+</ul>
+<h2 id="绘制单元格"><a class="markdownIt-Anchor" href="#绘制单元格"></a> 绘制单元格</h2>
+<p>思路如下：以左上角的单元格为起点，计算出所有单元格的坐标保存起来，最后在 <code>onDraw</code> 方法中遍历单元格组，根据坐标进行绘制。</p>
+<p>首先定义单元格的基准宽高与最终宽高变量：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> itemWidthBasic = <span class="number">90</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> itemHeightBasic = <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> itemWidth = -<span class="number">1F</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> itemHeight = -<span class="number">1F</span></span><br></pre></td></tr></table></figure>
+<p>其次定义自定义 View 的宽高变量：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> viewWidth: <span class="built_in">Int</span> = -<span class="number">1</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> viewHeight: <span class="built_in">Int</span> = -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>最后定义单元格在宽高方向上的数量变量：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> widthCount = -<span class="number">1</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> heightCount = -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>定义绘制单元格的画笔：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> boxPaint <span class="keyword">by</span> lazy &#123;</span><br><span class="line">    Paint(Paint.ANTI_ALIAS_FLAG).apply &#123;</span><br><span class="line">        color = Color.GRAY</span><br><span class="line">        style = Paint.Style.STROKE</span><br><span class="line">        strokeWidth = <span class="number">2F</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义 TouchRectF 实体，对 RectF 包装一层，增加 <code>isReDrawable</code> 变量，单元格被触摸重绘后标记为 True：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="keyword">class</span> <span class="title class_">TouchRectF</span>(<span class="keyword">val</span> rectF: RectF, <span class="keyword">var</span> isReDrawable: <span class="built_in">Boolean</span> = <span class="literal">false</span>) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">reset</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isReDrawable = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义保存单元格坐标的容器，其中包含屏幕上下左右以及垂直与水平居中的坐标容器：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 屏幕左侧单元格的坐标容器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> leftRectFList = mutableListOf&lt;TouchRectF&gt;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕顶部单元格的坐标容器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> topRectFList = mutableListOf&lt;TouchRectF&gt;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕右侧单元格的坐标容器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> rightRectFList = mutableListOf&lt;TouchRectF&gt;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕底部单元格的坐标容器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> bottomRectFList = mutableListOf&lt;TouchRectF&gt;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕水平居中单元格的坐标容器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> centerHorizontalRectFList = mutableListOf&lt;TouchRectF&gt;()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕垂直居中单元格的坐标容器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> centerVerticalRectFList = mutableListOf&lt;TouchRectF&gt;()</span><br></pre></td></tr></table></figure>
+<p>选择在 <code>onLayout</code> 方法中计算所有单元格的坐标并获取 View 的宽高：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onLayout</span><span class="params">(changed: <span class="type">Boolean</span>, left: <span class="type">Int</span>, top: <span class="type">Int</span>, right: <span class="type">Int</span>, bottom: <span class="type">Int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.onLayout(changed, left, top, right, bottom)</span><br><span class="line">    <span class="comment">// 保存 View 的宽高</span></span><br><span class="line">    viewWidth = width</span><br><span class="line">    viewHeight = height</span><br><span class="line"></span><br><span class="line">    computeRectF()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下图显示了所有单元格所在的范围：</p>
+<p><img data-src="/imgs/android/touch-view/touch-view-scope.png" alt="scope" /></p>
+<p>在 <code>computeRectF</code> 方法中计算单元格的宽高、数量及坐标：</p>
+<ol>
+<li>首先以单元格的基准宽高计算单元格宽高方向上的数量</li>
+<li>其次以单元格宽高方向上的数量计算单元格的最终宽高</li>
+<li>清除之前计算的结果</li>
+</ol>
+<p>根据上面单元格范围示意图：</p>
+<ul>
+<li>计算并保存左侧单元格的坐标，不包含头和尾，去掉与顶部和底部重叠的单元格</li>
+<li>计算并保存顶部单元格的坐标</li>
+<li>计算并保存右侧单元格的坐标，不包含头和尾，去掉与顶部和底部重叠的单元格</li>
+<li>计算并保存底部单元格的坐标</li>
+<li>计算并保存水平居中单元格的坐标，不包含头和尾，去掉与左侧和右侧重叠的单元格</li>
+<li>计算并保存垂直居中单元格的坐标，不包含头和尾，去掉与顶部和底部重叠的单元格，且去掉与水平居中重叠的单元格</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">computeRectF</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 以单元格的基准宽高计算单元格宽高方向上的数量</span></span><br><span class="line">    widthCount = viewWidth / itemWidthBasic</span><br><span class="line">    heightCount = viewHeight / itemHeightBasic</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 以单元格宽高方向上的数量再计算单元格的最终宽高</span></span><br><span class="line">    itemWidth = viewWidth.toFloat() / widthCount</span><br><span class="line">    itemHeight = viewHeight.toFloat() / heightCount</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清空之前计算的结果</span></span><br><span class="line">    leftRectFList.clear()</span><br><span class="line">    topRectFList.clear()</span><br><span class="line">    rightRectFList.clear()</span><br><span class="line">    bottomRectFList.clear()</span><br><span class="line">    centerHorizontalRectFList.clear()</span><br><span class="line">    centerVerticalRectFList.clear()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算并保存屏幕左侧单元格的坐标, 不包含头和尾, 去掉与顶部和底部重叠的单元格</span></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span> until heightCount - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">val</span> rectF = RectF(<span class="number">0F</span>, itemHeight * i, itemWidth, itemHeight * (i + <span class="number">1</span>))</span><br><span class="line">        leftRectFList.add(TouchRectF(rectF))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算并保存屏幕顶部单元格的坐标</span></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span> until widthCount) &#123;</span><br><span class="line">        <span class="keyword">val</span> rectF = RectF(itemWidth * i, <span class="number">0F</span>, itemWidth * (i + <span class="number">1</span>), itemHeight)</span><br><span class="line">        topRectFList.add(TouchRectF(rectF))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算并保存屏幕右侧单元格的坐标, 不包含头和尾, 去掉与顶部和底部重叠的单元格</span></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span> until heightCount - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">val</span> rectF = RectF(</span><br><span class="line">            viewWidth - itemWidth,</span><br><span class="line">            itemHeight * i,</span><br><span class="line">            viewWidth.toFloat(),</span><br><span class="line">            itemHeight * (i + <span class="number">1</span>)</span><br><span class="line">        )</span><br><span class="line">        rightRectFList.add(TouchRectF(rectF))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算并保存屏幕底部单元格的坐标</span></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span> until widthCount) &#123;</span><br><span class="line">        <span class="keyword">val</span> rectF = RectF(</span><br><span class="line">            itemWidth * i,</span><br><span class="line">            viewHeight - itemHeight,</span><br><span class="line">            itemWidth * (i + <span class="number">1</span>),</span><br><span class="line">            viewHeight.toFloat()</span><br><span class="line">        )</span><br><span class="line">        bottomRectFList.add(TouchRectF(rectF))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算并保存屏幕水平居中单元格的坐标, 不包含头和尾, 去掉与左侧和右侧重叠的单元格</span></span><br><span class="line">    <span class="keyword">val</span> centerHIndex = heightCount / <span class="number">2</span></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span> until widthCount - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">val</span> rectF = RectF(</span><br><span class="line">            itemWidth * i,</span><br><span class="line">            itemHeight * centerHIndex,</span><br><span class="line">            itemWidth * (i + <span class="number">1</span>),</span><br><span class="line">            itemHeight * (centerHIndex + <span class="number">1</span>)</span><br><span class="line">        )</span><br><span class="line">        centerHorizontalRectFList.add(TouchRectF(rectF))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算并保存屏幕垂直居中单元格的坐标, 不包含头和尾, 去掉与顶部和底部重叠的单元格, 且去掉与水平居中重叠的单元格</span></span><br><span class="line">    <span class="keyword">val</span> centerVIndex = widthCount / <span class="number">2</span></span><br><span class="line">    <span class="keyword">val</span> skipIndex: <span class="built_in">Int</span> = centerHIndex</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span> until heightCount - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 跳过与横轴交叉的部分</span></span><br><span class="line">        <span class="keyword">if</span> (i == skipIndex) &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> rectF = RectF(</span><br><span class="line">            itemWidth * centerVIndex,</span><br><span class="line">            itemHeight * i,</span><br><span class="line">            itemWidth * (centerVIndex + <span class="number">1</span>),</span><br><span class="line">            itemHeight * (i + <span class="number">1</span>)</span><br><span class="line">        )</span><br><span class="line">        centerVerticalRectFList.add(TouchRectF(rectF))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来在 <code>onDraw</code> 中绘制单元格：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onDraw</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 单元格数量为 -1 时返回</span></span><br><span class="line">    <span class="keyword">if</span> (widthCount == -<span class="number">1</span> || heightCount == -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清空画布</span></span><br><span class="line">    canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR)</span><br><span class="line">    canvas.drawColor(Color.WHITE)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绘制水平方向的单元格</span></span><br><span class="line">    drawHorizontalBox(canvas)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绘制垂直方向的单元格</span></span><br><span class="line">    drawVerticalBox(canvas)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawHorizontalBox</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (rectF <span class="keyword">in</span> topRectFList) &#123;</span><br><span class="line">        drawBox(rectF, canvas)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (rectF <span class="keyword">in</span> centerHorizontalRectFList) &#123;</span><br><span class="line">        drawBox(rectF, canvas)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (rectF <span class="keyword">in</span> bottomRectFList) &#123;</span><br><span class="line">        drawBox(rectF, canvas)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawVerticalBox</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (rectF <span class="keyword">in</span> leftRectFList) &#123;</span><br><span class="line">        drawBox(rectF, canvas)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (rectF <span class="keyword">in</span> centerVerticalRectFList) &#123;</span><br><span class="line">        drawBox(rectF, canvas)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (rectF <span class="keyword">in</span> rightRectFList) &#123;</span><br><span class="line">        drawBox(rectF, canvas)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawBox</span><span class="params">(rectF: <span class="type">TouchRectF</span>, canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    canvas.drawRect(rectF.rectF, boxPaint)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>首先做参数校验与画布清空</li>
+<li>然后绘制水平方向的单元格，在 <code>drawHorizontalBox</code> 方法中遍历水平方向的单元格坐标容器，再调用 <code>drawBox</code> 方法传入坐标绘制单元格</li>
+<li>最后绘制垂直方向的单元格，在 <code>drawVerticalBox</code> 方法中遍历垂直方向的单元格坐标容器，再调用 <code>drawBox</code> 方法传入坐标绘制单元格</li>
+<li>在 <code>drawBox</code> 方法中绘制单元格</li>
+</ol>
+<p>效果如下：</p>
+<p><img data-src="/imgs/android/touch-view/touch-view-rectf.png" alt="box" /></p>
+<h2 id="绘制交叉管道"><a class="markdownIt-Anchor" href="#绘制交叉管道"></a> 绘制交叉管道</h2>
+<p>上面绘制单元格比较简单一些，现在要绘制的两个管道相对复杂一些，本文为了简单，没有完全仿照某米触摸屏测试中管道的 UI 效果。</p>
+<p>思路：通过 Path 连接对角两个单元格的顶点组成管道，由于 Path 闭合后，单元格的两个顶点会连接成直线，这里两个顶点的连接使用二阶贝赛尔曲线绘制一个 View 显示范围之外的弧线，这样看起来管道没有起止点，且 Path 也可以闭合，同时也方便判断触摸点是否在管道内。</p>
+<p>定义管道 Path 和 Region：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * /</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> positiveCrossPath = TouchPath()</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> positiveCrossRegion = Region()</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * \</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> reverseCrossPath = TouchPath()</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> reverseCrossRegion = Region()</span><br></pre></td></tr></table></figure>
+<p>在 <code>computeRectF</code> 方法中计算管道 Path 路径：</p>
+<ul>
+<li>重置 Path 路径</li>
+<li>计算正向管道 Path，以左下角单元格为起点，右上角单元格为终点绘制 Path。</li>
+<li>计算反向管道 Path，以左上角单元格为起点，右下角单元格为终点绘制 Path。</li>
+<li>下面代码中的注释说明的更多一些。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">computeRectF</span><span class="params">()</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略计算单元格的代码</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 重置 Path</span></span><br><span class="line">    positiveCrossPath.path.reset()</span><br><span class="line">    reverseCrossPath.path.reset()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// PositiveCross</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取左下角单元格坐标</span></span><br><span class="line">    <span class="keyword">val</span> lbRectF = bottomRectFList.first().rectF</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取右上角单元格坐标</span></span><br><span class="line">    <span class="keyword">val</span> rtRectF = topRectFList.last().rectF</span><br><span class="line">    </span><br><span class="line">    with(positiveCrossPath.path) &#123;</span><br><span class="line">        <span class="comment">// 移动 Path 至左下角单元格的左上角顶点</span></span><br><span class="line">        moveTo(lbRectF.left, lbRectF.top)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 连接直线至右上角单元格的左上角顶点</span></span><br><span class="line">        lineTo(rtRectF.left, rtRectF.top)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 以右上角单元格的右上角顶点坐标为基准计算屏幕外一点为控制点, 右上角单元格的右下角顶点为结束点绘制二阶贝赛尔曲线</span></span><br><span class="line">        quadTo(</span><br><span class="line">            rtRectF.right + itemWidth,</span><br><span class="line">            rtRectF.top - itemHeight,</span><br><span class="line">            rtRectF.right,</span><br><span class="line">            rtRectF.bottom</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 连接直线至左下角单元格的右下角顶点</span></span><br><span class="line">        lineTo(lbRectF.right, lbRectF.bottom)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 以左下角单元格的左下角顶点坐标为基准计算屏幕外一点为控制点, 左下角单元格的左上角顶点为结束点绘制二阶贝赛尔曲线</span></span><br><span class="line">        quadTo(</span><br><span class="line">            lbRectF.left - itemWidth,</span><br><span class="line">            lbRectF.bottom + itemHeight,</span><br><span class="line">            lbRectF.left,</span><br><span class="line">            lbRectF.top</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 闭合 Path</span></span><br><span class="line">        close()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算正向管道 Path 区域</span></span><br><span class="line">    <span class="keyword">val</span> positiveCrossRectF = RectF()</span><br><span class="line">    positiveCrossPath.path.computeBounds(positiveCrossRectF, <span class="literal">true</span>)</span><br><span class="line">    positiveCrossRegion.setPath(positiveCrossPath.path, positiveCrossRectF.toRegion())</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ReverseCross</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取左上角单元格坐标</span></span><br><span class="line">    <span class="keyword">val</span> ltRectF = topRectFList.first().rectF</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取右下角单元格坐标</span></span><br><span class="line">    <span class="keyword">val</span> rbRectF = bottomRectFList.last().rectF</span><br><span class="line">    </span><br><span class="line">    with(reverseCrossPath.path) &#123;</span><br><span class="line">        <span class="comment">// 移动 Path 至左上角单元格的右上角顶点</span></span><br><span class="line">        moveTo(ltRectF.right, ltRectF.top)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 连接直线只右下角单元格的右上角顶点</span></span><br><span class="line">        lineTo(rbRectF.right, rbRectF.top)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 以右下角单元格的右下角顶点坐标为基准计算屏幕外一点为控制点, 右下角单元格的左下角顶点为结束点绘制二阶贝赛尔曲线</span></span><br><span class="line">        quadTo(</span><br><span class="line">            rbRectF.right + itemWidth,</span><br><span class="line">            rbRectF.bottom + itemHeight,</span><br><span class="line">            rbRectF.left,</span><br><span class="line">            rbRectF.bottom</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 连接直线至左上角单元格的左下角顶点</span></span><br><span class="line">        lineTo(ltRectF.left, ltRectF.bottom)</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 以左上角单元格的左下角顶点坐标为基准计算屏幕外一点为控制点, 左上角单元格的右上角顶点为结束点绘制二阶贝赛尔曲线</span></span><br><span class="line">        quadTo(</span><br><span class="line">            ltRectF.left - itemWidth,</span><br><span class="line">            ltRectF.top - itemHeight,</span><br><span class="line">            ltRectF.right,</span><br><span class="line">            ltRectF.top</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 闭合 Path</span></span><br><span class="line">        close()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算反向管道 Path 区域</span></span><br><span class="line">    <span class="keyword">val</span> reverseCrossRectF = RectF()</span><br><span class="line">    reverseCrossPath.path.computeBounds(reverseCrossRectF, <span class="literal">true</span>)</span><br><span class="line">    reverseCrossRegion.setPath(reverseCrossPath.path, reverseCrossRectF.toRegion())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来在 <code>onDraw</code> 方法中绘制管道：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onDraw</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 省略绘制单元格代码</span></span><br><span class="line"></span><br><span class="line">    drawPositiveCross(canvas)</span><br><span class="line">    drawReverseCross(canvas)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawReverseCross</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    canvas.drawPath(reverseCrossPath.path, boxPaint)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawPositiveCross</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    canvas.drawPath(positiveCrossPath.path, boxPaint)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<p><img data-src="/imgs/android/touch-view/touch-view.png" alt="pipe" /></p>
+<h2 id="重绘单元格"><a class="markdownIt-Anchor" href="#重绘单元格"></a> 重绘单元格</h2>
+<p>单元格与管道已经绘制好了，下面我们先开始重绘单元格。</p>
+<p>大体思路：在手指触摸屏幕的时候判断当前触摸的屏幕坐标是否在单元格内，是的话则重绘，否则不重绘。</p>
+<p>首先定义重绘单元格的画笔：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> fillPaint <span class="keyword">by</span> lazy &#123;</span><br><span class="line">    Paint(Paint.ANTI_ALIAS_FLAG).apply &#123;</span><br><span class="line">        color = Color.GREEN</span><br><span class="line">        style = Paint.Style.FILL</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为单元格与单元格、单元格与管道之间有重叠的部分，突出显示重叠部分哪块单元格没有被重绘，重绘单元格时改变单元格边框的颜色，所以需要定义重绘单元格的画笔：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> redrawBoxPaint <span class="keyword">by</span> lazy &#123;</span><br><span class="line">    Paint(Paint.ANTI_ALIAS_FLAG).apply &#123;</span><br><span class="line">        color = Color.YELLOW</span><br><span class="line">        style = Paint.Style.STROKE</span><br><span class="line">        strokeWidth = <span class="number">3F</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们重写 <code>onTouchEvent</code> 方法，在此方法中处理触摸事件：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouchEvent</span><span class="params">(event: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">val</span> x = event.x</span><br><span class="line">    <span class="keyword">val</span> y = event.y</span><br><span class="line">    <span class="keyword">when</span> (event.actionMasked) &#123;</span><br><span class="line">        MotionEvent.ACTION_DOWN -&gt; &#123;</span><br><span class="line">            <span class="comment">// 根据当前坐标查找可重绘的单元格</span></span><br><span class="line">            findReDrawableBox(x, y)</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 重绘 View</span></span><br><span class="line">            invalidate()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查找可重绘的单元格</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">findReDrawableBox</span><span class="params">(x: <span class="type">Float</span>, y: <span class="type">Float</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> touchRectF = (leftRectFList.find &#123; it.rectF.contains(x, y) &#125;</span><br><span class="line">        ?: topRectFList.find &#123; it.rectF.contains(x, y) &#125;</span><br><span class="line">        ?: rightRectFList.find &#123; it.rectF.contains(x, y) &#125;</span><br><span class="line">        ?: bottomRectFList.find &#123; it.rectF.contains(x, y) &#125;</span><br><span class="line">        ?: centerHorizontalRectFList.find &#123; it.rectF.contains(x, y) &#125;</span><br><span class="line">        ?: centerVerticalRectFList.find &#123; it.rectF.contains(x, y) &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (touchRectF != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 标记可重绘的单元格</span></span><br><span class="line">        markBoxReDrawable(touchRectF)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 标记可重绘的单元格</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">markBoxReDrawable</span><span class="params">(rectF: <span class="type">TouchRectF</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!rectF.isReDrawable) &#123;</span><br><span class="line">        rectF.isReDrawable = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>onTouchEvent</code> 方法中，我们监听 <code>ACTION_DOWN</code> 事件，根据当前触摸屏幕的坐标查找可重绘的单元格，如果查找到匹配的单元格且此单元格目前还没有被重绘，则标记此单元格为可重绘的。</p>
+<p>接下来，我们重构绘制单元格的 <code>drawBox</code> 方法来重绘单元格：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 重构 drawBox 方法，增加重绘代码</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawBox</span><span class="params">(rectF: <span class="type">TouchRectF</span>, canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 判断当前单元格是否已经标记为可重绘</span></span><br><span class="line">    <span class="keyword">if</span> (rectF.isReDrawable) &#123;</span><br><span class="line">        <span class="comment">// 重绘单元格</span></span><br><span class="line">        canvas.drawRect(rectF.rectF, redrawBoxPaint)</span><br><span class="line">        canvas.drawRect(rectF.rectF, fillPaint)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        canvas.drawRect(rectF.rectF, boxPaint)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="绘制轨迹线"><a class="markdownIt-Anchor" href="#绘制轨迹线"></a> 绘制轨迹线</h2>
+<p>一个个方格点击不太现实，因此增加手指滑动重绘单元格，同时增加手指滑动轨迹线绘制。</p>
+<p>定义轨迹线 Path：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> linePath = Path()</span><br></pre></td></tr></table></figure>
+<p>定义轨迹线画笔：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> linePaint <span class="keyword">by</span> lazy &#123;</span><br><span class="line">    Paint(Paint.ANTI_ALIAS_FLAG).apply &#123;</span><br><span class="line">        color = Color.BLUE</span><br><span class="line">        style = Paint.Style.STROKE</span><br><span class="line">        strokeWidth = <span class="number">8F</span></span><br><span class="line">        strokeJoin = Paint.Join.ROUND</span><br><span class="line">        strokeCap = Paint.Cap.ROUND</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来，需要修改 <code>onTouchEvent</code> 方法增加对滑动重绘单元格和绘制轨迹线的支持：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouchEvent</span><span class="params">(event: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">val</span> x = event.x</span><br><span class="line">    <span class="keyword">val</span> y = event.y</span><br><span class="line">    <span class="keyword">when</span> (event.actionMasked) &#123;</span><br><span class="line">        MotionEvent.ACTION_DOWN -&gt; &#123;</span><br><span class="line">            <span class="comment">// 清空轨迹线 Path</span></span><br><span class="line">            linePath.reset()</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 移动轨迹线起点至点击坐标</span></span><br><span class="line">            linePath.moveTo(x, y)</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 根据当前坐标查找可重绘的单元格</span></span><br><span class="line">            findReDrawableBox(x, y)</span><br><span class="line">        &#125;</span><br><span class="line">        MotionEvent.ACTION_MOVE -&gt; &#123;</span><br><span class="line">            <span class="comment">// 判断当前坐标是否在单元格和管道区域内</span></span><br><span class="line">            <span class="keyword">if</span> (isInTouchableRegion(x, y)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (linePath.isEmpty) &#123;</span><br><span class="line">                    <span class="comment">// 如果被重置了，先移动起点至当前坐标</span></span><br><span class="line">                    linePath.moveTo(x, y)</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// 没有被重置，连接直线至当前坐标</span></span><br><span class="line">                    linePath.lineTo(x, y)</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 根据当前坐标查找可重绘的单元格</span></span><br><span class="line">                findReDrawableBox(x, y)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 清空轨迹线 Path</span></span><br><span class="line">                linePath.reset()</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 重绘View</span></span><br><span class="line">            invalidate()</span><br><span class="line">        &#125;</span><br><span class="line">        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -&gt; &#123;</span><br><span class="line">            <span class="comment">// 清空轨迹线 Path</span></span><br><span class="line">            linePath.reset()</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 重绘View</span></span><br><span class="line">            invalidate()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断当前坐标是否在单元格和管道区域内</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">isInTouchableRegion</span><span class="params">(x: <span class="type">Float</span>, y: <span class="type">Float</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> leftRectFList.any &#123; it.rectF.contains(x, y) &#125; ||</span><br><span class="line">    		topRectFList.any &#123; it.rectF.contains(x, y) &#125; ||</span><br><span class="line">    		rightRectFList.any &#123; it.rectF.contains(x, y) &#125; ||</span><br><span class="line">    		bottomRectFList.any &#123; it.rectF.contains(x, y) &#125; ||</span><br><span class="line">    		centerHorizontalRectFList.any &#123; it.rectF.contains(x, y) &#125; ||</span><br><span class="line">    		centerVerticalRectFList.any &#123; it.rectF.contains(x, y) &#125; ||</span><br><span class="line">    		positiveCrossRegion.contains(x.toInt(), y.toInt()) ||</span><br><span class="line">    		reverseCrossRegion.contains(x.toInt(), y.toInt())</span><br></pre></td></tr></table></figure>
+<p>首先在 <code>ACTION_DOWN</code> 中清空轨迹线 Path，并移动轨迹线起点至当前坐标。</p>
+<p>然后在 <code>ACTION_MOVE</code> 中先判断当前坐标是否在单元格和管道区域内，如果不在区域内，不绘制轨迹线，则重置轨迹线 Path；否则再判断轨迹线 Path 是否为空，为空认为已经被重置，先移动轨迹线起点至当前坐标，否则认为没有被重置，连接直线至当前坐标；最后重绘 View。</p>
+<p>接下来修改 <code>onDraw</code> 方格，增加轨迹线的绘制：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onDraw</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 省略绘制单元格和管道代码</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 绘制轨迹线</span></span><br><span class="line">    drawTrackLine(canvas)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">drawTrackLine</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 判断轨迹线 Path 是否为空</span></span><br><span class="line">    <span class="keyword">if</span> (linePath.isEmpty) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绘制轨迹线</span></span><br><span class="line">    canvas.drawPath(linePath, linePaint)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<p><img data-src="/imgs/android/touch-view/touch-view-line.png" alt="line" /></p>
+<h2 id="重绘交叉管道"><a class="markdownIt-Anchor" href="#重绘交叉管道"></a> 重绘交叉管道</h2>
+<p>在某米的触摸屏测试中，笔者发现有以下几个条件需要注意：</p>
+<ol>
+<li>如果滑动期间超出管道的范围认为无效。</li>
+<li>只能从管道一端开始触摸，即从管道中间触摸视为无效。</li>
+<li>如果从管道一端开始，不是通过管道到达另一端认为无效，即开始时是从管道一端开始，期间通过沿单元格滑动到达另一端。</li>
+</ol>
+<p>以上几个问题中，第一个问题上面绘制轨迹线时已经解决，下面我们解决其他几个问题。</p>
+<p>解决思路：</p>
+<ul>
+<li>问题2：判断轨迹线的起点坐标是否在四个顶点单元格区域内。</li>
+<li>问题3：判断轨迹线上所有点的坐标是否在管道区域内。</li>
+</ul>
+<p>首先定义 PathMeasure 变量，用于获取轨迹线 Path 上各点的坐标：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> linePathMeasure = PathMeasure()</span><br></pre></td></tr></table></figure>
+<p>在 <code>onTouchEvent</code> 方法中的 <code>ACTION_MOVE</code> 分支中增加 <code>findReDrawableCross</code> 重绘管道逻辑：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouchEvent</span><span class="params">(event: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">when</span> (event.actionMasked) &#123;</span><br><span class="line">        <span class="comment">// 省略 ACTION_DOWN</span></span><br><span class="line">        MotionEvent.ACTION_MOVE -&gt; &#123;</span><br><span class="line">            <span class="comment">// 判断当前坐标是否在单元格和管道区域内</span></span><br><span class="line">            <span class="keyword">if</span> (isInTouchableRegion(x, y)) &#123;</span><br><span class="line">                <span class="comment">// 省略之前代码</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">// 根据当前坐标查找可重绘的单元格</span></span><br><span class="line">                findReDrawableBox(x, y)</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 新增重绘管道逻辑</span></span><br><span class="line">                findReDrawableCross()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 省略 ACTION_UP、ACTION_CANCEL</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>findReDrawableCross</code> 方法代码较多且稍微复杂一些，下面我把代码拆开逐步分析。</p>
+<h3 id="轨迹线路径测量及校验"><a class="markdownIt-Anchor" href="#轨迹线路径测量及校验"></a> 轨迹线路径测量及校验</h3>
+<ol>
+<li>首先校验轨迹线 Path 是否为空，为空则返回。</li>
+<li>把轨迹线 Path 设置给路径测量器。</li>
+<li>获取轨迹线 Path 的起点与终点的坐标并校验坐标合法性。</li>
+</ol>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">findReDrawableCross</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 轨迹线 Path 为空返回</span></span><br><span class="line">    <span class="keyword">if</span> (linePath.isEmpty) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 把轨迹线 Path 设置给路径测量器</span></span><br><span class="line">    linePathMeasure.setPath(linePath, <span class="literal">false</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义起点与终点坐标数组</span></span><br><span class="line">    <span class="keyword">val</span> startPoint = FloatArray(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">val</span> endPoint = FloatArray(<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取 Path 长度</span></span><br><span class="line">    <span class="keyword">val</span> linePathLength = linePathMeasure.length</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算起点与终点坐标</span></span><br><span class="line">    linePathMeasure.getPosTan(<span class="number">0F</span>, startPoint, <span class="literal">null</span>)</span><br><span class="line">    linePathMeasure.getPosTan(linePathLength, endPoint, <span class="literal">null</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 校验起点坐标</span></span><br><span class="line">    <span class="keyword">val</span> startX = startPoint[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">val</span> startY = startPoint[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> (startX == <span class="number">0F</span> || startY == <span class="number">0F</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 校验终点坐标</span></span><br><span class="line">    <span class="keyword">val</span> endX = endPoint[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">val</span> endY = endPoint[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> (endX == <span class="number">0F</span> || endY == <span class="number">0F</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="重绘正向管道"><a class="markdownIt-Anchor" href="#重绘正向管道"></a> 重绘正向管道</h3>
+<ol>
+<li>获取正向管道两端的单元格。</li>
+<li>判断轨迹线的起点与终点坐标是否都在管道两端的单元格区域内。</li>
+<li>遍历轨迹线，判断轨迹线上点的坐标是否在管道区域内。</li>
+<li>标记正向管道可重绘。</li>
+</ol>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">findReDrawableCross</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 省略校验</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取正向管道两端的单元格</span></span><br><span class="line">    <span class="keyword">val</span> lbRectF = bottomRectFList.first().rectF</span><br><span class="line">    <span class="keyword">val</span> rtRectF = topRectFList.last().rectF</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断轨迹线的起点与终点坐标是否都在管道两端的单元格区域内</span></span><br><span class="line">    <span class="keyword">if</span> (((lbRectF.contains(startX, startY) &amp;&amp; rtRectF.contains(endX, endY)) ||</span><br><span class="line">         (lbRectF.contains(endX, endY) &amp;&amp; rtRectF.contains(startX, startY)))</span><br><span class="line">       ) &#123;</span><br><span class="line">        <span class="comment">// 定义 mark 变量为 true</span></span><br><span class="line">        <span class="keyword">var</span> mark = <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 遍历轨迹线</span></span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span> until linePathLength.toInt()) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 获取轨迹线上点的坐标</span></span><br><span class="line">            <span class="keyword">val</span> point = FloatArray(<span class="number">2</span>)</span><br><span class="line">            <span class="keyword">val</span> posTan = linePathMeasure.getPosTan(i.toFloat(), point, <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">if</span> (!posTan) &#123;</span><br><span class="line">                mark = <span class="literal">false</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 坐标校验</span></span><br><span class="line">            <span class="keyword">val</span> x = point[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">val</span> y = point[<span class="number">1</span>]</span><br><span class="line">            <span class="keyword">if</span> (x == <span class="number">0F</span> || y == <span class="number">0F</span>) &#123;</span><br><span class="line">                mark = <span class="literal">false</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 判断轨迹线上点的坐标是否在管道区域内</span></span><br><span class="line">            <span class="keyword">if</span> (!positiveCrossRegion.contains(x.toInt(), y.toInt())) &#123;</span><br><span class="line">                mark = <span class="literal">false</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mark) &#123;</span><br><span class="line">            <span class="comment">// 标记正向管道可重绘</span></span><br><span class="line">            markPositiveCrossReDrawable()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 标记正向管道可重绘</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">markPositiveCrossReDrawable</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!positiveCrossPath.isReDrawable) &#123;</span><br><span class="line">        positiveCrossPath.isReDrawable = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="重绘反向管道"><a class="markdownIt-Anchor" href="#重绘反向管道"></a> 重绘反向管道</h3>
+<p>反向管道的重绘逻辑与正向管道相同：</p>
+<ol>
+<li>获取反向管道两端的单元格。</li>
+<li>判断轨迹线的起点与终点坐标是否都在管道两端的单元格区域内。</li>
+<li>遍历轨迹线，判断轨迹线上点的坐标是否在管道区域内。</li>
+<li>标记反向管道可重绘。</li>
+</ol>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">findReDrawableCross</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 省略校验</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取反向管道两端的单元格</span></span><br><span class="line">    <span class="keyword">val</span> ltRectF = topRectFList.first().rectF</span><br><span class="line">    <span class="keyword">val</span> rbRectF = bottomRectFList.last().rectF</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 判断轨迹线的起点与终点坐标是否都在管道两端的单元格区域内</span></span><br><span class="line">    <span class="keyword">if</span> (((ltRectF.contains(startX, startY) &amp;&amp; rbRectF.contains(endX, endY)) ||</span><br><span class="line">         (ltRectF.contains(endX, endY) &amp;&amp; rbRectF.contains(startX, startY)))</span><br><span class="line">       ) &#123;</span><br><span class="line">        <span class="comment">// 定义 mark 变量为 true</span></span><br><span class="line">        <span class="keyword">var</span> mark = <span class="literal">true</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 遍历轨迹线</span></span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span> until linePathLength.toInt()) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 获取轨迹线上点的坐标</span></span><br><span class="line">            <span class="keyword">val</span> point = FloatArray(<span class="number">2</span>)</span><br><span class="line">            <span class="keyword">val</span> posTan = linePathMeasure.getPosTan(i.toFloat(), point, <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">if</span> (!posTan) &#123;</span><br><span class="line">                mark = <span class="literal">false</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 坐标校验</span></span><br><span class="line">            <span class="keyword">val</span> x = point[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">val</span> y = point[<span class="number">1</span>]</span><br><span class="line">            <span class="keyword">if</span> (x == <span class="number">0F</span> || y == <span class="number">0F</span>) &#123;</span><br><span class="line">                mark = <span class="literal">false</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 判断轨迹线上点的坐标是否在管道区域内</span></span><br><span class="line">            <span class="keyword">if</span> (!reverseCrossRegion.contains(x.toInt(), y.toInt())) &#123;</span><br><span class="line">                mark = <span class="literal">false</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mark) &#123;</span><br><span class="line">            <span class="comment">// 标记反向管道可重绘</span></span><br><span class="line">            markReverseCrossReDrawable()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 标记反向管道可重绘</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">markReverseCrossReDrawable</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!reverseCrossPath.isReDrawable) &#123;</span><br><span class="line">        reverseCrossPath.isReDrawable = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重绘交叉管道的效果如下：</p>
+<p><img data-src="/imgs/android/touch-view/touch-view-cross.png" alt="cross" /></p>
+<h2 id="测试完成"><a class="markdownIt-Anchor" href="#测试完成"></a> 测试完成</h2>
+<p>最后我们还剩下触摸屏测试完成的判断以及对外提供测试完成的回调，并且测试完成后不再绘制轨迹线。</p>
+<p>定义测试完成的回调：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">TouchPassListener</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onTouchPass</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义是否测试完成变量与测试完成回调变量：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> isPassed = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> mTouchPassListener: TouchPassListener? = <span class="literal">null</span></span><br></pre></td></tr></table></figure>
+<p>新增 <code>isTouchPass</code> 方法，在此方法中判断所有单元格和管道是否都被标记为可重绘的：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">isTouchPass</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> leftRectFList.all &#123; it.isReDrawable &#125; &amp;&amp;</span><br><span class="line">    		topRectFList.all &#123; it.isReDrawable &#125; &amp;&amp;</span><br><span class="line">    		rightRectFList.all &#123; it.isReDrawable &#125; &amp;&amp;</span><br><span class="line">    		bottomRectFList.all &#123; it.isReDrawable &#125; &amp;&amp;</span><br><span class="line">    		centerHorizontalRectFList.all &#123; it.isReDrawable &#125; &amp;&amp;</span><br><span class="line">    		centerVerticalRectFList.all &#123; it.isReDrawable &#125; &amp;&amp;</span><br><span class="line">    		positiveCrossPath.isReDrawable &amp;&amp;</span><br><span class="line">    		reverseCrossPath.isReDrawable</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在标记单元格和管道为可重绘的方法中调用 <code>isTouchPass</code> 方法即可：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">markBoxReDrawable</span><span class="params">(rectF: <span class="type">TouchRectF</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!rectF.isReDrawable) &#123;</span><br><span class="line">        rectF.isReDrawable = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isTouchPass()) &#123;</span><br><span class="line">            touchPass()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">markPositiveCrossReDrawable</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!positiveCrossPath.isReDrawable) &#123;</span><br><span class="line">        positiveCrossPath.isReDrawable = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isTouchPass()) &#123;</span><br><span class="line">            touchPass()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">markReverseCrossReDrawable</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!reverseCrossPath.isReDrawable) &#123;</span><br><span class="line">        reverseCrossPath.isReDrawable = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isTouchPass()) &#123;</span><br><span class="line">            touchPass()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">touchPass</span><span class="params">()</span></span> &#123;</span><br><span class="line">    isPassed = <span class="literal">true</span></span><br><span class="line">    mTouchPassListener?.onTouchPass()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后效果如下：</p>
+<p><img data-src="/imgs/android/touch-view/touch-view-complete.png" alt="touch-view-complete" /></p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/09/13/View滑动冲突的两种解决方式/" rel="bookmark">View滑动冲突的两种解决方式</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2017/07/06/AndroidStudio中使用Aliyun Maven/" rel="bookmark">AndroidStudio中使用Aliyun Maven</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/01/Android中关于scrollBy的一点点心得/" rel="bookmark">Android中关于scrollBy的一点点心得</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/06/21/Android事件分发、拦截与处理的理解/" rel="bookmark">Android事件分发、拦截与处理的理解</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2016/05/30/记Android Studio自定义属性访问不了的问题/" rel="bookmark">记Android Studio自定义属性访问不了的问题</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/07/28/Android/TouchView/touch-view/" title="Android-自定义View-仿某米的触摸屏测试">https://sunxiaodou.com/2022/07/28/Android/TouchView/touch-view/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/view/" rel="tag"># view</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/19/ASM/JavaASM-%E5%9F%BA%E7%A1%80-ASM%E7%AE%80%E4%BB%8B/" rel="prev" title="JavaASM-基础-ASM简介">
+      <i class="fa fa-chevron-left"></i> JavaASM-基础-ASM简介
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android-%E8%87%AA%E5%AE%9A%E4%B9%89view-%E4%BB%BF%E6%9F%90%E7%B1%B3%E7%9A%84%E8%A7%A6%E6%91%B8%E5%B1%8F%E6%B5%8B%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text"> Android-自定义View-仿某米的触摸屏测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E5%8D%95%E5%85%83%E6%A0%BC"><span class="nav-number">1.2.</span> <span class="nav-text"> 绘制单元格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E4%BA%A4%E5%8F%89%E7%AE%A1%E9%81%93"><span class="nav-number">1.3.</span> <span class="nav-text"> 绘制交叉管道</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%BB%98%E5%8D%95%E5%85%83%E6%A0%BC"><span class="nav-number">1.4.</span> <span class="nav-text"> 重绘单元格</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%98%E5%88%B6%E8%BD%A8%E8%BF%B9%E7%BA%BF"><span class="nav-number">1.5.</span> <span class="nav-text"> 绘制轨迹线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%BB%98%E4%BA%A4%E5%8F%89%E7%AE%A1%E9%81%93"><span class="nav-number">1.6.</span> <span class="nav-text"> 重绘交叉管道</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%A8%E8%BF%B9%E7%BA%BF%E8%B7%AF%E5%BE%84%E6%B5%8B%E9%87%8F%E5%8F%8A%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.6.1.</span> <span class="nav-text"> 轨迹线路径测量及校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E7%BB%98%E6%AD%A3%E5%90%91%E7%AE%A1%E9%81%93"><span class="nav-number">1.6.2.</span> <span class="nav-text"> 重绘正向管道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E7%BB%98%E5%8F%8D%E5%90%91%E7%AE%A1%E9%81%93"><span class="nav-number">1.6.3.</span> <span class="nav-text"> 重绘反向管道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%AE%8C%E6%88%90"><span class="nav-number">1.7.</span> <span class="nav-text"> 测试完成</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">246k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:49</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : '21b09f515b2a998a2092316b8c0caa46',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
