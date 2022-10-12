@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Sword - 为 Kotlin 函数增加代理功能(二)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sword - 为 Kotlin 函数增加代理功能(二)">
+<meta property="og:url" content="https://sunxiaodou.com/2022/10/11/gosp/sword/01-sword/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="Sword - 为 Kotlin 函数增加代理功能(二)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/gosp/sword/01-00-codeflow.png">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/gosp/sword/01-01-proxy-mind.png">
+<meta property="article:published_time" content="2022-10-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-10-12T14:05:16.249Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="kotlin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sunxiaodou.com/imgs/gosp/sword/01-00-codeflow.png">
+
+<link rel="canonical" href="https://sunxiaodou.com/2022/10/11/gosp/sword/01-sword/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sword - 为 Kotlin 函数增加代理功能(二) | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">39</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2022/10/11/gosp/sword/01-sword/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sword - 为 Kotlin 函数增加代理功能(二)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-11 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-11T00:00:00+08:00">2022-10-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-10-12 22:05:16" itemprop="dateModified" datetime="2022-10-12T22:05:16+08:00">2022-10-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kotlin/" itemprop="url" rel="index"><span itemprop="name">Kotlin</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>14 分钟</span>
+            </span>
+            <div class="post-description">Sword - 为 Kotlin 函数增加代理功能(二)</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="sword-为-kotlin-函数增加代理功能二"><a class="markdownIt-Anchor" href="#sword-为-kotlin-函数增加代理功能二"></a> Sword - 为 Kotlin 函数增加代理功能(二)</h1>
+<h2 id="简介"><a class="markdownIt-Anchor" href="#简介"></a> 简介</h2>
+<p>Sword：一个可以给 Kotlin 函数增加代理的第三方库，基于 KCP 实现。</p>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>续接 <a href="https://sunxiaodou.com/2022/09/20/gosp/sword/00-sword/">上篇</a>，在上篇文章中笔者记录了搭建 Sword 的基础开发环境以及技术选型为：注解 + KCP + ASM。本文主要记录使用 ASM 的实现过程。</p>
+<p>首先看下上篇文章最后没有记录的 <code>ClassBuilder</code>。</p>
+<h2 id="classbuilder"><a class="markdownIt-Anchor" href="#classbuilder"></a> ClassBuilder</h2>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> annotations: List&lt;FqName&gt; = listOf(</span><br><span class="line">    FqName(<span class="string">&quot;com.guodong.android.sword.api.kt.Proxy&quot;</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">newMethod</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    origin: <span class="type">JvmDeclarationOrigin</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    access: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    name: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    desc: <span class="type">String</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    signature: <span class="type">String</span>?,</span></span></span><br><span class="line"><span class="params"><span class="function">    exceptions: <span class="type">Array</span>&lt;<span class="type">out</span> <span class="type">String</span>&gt;?</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>: MethodVisitor &#123;</span><br><span class="line">    <span class="keyword">val</span> newMethod = <span class="keyword">super</span>.newMethod(origin, access, name, desc, signature, exceptions)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> function = origin.descriptor <span class="keyword">as</span>? FunctionDescriptor ?: <span class="keyword">return</span> newMethod</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (function.isOperator ||</span><br><span class="line">        function.isInfix ||</span><br><span class="line">        function.isInline ||</span><br><span class="line">        function.isSuspend ||</span><br><span class="line">        function.isTailrec</span><br><span class="line">       ) &#123;</span><br><span class="line">        <span class="keyword">return</span> newMethod</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (annotations.none &#123; function.annotations.hasAnnotation(it) &#125;) &#123;</span><br><span class="line">        <span class="keyword">return</span> newMethod</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> className = delegate.thisName</span><br><span class="line"></span><br><span class="line">    messageCollector.report(</span><br><span class="line">        CompilerMessageSeverity.WARNING,</span><br><span class="line">        <span class="string">&quot;Sword className = <span class="variable">$className</span>, methodName = <span class="variable">$name</span>&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> realClassName = className.substring(className.lastIndexOf(<span class="string">&quot;/&quot;</span>) + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> SwordAdapter(</span><br><span class="line">        Opcodes.ASM9,</span><br><span class="line">        newMethod,</span><br><span class="line">        realClassName,</span><br><span class="line">        access,</span><br><span class="line">        name,</span><br><span class="line">        desc</span><br><span class="line">    )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>ClassBuilder</code> 中主要覆写 <code>newMethod</code> 函数拦截 Java 方法的生成：</p>
+<ol>
+<li>首先判断是否是函数描述符，否则直接返回，</li>
+<li>若是操作符重载、中缀、内联、挂起以及尾递归函数，不予处理，直接返回，</li>
+<li>函数若是不存在 <code>Proxy</code> 注解，不予处理，直接返回，</li>
+<li>获取真实的类名，交予 <code>SwordAdapter</code> 处理。</li>
+</ol>
+<p>可以看出在 <code>ClassBuilder</code> 中主要是实现了一些校验逻辑，第 2 步中的过滤逻辑可增加配置参数提供给集成方在外部灵活配置。</p>
+<p>接下来我们看下 <code>SwordAdapter</code> 是如何处理的吧。</p>
+<h2 id="swordadapter"><a class="markdownIt-Anchor" href="#swordadapter"></a> SwordAdapter</h2>
+<p><code>SwordAdapter</code> 的逻辑较为复杂，笔者先描述下自己的实现思路，然后再按照思路一点点分析。</p>
+<ol>
+<li>
+<p>首先通过 ASM 判断当前函数是否存在 <code>Proxy</code> 注解，若存在则解析出注解中的数据暂存起来，否则不予转换，</p>
+</li>
+<li>
+<p>若存在<code>Proxy</code> 注解并解析出注解中的数据，则根据注解中的 <code>enable</code> 字段判断是否启用代理，若启用则进行转换，否则不予转换，</p>
+</li>
+<li>
+<p>若进行转换，再判断注解中的 <code>handler</code> 字段是否为空字符串，若是空字符串则进行简单的转换，否则进行代理转换，</p>
+</li>
+<li>
+<p>简单转换：根据函数返回类型判断</p>
+<ol>
+<li>无返回值类型返回 <code>void</code>，</li>
+<li>基本数据类型返回：<code>-1</code>，<code>char</code> 类型返回 <code>48</code>，</li>
+<li>引用类型返回 <code>null</code>。</li>
+</ol>
+</li>
+<li>
+<p>代理转换：替换<code>handler</code>字段中的全限定名，调用<code>InvocationHandler#invoke</code>函数。</p>
+</li>
+</ol>
+<p>下面的流程图看起来可能更清楚一些：</p>
+<p><img data-src="/imgs/gosp/sword/01-00-codeflow.png" alt="code flow" /></p>
+<h3 id="解析注解"><a class="markdownIt-Anchor" href="#解析注解"></a> 解析注解</h3>
+<p>首先定义一个 <code>Proxy</code> 注解数据实体类：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">data</span> <span class="keyword">class</span> <span class="title class_">SwordParam</span>(</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否有[Proxy]注解</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">var</span> hasProxyAnnotation: <span class="built_in">Boolean</span> = <span class="literal">false</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 是否启用, 默认True</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">var</span> enable: <span class="built_in">Boolean</span> = <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * [InvocationHandler]实现类的全限定名, 实现类必须有无参构造方法</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * e.g. com.example.ProxyTestInvocationHandler</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">var</span> handler: String = <span class="string">&quot;&quot;</span></span><br><span class="line">) &#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="comment">// 与[Proxy]注解的参数名一一对应</span></span><br><span class="line">        <span class="keyword">internal</span> <span class="keyword">const</span> <span class="keyword">val</span> PARAM_ENABLE = <span class="string">&quot;enable&quot;</span></span><br><span class="line">        <span class="keyword">internal</span> <span class="keyword">const</span> <span class="keyword">val</span> PARAM_HANDLER = <span class="string">&quot;handler&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此实体类存储 <code>Proxy</code> 注解中解析出来的数据，下面就是解析 <code>Proxy</code> 注解了：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一些常量</span></span><br><span class="line"><span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> PROXY_KT_DESC = <span class="string">&quot;Lcom/guodong/android/sword/api/kt/Proxy;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> KT_INVOCATION_HANDLER_OWNER =</span><br><span class="line">    <span class="string">&quot;com/guodong/android/sword/api/kt/InvocationHandler&quot;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> INVOKE_METHOD = <span class="string">&quot;invoke&quot;</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> INVOCATION_HANDLER_INVOKE_DESC =</span><br><span class="line">    <span class="string">&quot;(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> proxyDesc = listOf(PROXY_KT_DESC)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明注解数据实体变量</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> param = SwordParam()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 覆写`visitAnnotation`</span></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">visitAnnotation</span><span class="params">(descriptor: <span class="type">String</span>, visible: <span class="type">Boolean</span>)</span></span>: AnnotationVisitor &#123;</span><br><span class="line">    <span class="keyword">var</span> av = <span class="keyword">super</span>.visitAnnotation(descriptor, visible)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是否存在`Proxy`注解</span></span><br><span class="line">    <span class="keyword">if</span> (proxyDesc.contains(descriptor)) &#123;</span><br><span class="line">        param.hasProxyAnnotation = <span class="literal">true</span></span><br><span class="line">        <span class="keyword">if</span> (av != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 解析`Proxy`注解</span></span><br><span class="line">            av = AnnotationAdapter(api, av, param)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> av</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解析注解数据主要覆写 <code>visitAnnotation</code> 函数，在此函数中首先判断是否存在 <code>Proxy</code> 注解，若存在则进行解析，否则不予处理。</p>
+<p>解析逻辑就在下面代码的 <code>AnnotationAdapter</code> 中了：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">class</span> <span class="title class_">AnnotationAdapter</span>(</span><br><span class="line">    api: <span class="built_in">Int</span>,</span><br><span class="line">    annotationVisitor: AnnotationVisitor?,</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> param: SwordParam</span><br><span class="line">) : AnnotationVisitor(api, annotationVisitor) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">visit</span><span class="params">(name: <span class="type">String</span>, value: <span class="type">Any</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">when</span> (name) &#123;</span><br><span class="line">            SwordParam.PARAM_ENABLE -&gt; param.enable = (value <span class="keyword">as</span> <span class="built_in">Boolean</span>)</span><br><span class="line">            SwordParam.PARAM_HANDLER -&gt; param.handler = (value <span class="keyword">as</span> String)</span><br><span class="line">            <span class="keyword">else</span> -&gt; &#123;&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上所示，解析逻辑也比较简单，在 <code>visit</code> 函数中：</p>
+<ol>
+<li>第一个参数 <code>name</code> 表示注解中参数的名称，第二参数 <code>value</code>表示注解中参数的值，</li>
+<li>通过比对 <code>name</code> 参数的名称来解析注解中的数据并存储在实体中。</li>
+</ol>
+<p>至此解析 <code>Proxy</code> 注解完成，我们已经拿到注解中的数据，下面我们就可以开始转换了。</p>
+<h3 id="转换分支"><a class="markdownIt-Anchor" href="#转换分支"></a> 转换分支</h3>
+<p>对函数代理功能的转换，笔者实现了两种转换分支：</p>
+<ol>
+<li><strong>简单转换</strong>：或者称为默认转换，就像 <code>switch</code> 有 <code>default</code> 分支一样，</li>
+<li><strong>代理转换</strong>：真正的代理功能实现。</li>
+</ol>
+<p>转换逻辑在 <code>visitCode</code> 函数中处理，我们先看看转换分支的选择：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">visitCode</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 判断是否有`Proxy`注解且是否启用代理</span></span><br><span class="line">    <span class="keyword">if</span> (param.hasProxyAnnotation &amp;&amp; param.enable) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 织入一个`booelan`值：True</span></span><br><span class="line">        <span class="keyword">super</span>.visitInsn(Opcodes.ICONST_1)</span><br><span class="line">        <span class="keyword">val</span> label = Label()</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 织入`if`判断语句</span></span><br><span class="line">        <span class="keyword">super</span>.visitJumpInsn(Opcodes.IFEQ, label)</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 获取`methodType`</span></span><br><span class="line">        <span class="keyword">val</span> methodType = Type.getMethodType(</span><br><span class="line">            methodDescriptor</span><br><span class="line">        )</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 获取`returnType`，函数的返回值类型</span></span><br><span class="line">        <span class="keyword">val</span> returnType = methodType.returnType</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> handler = param.handler</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 判断`handler`是否是空字符串</span></span><br><span class="line">        <span class="keyword">if</span> (handler.isNotEmpty()) &#123;</span><br><span class="line">            <span class="comment">// 代理转换</span></span><br><span class="line">            weaveHandler(methodType, returnType, handler)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 简单转换</span></span><br><span class="line">            weaveDefaultValue(returnType)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">super</span>.visitLabel(label)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">super</span>.visitCode()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>visitCode</code> 函数的前部分是一些判断处理：</p>
+<ol>
+<li>如果有<code>Proxy</code>注解且启用了代理，则通过 <code>ASM</code> 先织入 <code>if (true)</code> 条件判断语句，</li>
+<li>接下来获取函数的 <code>methodType</code> 和 <code>returnType</code>，分别表示在 <code>ASM</code> 眼中的函数类型和返回值类型，</li>
+<li>最后判断 <code>handler</code> 是否是空字符串来决定执行哪种转换分支。</li>
+</ol>
+<h3 id="简单转换"><a class="markdownIt-Anchor" href="#简单转换"></a> 简单转换</h3>
+<p>简单转换的实现是根据函数返回类型判断：</p>
+<ol>
+<li>无返回值类型返回 <code>void</code>，</li>
+<li>基本数据类型返回：<code>-1</code>，<code>char</code> 类型返回 <code>48</code>，</li>
+<li>引用类型返回 <code>null</code>。</li>
+</ol>
+<p>下面是简单转换的实现代码片段：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">weaveDefaultValue</span><span class="params">(returnType: <span class="type">Type</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> sort = returnType.sort</span><br><span class="line">    <span class="keyword">when</span> &#123;</span><br><span class="line">        sort == Type.VOID -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.RETURN)</span><br><span class="line">        &#125;</span><br><span class="line">        sort == Type.CHAR -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitIntInsn(Opcodes.BIPUSH, <span class="number">48</span>)</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(returnType.getOpcode(Opcodes.IRETURN))</span><br><span class="line">        &#125;</span><br><span class="line">        sort &gt;= Type.BOOLEAN &amp;&amp; sort &lt;= Type.INT -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.ICONST_M1)</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(returnType.getOpcode(Opcodes.IRETURN))</span><br><span class="line">        &#125;</span><br><span class="line">        sort == Type.LONG -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitLdcInsn(-<span class="number">1L</span>)</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.LRETURN)</span><br><span class="line">        &#125;</span><br><span class="line">        sort == Type.FLOAT -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitLdcInsn(-<span class="number">1f</span>)</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.FRETURN)</span><br><span class="line">        &#125;</span><br><span class="line">        sort == Type.DOUBLE -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitLdcInsn(-<span class="number">1.0</span>)</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.DRETURN)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> -&gt; &#123;</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.ACONST_NULL)</span><br><span class="line">            <span class="keyword">super</span>.visitInsn(Opcodes.ARETURN)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简单转换的实现逻辑比较简单，笔者就不再分析了，接下来我们看看今天的主角：代理转换。</p>
+<h3 id="代理转换"><a class="markdownIt-Anchor" href="#代理转换"></a> 代理转换</h3>
+<p>代理转换的实现逻辑较为复杂，以下几点是我们需要考虑的：</p>
+<ol>
+<li>原始函数是否是静态函数：非静态函数(不包括构造函数)的第零位参数始终是 <code>this</code>，</li>
+<li>如何构建 <code>InvocationHandler</code> 实现类的实例，</li>
+<li>如何获取 <code>InvocationHandler#invoke</code> 函数所需的参数，</li>
+<li>如何调用 <code>InvocationHandler#invoke</code> 函数，</li>
+<li>调用 <code>InvocationHandler#invoke</code> 函数后的结果如何返回给原始函数。</li>
+</ol>
+<p>脑图如下：</p>
+<p><img data-src="/imgs/gosp/sword/01-01-proxy-mind.png" alt="proxy mind" /></p>
+<p>下面我们就根据上述几点依次分析下：</p>
+<h4 id="1是否是静态函数"><a class="markdownIt-Anchor" href="#1是否是静态函数"></a> 1.是否是静态函数</h4>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> argumentTypes = t.argumentTypes</span><br><span class="line"><span class="keyword">val</span> argumentSize = argumentTypes.size</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> isStaticMethod = methodAccess and Opcodes.ACC_STATIC != <span class="number">0</span></span><br><span class="line"><span class="keyword">var</span> localSize = <span class="keyword">if</span> (isStaticMethod) <span class="number">0</span> <span class="keyword">else</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">val</span> firstSlot = localSize</span><br><span class="line"><span class="keyword">for</span> (argType <span class="keyword">in</span> argumentTypes) &#123;</span><br><span class="line">    localSize += argType.size</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先判断是否是静态函数，其中一个目的是为了找到函数第一个参数的起始位置，以及计算整个方法的 <code>locals</code> 大小，为后续存储 <code>InvocationHandler</code> 实现类实例做准备：</p>
+<ul>
+<li><code>firstSlot</code> 即为第一个参数的起始位置，后面会使用到，</li>
+<li><code>localSize</code> 即为整个方法的 <code>lcoals</code> 大小，通过遍历函数参数得到。</li>
+</ul>
+<h4 id="2构建实现类实例"><a class="markdownIt-Anchor" href="#2构建实现类实例"></a> 2.构建实现类实例</h4>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> realHandler = covertToClassDescriptor(handler)</span><br><span class="line"><span class="keyword">super</span>.visitTypeInsn(Opcodes.NEW, realHandler)</span><br><span class="line"><span class="keyword">super</span>.visitInsn(Opcodes.DUP)</span><br><span class="line"><span class="keyword">super</span>.visitMethodInsn(Opcodes.INVOKESPECIAL, realHandler, <span class="string">&quot;&lt;init&gt;&quot;</span>, <span class="string">&quot;()V&quot;</span>, <span class="literal">false</span>)</span><br><span class="line"><span class="keyword">super</span>.visitVarInsn(Opcodes.ASTORE, localSize)</span><br><span class="line"><span class="keyword">super</span>.visitVarInsn(Opcodes.ALOAD, localSize)</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">covertToClassDescriptor</span><span class="params">(className: <span class="type">String</span>)</span></span>: String &#123;</span><br><span class="line">    <span class="keyword">return</span> className.replace(<span class="string">&quot;\\.&quot;</span>.toRegex(), <span class="string">&quot;/&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>首先需要把 <code>handler</code> 字段中的实现类全限定名（<code>Full-Qualified Name</code>）转换成 <code>ASM</code> 里的 <code>InternalName</code>，比如：<code>com.guodong.android.TestInvocationHandler</code> 转换为 <code>com/guodong/android/TestInvocationHandler</code>，即把 <code>.</code> 替换成 <code>/</code>。</li>
+<li>上述片段中的第 4 行代码通过调用实现类的无参构造方法来构建实例，这就是为什么实现类必须有无参构造方法的原因，</li>
+<li>后面两行代码是把创建出来的实例存储在方法的 <code>locals</code> 上并再次加载出来以备后用。</li>
+</ol>
+<h4 id="3获取所需参数"><a class="markdownIt-Anchor" href="#3获取所需参数"></a> 3.获取所需参数</h4>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">super</span>.visitLdcInsn(className)</span><br><span class="line"><span class="keyword">super</span>.visitLdcInsn(methodName)</span><br><span class="line">weaveInt(argumentSize)</span><br><span class="line"><span class="keyword">super</span>.visitTypeInsn(Opcodes.ANEWARRAY, <span class="string">&quot;java/lang/Object&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> (argumentTypes.isNotEmpty()) &#123;</span><br><span class="line">    weaveArgs(argumentTypes, argumentSize, firstSlot)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">--------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line"><span class="comment">// InvocationHandler</span></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">invoke</span><span class="params">(className: <span class="type">String</span>, methodName: <span class="type">String</span>, args: <span class="type">Array</span>&lt;<span class="type">Any</span>?&gt;)</span></span>: Any?</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码片段的最后是 <code>InvocationHandler</code> 接口的声明，如上所示，<code>invoke</code> 函数需要 3 个参数，分别为：</p>
+<ol>
+<li>当前的类名，</li>
+<li>当前的函数名，</li>
+<li>当前函数声明参数的数组。</li>
+</ol>
+<p>下面分析下获取参数的逻辑：</p>
+<ol>
+<li>代码片段的前两行代码我们织入了前两个参数，</li>
+<li>第 3 行代码我们织入参数数组的大小，</li>
+<li>第 4 行代码构建参数数组实例，</li>
+<li>最后面的 <code>if</code> 条件判断逻辑是把原始函数的参数放进数组内。</li>
+</ol>
+<h4 id="4调用-invoke-函数"><a class="markdownIt-Anchor" href="#4调用-invoke-函数"></a> 4.调用 <code>invoke</code> 函数</h4>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">super</span>.visitMethodInsn(</span><br><span class="line">    Opcodes.INVOKEINTERFACE,</span><br><span class="line">    KT_INVOCATION_HANDLER_OWNER,</span><br><span class="line">    INVOKE_METHOD,</span><br><span class="line">    INVOCATION_HANDLER_INVOKE_DESC,</span><br><span class="line">    <span class="literal">true</span> <span class="comment">/* isInterface */</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>调用 <code>invoke</code> 函数比较简单，通过调用 <code>ASM</code> 的 <code>visitMethodInsn</code> 方法传入正确的参数即可。注意最后一个参数要为 <code>true</code>，因为我们调用的是一个接口方法。</p>
+<h4 id="5invoke函数的结果返回给原始函数"><a class="markdownIt-Anchor" href="#5invoke函数的结果返回给原始函数"></a> 5.<code>invoke</code>函数的结果返回给原始函数</h4>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> returnTypeSort = returnType.sort</span><br><span class="line"><span class="keyword">when</span> &#123;</span><br><span class="line">    returnTypeSort == Type.VOID -&gt; &#123;</span><br><span class="line">        <span class="keyword">super</span>.visitInsn(Opcodes.RETURN)</span><br><span class="line">    &#125;</span><br><span class="line">    isPrimitiveType(returnTypeSort) -&gt; &#123;</span><br><span class="line">        weavePrimitiveReturn(returnTypeSort)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> -&gt; &#123;</span><br><span class="line">        <span class="keyword">val</span> internalName = returnType.internalName</span><br><span class="line">        <span class="keyword">super</span>.visitTypeInsn(Opcodes.CHECKCAST, internalName)</span><br><span class="line">        <span class="keyword">super</span>.visitInsn(Opcodes.ARETURN)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如前所示，<code>invoke</code> 函数的返回值是 <code>Any?</code> ，那么如何返回给原始函数呢？我们还是需要根据原始函数的返回值类型做判断：</p>
+<ol>
+<li>如果是 <code>voidd</code> 类型，则直接 <code>return</code>，</li>
+<li>如果是基本数据类型，需要先强制类型转换为包装类型，再调用包装类型对应的 <code>xxxValue</code> 方法获取基本数据类型，最后再返回，</li>
+<li>如果是引用类型，通过 <code>returnType</code> 获取返回值的 <code>InternalName</code>，然后进行强制类型转换，最后返回。</li>
+</ol>
+<p>至此，代理转换分析完毕，happy~</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>在想实现某个功能的时候，我们可能会有好几种思路，如何在这好几种思路中选择一个进行实现，这其中考量与取舍的过程笔者觉得比较有趣。</p>
+<p>本文记录了 <code>Sword</code> 的实现原理与源码分析，同时记录了笔者实现代码时的一些思路与思考，笔者个人认为这些思路与思考远比实现这个功能更有意义。</p>
+<p>下篇再见，happy~</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/23/Kotlin/Kotlin-KCP的应用-修改SDK版本号/" rel="bookmark">Kotlin-KCP的应用-修改SDK版本号</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/29/Kotlin/Kotlin-协程为线程框架而生？/" rel="bookmark">Kotlin-协程为线程框架而生？</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/08/Kotlin/Kotlin-KCP的应用-第一篇/" rel="bookmark">Kotlin-KCP的应用-第一篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/12/Kotlin/Kotlin-KCP的应用-第二篇/" rel="bookmark">Kotlin-KCP的应用-第二篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/31/Kotlin/Kotlin-回调如何转成挂起函数/" rel="bookmark">Kotlin-回调如何转成挂起函数</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2022/10/11/gosp/sword/01-sword/" title="Sword - 为 Kotlin 函数增加代理功能(二)">https://sunxiaodou.com/2022/10/11/gosp/sword/01-sword/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/kotlin/" rel="tag"># kotlin</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/20/gosp/sword/00-sword/" rel="prev" title="Sword - 为 Kotlin 函数增加代理功能(一)">
+      <i class="fa fa-chevron-left"></i> Sword - 为 Kotlin 函数增加代理功能(一)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sword-%E4%B8%BA-kotlin-%E5%87%BD%E6%95%B0%E5%A2%9E%E5%8A%A0%E4%BB%A3%E7%90%86%E5%8A%9F%E8%83%BD%E4%BA%8C"><span class="nav-number">1.</span> <span class="nav-text"> Sword - 为 Kotlin 函数增加代理功能(二)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text"> 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.2.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#classbuilder"><span class="nav-number">1.3.</span> <span class="nav-text"> ClassBuilder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#swordadapter"><span class="nav-number">1.4.</span> <span class="nav-text"> SwordAdapter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E6%B3%A8%E8%A7%A3"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 解析注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E5%88%86%E6%94%AF"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 转换分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.4.3.</span> <span class="nav-text"> 简单转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.4.4.</span> <span class="nav-text"> 代理转换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E6%98%AF%E5%90%A6%E6%98%AF%E9%9D%99%E6%80%81%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.4.1.</span> <span class="nav-text"> 1.是否是静态函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E6%9E%84%E5%BB%BA%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.4.4.2.</span> <span class="nav-text"> 2.构建实现类实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E8%8E%B7%E5%8F%96%E6%89%80%E9%9C%80%E5%8F%82%E6%95%B0"><span class="nav-number">1.4.4.3.</span> <span class="nav-text"> 3.获取所需参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4%E8%B0%83%E7%94%A8-invoke-%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.4.4.</span> <span class="nav-text"> 4.调用 invoke 函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5invoke%E5%87%BD%E6%95%B0%E7%9A%84%E7%BB%93%E6%9E%9C%E8%BF%94%E5%9B%9E%E7%BB%99%E5%8E%9F%E5%A7%8B%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.4.5.</span> <span class="nav-text"> 5.invoke函数的结果返回给原始函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank">GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/guodongAndroid" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;guodongAndroid" rel="noopener" target="_blank">Gitee</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://juejin.cn/user/4300945216521309" title="掘金 → https:&#x2F;&#x2F;juejin.cn&#x2F;user&#x2F;4300945216521309" rel="noopener" target="_blank">掘金</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/guodongandroid" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;guodongandroid" rel="noopener" target="_blank">CSDN</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">264k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : 'b4856a2b35f55bc16e34f591b0a6a221',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
