@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="使用Kotlin协程的崩溃纪实(一)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Kotlin协程的崩溃纪实(一)">
+<meta property="og:url" content="https://sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/index.html">
+<meta property="og:site_name" content="孫小逗">
+<meta property="og:description" content="使用Kotlin协程的崩溃纪实(一)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-10T15:17:27.284Z">
+<meta property="article:author" content="guodongAndroid">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="kotlin">
+<meta property="article:tag" content="coroutines">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用Kotlin协程的崩溃纪实(一) | 孫小逗</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">孫小逗</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一壶浊酒空对月</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-book">
+
+    <a href="/book/" rel="section"><i class="fa fa-book fa-fw"></i>专栏</a>
+
+  </li>
+        <li class="menu-item menu-item-pan">
+
+    <a href="https://pan.sunxiaodou.com/" rel="noopener" target="_blank"><i class="fa fa-hdd fa-fw"></i>网盘</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">35</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">44</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/guodongAndroid" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="guodongAndroid">
+      <meta itemprop="description" content="Android & Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="孫小逗">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Kotlin协程的崩溃纪实(一)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-04-07 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-07T00:00:00+08:00">2023-04-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-04-10 23:17:27" itemprop="dateModified" datetime="2023-04-10T23:17:27+08:00">2023-04-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Kotlin/" itemprop="url" rel="index"><span itemprop="name">Kotlin</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+            <div class="post-description">使用Kotlin协程的崩溃纪实(一)</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="使用kotlin协程的崩溃纪实一"><a class="markdownIt-Anchor" href="#使用kotlin协程的崩溃纪实一"></a> 使用Kotlin协程的崩溃纪实(一)</h1>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>由于笔者对Kotlin协程缺乏深刻的理解以及充分的实践，导致在实际工作中使用Kotlin协程时遇到一些崩溃的问题。</p>
+<p>那么本文主要记录遇到的这些崩溃问题，这是其中之一。</p>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>在Kotlin协程中如果不能合理的使用<code>for-in</code>循环，可能会抛出<code>ConcurrentModificationException</code>异常导致崩溃。</p>
+<h2 id="伪代码"><a class="markdownIt-Anchor" href="#伪代码"></a> 伪代码</h2>
+<p>下面是符合背景中描述的伪代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> ml = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0.</span><span class="number">.10</span>) &#123;</span><br><span class="line">        ml.add(i)</span><br><span class="line">    &#125;</span><br><span class="line">    println(ml)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> run = RunSuspend&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> scope = CoroutineScope(EmptyCoroutineContext)</span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程A</span></span><br><span class="line">		<span class="keyword">try</span>	&#123;</span><br><span class="line">            <span class="keyword">for</span> (i <span class="keyword">in</span> ml) &#123;</span><br><span class="line">        		log(<span class="string">&quot;<span class="subst">$&#123;suspendWork(<span class="number">500</span>L)&#125;</span>: <span class="variable">$i</span>&quot;</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			run.resumeWith(<span class="number">1</span>)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">            run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> await = RunSuspend&lt;<span class="built_in">Boolean</span>&gt;()</span><br><span class="line">	await.await(<span class="number">1_000L</span>)</span><br><span class="line">    </span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程B</span></span><br><span class="line">        log(<span class="string">&quot;Add 11: <span class="subst">$&#123;ml.add(<span class="number">11</span>)&#125;</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> code = run.await()</span><br><span class="line">    log(<span class="string">&quot;Finish with [<span class="variable">$code</span>]&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">suspendWork</span><span class="params">(timeout: <span class="type">Long</span>)</span></span> = suspendCoroutine&lt;<span class="built_in">Boolean</span>&gt; &#123; continuation -&gt;</span><br><span class="line">    thread &#123;</span><br><span class="line">        Thread.sleep(timeout)</span><br><span class="line">        continuation.resume(Random.nextBoolean())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> DF = SimpleDateFormat(<span class="string">&quot;HH:mm:ss.SSS&quot;</span>)</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">log</span><span class="params">(any: <span class="type">Any</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;[<span class="subst">$&#123;DF.format(Date(System.currentTimeMillis()))&#125;</span> <span class="subst">$&#123;Thread.currentThread().name&#125;</span>]: <span class="variable">$any</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的伪代码大致的逻辑如下：</p>
+<ol>
+<li>创建一个可变列表<code>ml</code>并添加[0, 10]这11条数据，</li>
+<li>创建一个<code>RunSuspend</code>的实例<code>run</code>，用于主线程等待协程执行完毕，否则主线程退出，协程无法执行完毕，</li>
+<li>创建一个协程作用域<code>scope，</code>启动一个协程A，在协程中执行<code>for-in</code>循环，在循环中调用挂起函数<code>suspendWork</code>模拟执行耗时任务，其每500ms输出一条日志，循环执行完毕后或抛出异常时调用<code>run.resumeWith</code>通知协程执行完毕并停止阻塞主线程，</li>
+<li>再创建一个<code>RunSuspend</code>的实例<code>await</code>，用于阻塞主线程1000ms，然后启动一个新的协程B为可变列表<code>ml</code>新增一条数据，</li>
+<li>调用<code>run.await</code>阻塞主线程并等待协程A执行完毕。</li>
+</ol>
+<p>伪代码执行的期望结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:10:39.588 DefaultDispatcher-worker-1]: true: 0</span><br><span class="line">[22:10:40.085 DefaultDispatcher-worker-1]: Add 11: true</span><br><span class="line">[22:10:40.095 DefaultDispatcher-worker-1]: false: 1</span><br><span class="line">[22:10:40.598 DefaultDispatcher-worker-1]: true: 2</span><br><span class="line">[22:10:41.104 DefaultDispatcher-worker-1]: true: 3</span><br><span class="line">[22:10:41.610 DefaultDispatcher-worker-1]: true: 4</span><br><span class="line">[22:10:42.114 DefaultDispatcher-worker-1]: false: 5</span><br><span class="line">[22:10:42.619 DefaultDispatcher-worker-1]: false: 6</span><br><span class="line">[22:10:43.122 DefaultDispatcher-worker-1]: false: 7</span><br><span class="line">[22:10:43.628 DefaultDispatcher-worker-1]: false: 8</span><br><span class="line">[22:10:44.132 DefaultDispatcher-worker-1]: true: 9</span><br><span class="line">[22:10:44.637 DefaultDispatcher-worker-1]: false: 10</span><br><span class="line">[22:10:44.638 main]: Finish with [1]</span><br></pre></td></tr></table></figure>
+<p>笔者期望伪代码可以正常的执行完毕。</p>
+<p>但是，实际上伪代码执行的结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:11:34.338 DefaultDispatcher-worker-1]: false: 0</span><br><span class="line">[22:11:34.836 DefaultDispatcher-worker-1]: Add 11: true</span><br><span class="line">[22:11:34.839 DefaultDispatcher-worker-1]: true: 1</span><br><span class="line">[22:11:34.840 main]: Finish with [-1]</span><br><span class="line">java.util.ConcurrentModificationException</span><br><span class="line">	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:901)</span><br><span class="line">	at java.util.ArrayList$Itr.next(ArrayList.java:851)</span><br><span class="line">	at CoroutinesKt.case1(Coroutines.kt:56)</span><br><span class="line">	at CoroutinesKt.access$case1(Coroutines.kt:1)</span><br><span class="line">	at CoroutinesKt$case1$1.invokeSuspend(Coroutines.kt)</span><br><span class="line">	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)</span><br><span class="line">	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:571)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:678)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:665)</span><br></pre></td></tr></table></figure>
+<p>执行结果分析：</p>
+<ol>
+<li>协程中的<code>for-in</code>循环输出了2条日志，每次输出日志时，其实已经是每次遍历执行500ms之后了，</li>
+<li>阻塞主线程1000ms后，我们在启动的协程B中为可变列表<code>ml</code>新增了一条数据：11，</li>
+<li>在第三次遍历时协程A中抛出了一个异常：<code>java.util.ConcurrentModificationException</code>。</li>
+</ol>
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
+<p>为什么执行结果会与我们期望的结果不同呢？接下来我们分析下原因。</p>
+<p>首先我们再仔细观察下协程中的代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scope.launch &#123;</span><br><span class="line">    <span class="keyword">try</span>	&#123;</span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> ml) &#123;</span><br><span class="line">            log(<span class="string">&quot;<span class="subst">$&#123;suspendWork(<span class="number">500</span>L)&#125;</span>: <span class="variable">$i</span>&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        run.resumeWith(<span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">        e.printStackTrace()</span><br><span class="line">        run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照笔者的想法，<code>for-in</code>循环的执行逻辑如下：</p>
+<ol>
+<li>循环体是在同一个线程中执行，</li>
+<li>循环体是同步且顺序执行的，</li>
+</ol>
+<p>可以简单理解循环体的执行是线程安全的。</p>
+<h3 id="真的线程安全么"><a class="markdownIt-Anchor" href="#真的线程安全么"></a> 真的线程安全么？</h3>
+<p>针对第一点，目前的<code>scope</code>没有指定运行的线程，那么协程默认是在<code>Default</code>线程池中执行，同时循环体的每次执行都会触发两次线程切换，其一是从<code>launch</code>协程体执行的线程切换至<code>suspendWork</code>挂起函数执行的线程，其二是<code>suspendWork</code>挂起函数执行完毕后，从<code>suspendWork</code>挂断函数执行线程切换回<code>launch</code>协程体执行的线程，而<code>launch</code>协程体执行的线程由<code>Default</code>线程池分配，线程池分配线程存在不固定性，所以循环体在同一个线程中执行不能成立，自然不能称为是线程安全的。</p>
+<h3 id="为什么会有这样的想法呢"><a class="markdownIt-Anchor" href="#为什么会有这样的想法呢"></a> 为什么会有这样的想法呢？</h3>
+<p>正如前言中所说，笔者对协程缺乏深刻的理解以及充分的实践，而协程的一大特点是：使用「同步代码」写出异步程序。</p>
+<p>其实笔者就是被「同步代码」这一表象所“欺骗”，这也是笔者对协程缺乏深刻理解的佐证。</p>
+<p>使用「同步代码」写出异步程序，对程序猿来说这是多么美好的事情，但是如果对协程理解的不够深入，不清楚它背后的逻辑，那么很容易就像笔者一样被它简单的表象所“欺骗”。</p>
+<p>针对第二点，协程的特点是使用「同步代码」写出异步程序，在循环体中调用了挂起函数，那么循环逻辑必然是异步程序，所以第二点也不成立。</p>
+<h3 id="异常原因"><a class="markdownIt-Anchor" href="#异常原因"></a> 异常原因</h3>
+<p><code>in</code>在集合遍历时是一个操作符重载关键字，我们把鼠标放在<code>in</code>关键字上，然后按住<code>ctrl(windows)</code>或<code>command(macos)</code>键，再点击鼠标左键，会看到它其实重载的是<code>Iterator</code>的<code>next()</code>和<code>hasNext()</code>方法，所以<code>for-in</code>循环其实是通过<code>Iterator</code>来使用的。</p>
+<p>在<code>Iterator</code>的<code>next()</code>方法中会检查集合是否被修改，如果被修改则抛出<code>java.util.ConcurrentModificationException</code>异常。</p>
+<h3 id="如何修复"><a class="markdownIt-Anchor" href="#如何修复"></a> 如何修复？</h3>
+<p>修复方案有多种，比如：</p>
+<ol>
+<li>在协程体中，先对<code>ml</code>集合进行一次浅拷贝赋值给<code>ml2</code>，然后遍历<code>ml2</code>，如此便不会抛出上述异常，但是无法遍历<code>ml</code>中新增的元素，</li>
+<li>使用加锁的方式，遍历<code>ml</code>集合时不允许其他线程对<code>ml</code>集合进行更新，</li>
+<li>其他方式，</li>
+</ol>
+<p>具体选择哪种修复方案，这里可以根据业务场景的不同而选择不同的修复方案。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>本文记录的笔者在使用Kotlin协程过程中遇到的<code>for-in</code>崩溃问题，通过伪代码笔者复现了崩溃问题，并分析了问题产生的原因以及给出一些修复方案供选择参考。</p>
+<p>其中最重要的是发现自身的不足，发现自己的不足也是一种进步。</p>
+<p>总之就是：</p>
+<blockquote>
+<p>纸上得来终觉浅，绝知此事要躬行。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/31/Kotlin/Kotlin-回调如何转成挂起函数/" rel="bookmark">Kotlin-回调如何转成挂起函数</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/29/Kotlin/Kotlin-协程为线程框架而生？/" rel="bookmark">Kotlin-协程为线程框架而生？</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/30/Kotlin/Kotlin-挂起函数挂起了啥？/" rel="bookmark">Kotlin-挂起函数挂起了啥？</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/23/Kotlin/Kotlin-KCP的应用-修改SDK版本号/" rel="bookmark">Kotlin-KCP的应用-修改SDK版本号</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/08/Kotlin/Kotlin-KCP的应用-第一篇/" rel="bookmark">Kotlin-KCP的应用-第一篇</a></div>
+    </li>
+  </ul>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>guodongAndroid
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/" title="使用Kotlin协程的崩溃纪实(一)">https://sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/guodongAndroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://juejin.cn/user/4300945216521309">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">掘金</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="https://blog.csdn.net/guodongandroid">
+            <span class="icon">
+              <i class=""></i>
+            </span>
+
+            <span class="label">CSDN</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+              <a href="/tags/kotlin/" rel="tag"># kotlin</a>
+              <a href="/tags/coroutines/" rel="tag"># coroutines</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/31/summary/2022/" rel="prev" title="2022年终总结">
+      <i class="fa fa-chevron-left"></i> 2022年终总结
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8kotlin%E5%8D%8F%E7%A8%8B%E7%9A%84%E5%B4%A9%E6%BA%83%E7%BA%AA%E5%AE%9E%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text"> 使用Kotlin协程的崩溃纪实(一)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.2.</span> <span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text"> 伪代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">1.4.</span> <span class="nav-text"> 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%9F%E7%9A%84%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%B9%88"><span class="nav-number">1.4.1.</span> <span class="nav-text"> 真的线程安全么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E8%BF%99%E6%A0%B7%E7%9A%84%E6%83%B3%E6%B3%95%E5%91%A2"><span class="nav-number">1.4.2.</span> <span class="nav-text"> 为什么会有这样的想法呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8%E5%8E%9F%E5%9B%A0"><span class="nav-number">1.4.3.</span> <span class="nav-text"> 异常原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BF%AE%E5%A4%8D"><span class="nav-number">1.4.4.</span> <span class="nav-text"> 如何修复？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text"> 总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="guodongAndroid"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">guodongAndroid</p>
+  <div class="site-description" itemprop="description">Android & Kotlin</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/guodongAndroid" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;guodongAndroid" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:sun33919135@gmail.com" title="E-Mail → mailto:sun33919135@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/10827596" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;10827596" rel="noopener" target="_blank"><i class="fa fa-play fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/@guodongAndroid" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;@guodongAndroid" rel="noopener" target="_blank"><i class="fab fa-youtube fa-fw"></i>YouTube</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guodongAndroid</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">299k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:18</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '02ac148d741debb47ea2',
+      clientSecret: 'bd36c2001153a8abac0a1b0d2d9a1e0dc6c528cd',
+      repo        : 'guodongAndroid.github.io',
+      owner       : 'guodongAndroid',
+      admin       : ['guodongAndroid'],
+      id          : 'dc520409f25b96aca1a03f3ff2b92dce',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
