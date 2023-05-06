@@ -1,0 +1,1 @@
+import{_ as t,Y as e,Z as c,$ as o}from"./framework-3d290349.js";const _={},n=o("p",null,"本节旨在让新手熟悉 Git。 它将介绍 Git 的核心基本概念，Git 与其他版本控制系统的不同之处，以及 Git 的基本操作，如提交、合并和拉取。即使您已经使用 Git 很长时间，您也可能会在本节中发现对 Git 不太了解的内容。",-1),s=[n];function i(r,a){return e(),c("div",null,s)}const d=t(_,[["render",i],["__file","01-section01.html.vue"]]);export{d as default};
