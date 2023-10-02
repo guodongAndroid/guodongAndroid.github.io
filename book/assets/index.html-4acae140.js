@@ -1,1 +1,0 @@
-const e=JSON.parse('{"key":"v-225303cd","path":"/GitBook/","title":"Git Book","lang":"zh-CN","frontmatter":{"title":"Git Book","article":false,"feed":false,"sitemap":false},"headers":[],"git":{},"readingTime":{"minutes":0.03,"words":10},"filePathRelative":null}');export{e as data};
