@@ -21,25 +21,23 @@
     var CONFIG = {"hostname":"sunxiaodou.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"manual"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Java通过ESL连接FreeSWITCH">
+  <meta name="description" content="嵌入式Tomcat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java通过ESL连接FreeSWITCH">
-<meta property="og:url" content="https://sunxiaodou.com/2017/08/02/java-esl-freeswitch/index.html">
+<meta property="og:title" content="嵌入式Tomcat">
+<meta property="og:url" content="https://sunxiaodou.com/2023/10/05/servlet/01-servlet-tomcat-embed/index.html">
 <meta property="og:site_name" content="孫小逗">
-<meta property="og:description" content="Java通过ESL连接FreeSWITCH">
+<meta property="og:description" content="嵌入式Tomcat">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://om278gsrf.bkt.clouddn.com/freeswitch/QQ20170802-152052@2x.png">
-<meta property="article:published_time" content="2017-08-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-23T02:03:34.531Z">
+<meta property="og:image" content="https://sunxiaodou.com/imgs/servlet/01/00.modify-project-structure.png">
+<meta property="article:published_time" content="2023-10-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-10-06T02:54:49.438Z">
 <meta property="article:author" content="guodongAndroid">
-<meta property="article:tag" content="FreeSWITCH">
-<meta property="article:tag" content="ESL">
-<meta property="article:tag" content="InBound">
-<meta property="article:tag" content="Java">
+<meta property="article:tag" content="kotlin">
+<meta property="article:tag" content="servlet">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://om278gsrf.bkt.clouddn.com/freeswitch/QQ20170802-152052@2x.png">
+<meta name="twitter:image" content="https://sunxiaodou.com/imgs/servlet/01/00.modify-project-structure.png">
 
-<link rel="canonical" href="https://sunxiaodou.com/2017/08/02/java-esl-freeswitch/">
+<link rel="canonical" href="https://sunxiaodou.com/2023/10/05/servlet/01-servlet-tomcat-embed/">
 
 
 <script id="page-configurations">
@@ -52,7 +50,7 @@
   };
 </script>
 
-  <title>Java通过ESL连接FreeSWITCH | 孫小逗</title>
+  <title>嵌入式Tomcat | 孫小逗</title>
   
 
 
@@ -214,7 +212,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2017/08/02/java-esl-freeswitch/">
+    <link itemprop="mainEntityOfPage" href="https://sunxiaodou.com/2023/10/05/servlet/01-servlet-tomcat-embed/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -227,7 +225,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Java通过ESL连接FreeSWITCH
+          嵌入式Tomcat
         </h1>
 
         <div class="post-meta">
@@ -237,14 +235,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2017-08-02 00:00:00" itemprop="dateCreated datePublished" datetime="2017-08-02T00:00:00+08:00">2017-08-02</time>
+              <time title="创建时间：2023-10-05 00:00:00" itemprop="dateCreated datePublished" datetime="2023-10-05T00:00:00+08:00">2023-10-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-23 10:03:34" itemprop="dateModified" datetime="2022-07-23T10:03:34+08:00">2022-07-23</time>
+                <time title="修改时间：2023-10-06 10:54:49" itemprop="dateModified" datetime="2023-10-06T10:54:49+08:00">2023-10-06</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -252,7 +250,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FreeSwitch/" itemprop="url" rel="index"><span itemprop="name">FreeSwitch</span></a>
+                  <a href="/categories/Servlet/" itemprop="url" rel="index"><span itemprop="name">Servlet</span></a>
                 </span>
             </span>
 
@@ -269,16 +267,16 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.2k</span>
+              <span>3.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>5 分钟</span>
             </span>
-            <div class="post-description">Java通过ESL连接FreeSWITCH</div>
+            <div class="post-description">嵌入式Tomcat</div>
 
         </div>
       </header>
@@ -289,28 +287,98 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <Contents>
+        <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>在上一篇中，我们下载了 Tomcat 服务器，并在 IDEA 中配置了 Tomcat Local Server，如果我们不想下载并配置Tomcat 服务器又想运行 Servlet，该如何是好呢？</p>
+<h2 id="开发环境"><a class="markdownIt-Anchor" href="#开发环境"></a> 开发环境</h2>
 <blockquote>
-<p>转载请注明出处</p>
-<p><a href="http://sunxiaodou.com/2017/08/02/Java%E9%80%9A%E8%BF%87ESL%E8%BF%9E%E6%8E%A5FreeSWITCH/">http://sunxiaodou.com/2017/08/02/Java通过ESL连接FreeSWITCH/</a></p>
-<p>本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
+<p>在上一篇的基础上，升级下 JDK、Gradle 和 Kotlin 的版本，本文不需要 Tomcat 服务器</p>
 </blockquote>
-<h2 id="java通过esl连接freeswitch"><a class="markdownIt-Anchor" href="#java通过esl连接freeswitch"></a> Java通过ESL连接FreeSWITCH</h2>
-<h3 id="创建gradle项目"><a class="markdownIt-Anchor" href="#创建gradle项目"></a> 创建Gradle项目</h3>
-<p>首先我们创建一个基于Gradle的Java工程，并添加FreeSWITCH ESL的Java依赖。</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile <span class="string">&#x27;org.freeswitch.esl.client:org.freeswitch.esl.client:0.9.2&#x27;</span></span><br></pre></td></tr></table></figure>
-<p><img data-src="http://om278gsrf.bkt.clouddn.com/freeswitch/QQ20170802-152052@2x.png" alt="Project" /></p>
-<p>创建ESLTest.java文件，并添加如下代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(ESLTest.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">HOST</span> <span class="operator">=</span> <span class="string">&quot;192.168.1.22&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">PORT</span> <span class="operator">=</span> <span class="number">8021</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">PASSWORD</span> <span class="operator">=</span> <span class="string">&quot;ClueCon&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">job_UUID</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        InBound();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">InBound</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="type">Client</span> <span class="variable">client</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Client</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            client.connect(HOST, PORT, PASSWORD, <span class="number">20</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;连接成功&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            log.error(<span class="string">&quot;Connect Failed&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        client.addEventListener(<span class="keyword">new</span> <span class="title class_">IEslEventListener</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">eventReceived</span><span class="params">(EslEvent event)</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (event.getEventName().equals(<span class="string">&quot;CHANNEL_ANSWER&quot;</span>)) &#123; <span class="comment">//</span></span><br><span class="line">                    System.out.println(<span class="string">&quot;通道应答&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.getEventName().equals(<span class="string">&quot;HEARTBEAT&quot;</span>)) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;收到心跳 --&gt; &quot;</span> + event.getEventBodyLines());</span><br><span class="line">                    job_UUID = client.sendAsyncApiCommand(<span class="string">&quot;status&quot;</span>, <span class="literal">null</span>);</span><br><span class="line">                    System.out.println(<span class="string">&quot;Job_UUID --&gt; &quot;</span> + job_UUID);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.getEventName().equals(<span class="string">&quot;CHANNEL_DESTROY&quot;</span>)) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;通道销毁&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.getEventName().equals(<span class="string">&quot;CHANNEL_HANGUP_COMPLETE&quot;</span>)) &#123;</span><br><span class="line">                    <span class="comment">//挂断</span></span><br><span class="line">                    System.out.println(<span class="string">&quot;通道挂断完成&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (event.getEventName().equals(<span class="string">&quot;CHANNEL_CREATE&quot;</span>)) &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;通道创建&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">backgroundJobResultReceived</span><span class="params">(EslEvent event)</span> &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">uuid</span> <span class="operator">=</span> event.getEventHeaders().get(<span class="string">&quot;Job-UUID&quot;</span>);</span><br><span class="line">                <span class="keyword">if</span> (job_UUID.equals(uuid)) &#123;</span><br><span class="line">                    <span class="keyword">for</span> (String s : event.getEventBodyLines()) &#123;</span><br><span class="line">                        System.out.println(s);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        client.setEventSubscriptions(<span class="string">&quot;plain&quot;</span>, <span class="string">&quot;all&quot;</span>);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>我们使用InBound模式与FreeSWITCH进行连接，我这边的FreeSWITCH运行在192.168.1.22机器上，InBound模式默认是8021端口，密码默认为ClueCon，20为连接超时时长，单位秒。</p>
-<p>FreeSWITCH每隔20秒会发送心跳事件，代码中收到心跳事件，会发送一个异步API去查看FreeSWITCH的状态，并返回一个Job_UUID，异步完成后通过<code>backgroundJobResultReceived</code>回调执行结果。</p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=100% height=86 src="//music.163.com/outchain/player?type=2&id=5272940&auto=1&height=66"></iframe>
+<ul>
+<li>IntelliJ IDEA 2022.2.4 (Ultimate Edition)</li>
+<li><strong>JDK 11</strong></li>
+<li><strong>Gradle 7.5.1</strong></li>
+<li><strong>Kotlin 1.8.21</strong></li>
+<li><s>Tomcat 10.1.13</s></li>
+</ul>
+<h2 id="嵌入式-tomcat"><a class="markdownIt-Anchor" href="#嵌入式-tomcat"></a> 嵌入式 Tomcat</h2>
+<p>实际上 Tomcat 也是一个 Java 程序，它的启动流程如下：</p>
+<ol>
+<li>启动一个 JVM 加载 Tomcat 的主类并执行它的 <code>main()</code> 方法，</li>
+<li>Tomcat 加载 <code>war</code> 包并初始化 Servlet，</li>
+<li>Servlet 运行，提供服务。</li>
+</ol>
+<p>从上面的流程可以看出，启动Tomcat其实是 JVM 加载 Tomcat 的主类并执行它的 <code>main()</code> 方法，我们可以把Tomcat 的 <code>jar</code> 包引入到项目里来，然后自己写一个 <code>main()</code> 方法来启动 Tomcat，然后让它加载项目里的 Servlet —— <strong>这就是嵌入式Tomcat</strong>。</p>
+<p>修改 <code>build.gradle.kts</code> 增加如下依赖：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    providedCompile(&quot;jakarta.servlet:jakarta.servlet-api:6.0.0&quot;)</span><br><span class="line"></span><br><span class="line"><span class="addition">+   testImplementation(&quot;org.apache.tomcat.embed:tomcat-embed-core:10.1.13&quot;)</span></span><br><span class="line"></span><br><span class="line">    testImplementation(kotlin(&quot;test&quot;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以 <code>testImplementation</code> 的依赖方式引入 <code>tomcat-embed-core</code> 包，版本为 <code>10.1.13</code>。</p>
+<p>接下来将在 <code>test</code> 包下编写自己的 <code>main()</code> 方法，因此以 ``testImplementation` 的方式引入。</p>
+<blockquote>
+<p>可以在 <a target="_blank" rel="noopener" href="https://central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/10.1.13">Maven Central (sonatype.com)</a> 查询嵌入式 Tomcat 的版本</p>
+</blockquote>
+<p>由于 <code>10.1.13</code> 版本的嵌入式 Tomcat 最低支持 Java 11，因此还需要修改 <code>build.gradle.kts</code> 中的 <code>KotlinCompile</code> Task 和项目配置，修改内容如下：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tasks.withType&lt;KotlinCompile&gt; &#123;</span><br><span class="line"><span class="deletion">-   kotlinOptions.jvmTarget = &quot;1.8&quot;</span></span><br><span class="line"><span class="addition">+   kotlinOptions.jvmTarget = &quot;11&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改项目配置中的 SDK 为 <code>Java 11</code>，Language level 为 <code>SDK default</code></p>
+<p><img data-src="/imgs/servlet/01/00.modify-project-structure.png" alt="edit project structure" /></p>
+<h2 id="启动tomcat"><a class="markdownIt-Anchor" href="#启动tomcat"></a> 启动Tomcat</h2>
+<p>在 <code>test</code> 包下新建名为 <code>servlet</code> 的包并新建 <code>Main.kt</code> 的 Kotlin 文件，此时目录结构如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">src</span><br><span class="line">├── main</span><br><span class="line">│   ├── kotlin</span><br><span class="line">│   │   └── servlet</span><br><span class="line">│   │       └── HelloServlet.kt</span><br><span class="line">│   ├── resources</span><br><span class="line">│   └── webapp</span><br><span class="line">│       └── WEB-INF</span><br><span class="line">│           └── web.backup.xml</span><br><span class="line">└── <span class="built_in">test</span></span><br><span class="line">    ├── kotlin</span><br><span class="line">    │   └── servlet</span><br><span class="line">    │       └── Main.kt</span><br><span class="line">    └── resources</span><br></pre></td></tr></table></figure>
+<p>然后在其中增加以下 <code>main()</code> 函数：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>main()</code> 函数体里，首先通过以下代码创建一个 Tomcat 实例并配置服务器端口：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> tomcat = Tomcat()</span><br><span class="line">tomcat.setPort(<span class="number">8080</span>)</span><br></pre></td></tr></table></figure>
+<p>通过以下代码创建一个服务器上下文 <code>Context</code> 对象：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加 Webapp 并返回一个 Context 实例</span></span><br><span class="line"><span class="keyword">val</span> context = tomcat.addWebapp(<span class="string">&quot;&quot;</span> <span class="comment">/* contextPath */</span>, File(<span class="string">&quot;src/main/webapp&quot;</span>).absolutePath <span class="comment">/* docBase */</span>)</span><br></pre></td></tr></table></figure>
+<p>通过 <code>tomcat.addWebapp(String, String)</code> 方法添加 Webapp 并返回一个 <code>Context</code> 实例，其中 <code>addWebapp()</code> 方法的两个参数：</p>
+<ul>
+<li><code>contextPath</code>：表示 Webapp 的上下文映射，可以理解为 Webapp 的别名，
+<ul>
+<li>比如：<code>contextPath</code> 为 <code>/hello</code>，那么在浏览器访问时：<code>http://localhost:8080/hello/any-servlet-url-pattern</code>,</li>
+<li>参数只能是 <strong>空字符串</strong> 或者 <strong>以 <code>/</code> 开头且不以 <code>/</code> 结尾字符串</strong> 中的一种，<strong>空字符串</strong> 表示使用根上下文，如果不符合上述标准，Tomcat 内部会进行适当修正，</li>
+</ul>
+</li>
+<li><code>docBase</code>：上下文的基准目录，用于查找/访问静态文件，
+<ul>
+<li>目录必须存在且入参必须是绝对路径，</li>
+</ul>
+</li>
+</ul>
+<p>这里 <code>contextPath</code> 传入 **空字符串 **使用根上下文，目前项目没有静态文件，理论上现在 <code>docBase</code> 传入任意目录都可以，但最好还是传入 <code>src/main/webapp</code>，因为后续我们的静态文件还是会放到上述目录。</p>
+<p>然后通过以下代码为上下文添加 Web 资源：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建 WebResourceRoot 实例，表示 Webapp 的完整资源集</span></span><br><span class="line"><span class="keyword">val</span> root: WebResourceRoot = StandardRoot(context)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建基于目录的 Webapp 子资源集</span></span><br><span class="line"><span class="keyword">val</span> dirResourceSet = DirResourceSet(</span><br><span class="line">    root, <span class="comment">/* WebResourceRoot root */</span></span><br><span class="line">    <span class="string">&quot;/WEB-INF/classes&quot;</span>, <span class="comment">/* String webAppMount: 资源目录要挂载到 Webapp 的路径 */</span></span><br><span class="line">    File(<span class="string">&quot;build/classes/kotlin/main&quot;</span>).absolutePath, <span class="comment">/* String base: 资源目录的绝对路径 */</span></span><br><span class="line">    <span class="string">&quot;/&quot;</span> <span class="comment">/* String internalPath: 资源目录的内部路径 */</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将基于目录的子资源集添加到完整资源集的前置资源中</span></span><br><span class="line"><span class="comment">// Webapp 查找资源时按以下顺序：前置资源 -&gt; 主要资源 -&gt; JARs 资源 -&gt; 后置资源</span></span><br><span class="line">root.addPreResources(dirResourceSet)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将完整资源集添加到 Tomcat 上下文</span></span><br><span class="line">context.resources = root</span><br></pre></td></tr></table></figure>
+<p>Webapp 需要很多资源才能运行，第一行代码创建一个 <code>WebResourceRoot</code> 实例，表示 Webapp 的完整资源集，完整资源集里面还有一些子资源集，比如：Servlet 的 classes、第三方的 JARs 包、JSPs 文件等。</p>
+<p>Webapp 在查找 Servlet 时会从 <code>/WEB-INF/classes</code> 目录下查找，所以第二行代码将编译后的 Servlet classes 的目录 <code>build/classes/kotlin/main</code> 挂载到 <code>/WEB-INF/classes</code> 路径下。</p>
+<p>Webapp 查找资源时按以下顺序：前置资源 -&gt; 主要资源 -&gt; JARs 资源 -&gt; 后置资源，第三行代码将资源集添加到完整资源集的前置资源中。</p>
+<p>然后将完整资源集添加到 Tomcat 上下文中。</p>
+<p>接下来就可以启动 Tomcat 了：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建默认的 Server</span></span><br><span class="line"><span class="keyword">val</span> server = tomcat.server</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建默认的 Service 和 Connector</span></span><br><span class="line">tomcat.connector</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动 Tomcat</span></span><br><span class="line">server.start()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等待接收 SHUTDOWN 命令, 阻塞主线程以保证主线程存活</span></span><br><span class="line">server.await()</span><br></pre></td></tr></table></figure>
+<p>然后在浏览器中访问：<code>http://localhost:8080/servlet</code> 即可，在 Servlet 中还可以断点调试。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>嵌入式 Tomcat 不用本地下载并配置 Tomcat 服务器，在开发过程中便于断点调试。</p>
+
     </div>
 
     
     
     
       
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2023/09/30/servlet/00-servlet-getting-started/" rel="bookmark">Servlet入门</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/23/Kotlin/Kotlin-KCP的应用-修改SDK版本号/" rel="bookmark">Kotlin-KCP的应用-修改SDK版本号</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/08/Kotlin/Kotlin-KCP的应用-第一篇/" rel="bookmark">Kotlin-KCP的应用-第一篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/12/Kotlin/Kotlin-KCP的应用-第二篇/" rel="bookmark">Kotlin-KCP的应用-第二篇</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/2022/05/29/Kotlin/Kotlin-协程为线程框架而生？/" rel="bookmark">Kotlin-协程为线程框架而生？</a></div>
+    </li>
+  </ul>
 
         
 
@@ -321,7 +389,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://sunxiaodou.com/2017/08/02/java-esl-freeswitch/" title="Java通过ESL连接FreeSWITCH">https://sunxiaodou.com/2017/08/02/java-esl-freeswitch/</a>
+    <a href="https://sunxiaodou.com/2023/10/05/servlet/01-servlet-tomcat-embed/" title="嵌入式Tomcat">https://sunxiaodou.com/2023/10/05/servlet/01-servlet-tomcat-embed/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -381,10 +449,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/FreeSWITCH/" rel="tag"># FreeSWITCH</a>
-              <a href="/tags/ESL/" rel="tag"># ESL</a>
-              <a href="/tags/InBound/" rel="tag"># InBound</a>
-              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/kotlin/" rel="tag"># kotlin</a>
+              <a href="/tags/servlet/" rel="tag"># servlet</a>
           </div>
 
         
@@ -393,13 +459,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2017/07/16/%E4%BD%BF%E7%94%A8%E8%BF%85%E9%9B%B7%E4%B8%8B%E8%BD%BD%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98%E6%96%87%E4%BB%B6/" rel="prev" title="使用迅雷下载百度网盘文件">
-      <i class="fa fa-chevron-left"></i> 使用迅雷下载百度网盘文件
+    <a href="/2023/10/02/node/00-building-node-js-cli-with-typescript/" rel="prev" title="使用 TypeScript 开发 Node.js CLI">
+      <i class="fa fa-chevron-left"></i> 使用 TypeScript 开发 Node.js CLI
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2017/09/14/%E8%AE%B0%E5%BD%93TextView.setSingleLine(true)%E6%97%B6%EF%BC%8C%E6%BB%91%E5%8A%A8TextView%E7%9A%84%E5%8C%BA%E5%9F%9F%EF%BC%8C%E5%AF%BC%E8%87%B4%E7%9A%84ViewPager%E4%B8%8D%E8%83%BD%E6%BB%91%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98/" rel="next" title="记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题">
-      记当TextView.setSingleLine(true)时，滑动TextView的区域，导致的ViewPager不能滑动的问题 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -459,7 +522,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#java%E9%80%9A%E8%BF%87esl%E8%BF%9E%E6%8E%A5freeswitch"><span class="nav-number">1.</span> <span class="nav-text"> Java通过ESL连接FreeSWITCH</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAgradle%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.1.</span> <span class="nav-text"> 创建Gradle项目</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text"> 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="nav-number">2.</span> <span class="nav-text"> 开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%E5%BC%8F-tomcat"><span class="nav-number">3.</span> <span class="nav-text"> 嵌入式 Tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8tomcat"><span class="nav-number">4.</span> <span class="nav-text"> 启动Tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text"> 总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -621,7 +684,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'guodongAndroid.github.io',
       owner       : 'guodongAndroid',
       admin       : ['guodongAndroid'],
-      id          : 'fee3ca4bad70fb0b24edcf8afc540b91',
+      id          : 'abda8310341e210a87bca024927768bd',
         language: 'zh-CN',
       distractionFreeMode: true
     });

@@ -4259,4 +4259,83 @@ Kotlin语法：<a href="https://huanglizhuo.gitbooks.io/kotlin-in-chinese/conten
         <tag>coroutines</tag>
       </tags>
   </entry>
+  <entry>
+    <title>嵌入式Tomcat</title>
+    <url>/2023/10/05/servlet/01-servlet-tomcat-embed/</url>
+    <content><![CDATA[<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>在上一篇中，我们下载了 Tomcat 服务器，并在 IDEA 中配置了 Tomcat Local Server，如果我们不想下载并配置Tomcat 服务器又想运行 Servlet，该如何是好呢？</p>
+<h2 id="开发环境"><a class="markdownIt-Anchor" href="#开发环境"></a> 开发环境</h2>
+<blockquote>
+<p>在上一篇的基础上，升级下 JDK、Gradle 和 Kotlin 的版本，本文不需要 Tomcat 服务器</p>
+</blockquote>
+<ul>
+<li>IntelliJ IDEA 2022.2.4 (Ultimate Edition)</li>
+<li><strong>JDK 11</strong></li>
+<li><strong>Gradle 7.5.1</strong></li>
+<li><strong>Kotlin 1.8.21</strong></li>
+<li><s>Tomcat 10.1.13</s></li>
+</ul>
+<h2 id="嵌入式-tomcat"><a class="markdownIt-Anchor" href="#嵌入式-tomcat"></a> 嵌入式 Tomcat</h2>
+<p>实际上 Tomcat 也是一个 Java 程序，它的启动流程如下：</p>
+<ol>
+<li>启动一个 JVM 加载 Tomcat 的主类并执行它的 <code>main()</code> 方法，</li>
+<li>Tomcat 加载 <code>war</code> 包并初始化 Servlet，</li>
+<li>Servlet 运行，提供服务。</li>
+</ol>
+<p>从上面的流程可以看出，启动Tomcat其实是 JVM 加载 Tomcat 的主类并执行它的 <code>main()</code> 方法，我们可以把Tomcat 的 <code>jar</code> 包引入到项目里来，然后自己写一个 <code>main()</code> 方法来启动 Tomcat，然后让它加载项目里的 Servlet —— <strong>这就是嵌入式Tomcat</strong>。</p>
+<p>修改 <code>build.gradle.kts</code> 增加如下依赖：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    providedCompile(&quot;jakarta.servlet:jakarta.servlet-api:6.0.0&quot;)</span><br><span class="line"></span><br><span class="line"><span class="addition">+   testImplementation(&quot;org.apache.tomcat.embed:tomcat-embed-core:10.1.13&quot;)</span></span><br><span class="line"></span><br><span class="line">    testImplementation(kotlin(&quot;test&quot;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以 <code>testImplementation</code> 的依赖方式引入 <code>tomcat-embed-core</code> 包，版本为 <code>10.1.13</code>。</p>
+<p>接下来将在 <code>test</code> 包下编写自己的 <code>main()</code> 方法，因此以 ``testImplementation` 的方式引入。</p>
+<blockquote>
+<p>可以在 <a href="https://central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/10.1.13">Maven Central (sonatype.com)</a> 查询嵌入式 Tomcat 的版本</p>
+</blockquote>
+<p>由于 <code>10.1.13</code> 版本的嵌入式 Tomcat 最低支持 Java 11，因此还需要修改 <code>build.gradle.kts</code> 中的 <code>KotlinCompile</code> Task 和项目配置，修改内容如下：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">tasks.withType&lt;KotlinCompile&gt; &#123;</span><br><span class="line"><span class="deletion">-   kotlinOptions.jvmTarget = &quot;1.8&quot;</span></span><br><span class="line"><span class="addition">+   kotlinOptions.jvmTarget = &quot;11&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改项目配置中的 SDK 为 <code>Java 11</code>，Language level 为 <code>SDK default</code></p>
+<p><img data-src="/imgs/servlet/01/00.modify-project-structure.png" alt="edit project structure" /></p>
+<h2 id="启动tomcat"><a class="markdownIt-Anchor" href="#启动tomcat"></a> 启动Tomcat</h2>
+<p>在 <code>test</code> 包下新建名为 <code>servlet</code> 的包并新建 <code>Main.kt</code> 的 Kotlin 文件，此时目录结构如下：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">src</span><br><span class="line">├── main</span><br><span class="line">│   ├── kotlin</span><br><span class="line">│   │   └── servlet</span><br><span class="line">│   │       └── HelloServlet.kt</span><br><span class="line">│   ├── resources</span><br><span class="line">│   └── webapp</span><br><span class="line">│       └── WEB-INF</span><br><span class="line">│           └── web.backup.xml</span><br><span class="line">└── <span class="built_in">test</span></span><br><span class="line">    ├── kotlin</span><br><span class="line">    │   └── servlet</span><br><span class="line">    │       └── Main.kt</span><br><span class="line">    └── resources</span><br></pre></td></tr></table></figure>
+<p>然后在其中增加以下 <code>main()</code> 函数：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 <code>main()</code> 函数体里，首先通过以下代码创建一个 Tomcat 实例并配置服务器端口：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> tomcat = Tomcat()</span><br><span class="line">tomcat.setPort(<span class="number">8080</span>)</span><br></pre></td></tr></table></figure>
+<p>通过以下代码创建一个服务器上下文 <code>Context</code> 对象：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加 Webapp 并返回一个 Context 实例</span></span><br><span class="line"><span class="keyword">val</span> context = tomcat.addWebapp(<span class="string">&quot;&quot;</span> <span class="comment">/* contextPath */</span>, File(<span class="string">&quot;src/main/webapp&quot;</span>).absolutePath <span class="comment">/* docBase */</span>)</span><br></pre></td></tr></table></figure>
+<p>通过 <code>tomcat.addWebapp(String, String)</code> 方法添加 Webapp 并返回一个 <code>Context</code> 实例，其中 <code>addWebapp()</code> 方法的两个参数：</p>
+<ul>
+<li><code>contextPath</code>：表示 Webapp 的上下文映射，可以理解为 Webapp 的别名，
+<ul>
+<li>比如：<code>contextPath</code> 为 <code>/hello</code>，那么在浏览器访问时：<code>http://localhost:8080/hello/any-servlet-url-pattern</code>,</li>
+<li>参数只能是 <strong>空字符串</strong> 或者 <strong>以 <code>/</code> 开头且不以 <code>/</code> 结尾字符串</strong> 中的一种，<strong>空字符串</strong> 表示使用根上下文，如果不符合上述标准，Tomcat 内部会进行适当修正，</li>
+</ul>
+</li>
+<li><code>docBase</code>：上下文的基准目录，用于查找/访问静态文件，
+<ul>
+<li>目录必须存在且入参必须是绝对路径，</li>
+</ul>
+</li>
+</ul>
+<p>这里 <code>contextPath</code> 传入 **空字符串 **使用根上下文，目前项目没有静态文件，理论上现在 <code>docBase</code> 传入任意目录都可以，但最好还是传入 <code>src/main/webapp</code>，因为后续我们的静态文件还是会放到上述目录。</p>
+<p>然后通过以下代码为上下文添加 Web 资源：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建 WebResourceRoot 实例，表示 Webapp 的完整资源集</span></span><br><span class="line"><span class="keyword">val</span> root: WebResourceRoot = StandardRoot(context)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建基于目录的 Webapp 子资源集</span></span><br><span class="line"><span class="keyword">val</span> dirResourceSet = DirResourceSet(</span><br><span class="line">    root, <span class="comment">/* WebResourceRoot root */</span></span><br><span class="line">    <span class="string">&quot;/WEB-INF/classes&quot;</span>, <span class="comment">/* String webAppMount: 资源目录要挂载到 Webapp 的路径 */</span></span><br><span class="line">    File(<span class="string">&quot;build/classes/kotlin/main&quot;</span>).absolutePath, <span class="comment">/* String base: 资源目录的绝对路径 */</span></span><br><span class="line">    <span class="string">&quot;/&quot;</span> <span class="comment">/* String internalPath: 资源目录的内部路径 */</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将基于目录的子资源集添加到完整资源集的前置资源中</span></span><br><span class="line"><span class="comment">// Webapp 查找资源时按以下顺序：前置资源 -&gt; 主要资源 -&gt; JARs 资源 -&gt; 后置资源</span></span><br><span class="line">root.addPreResources(dirResourceSet)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将完整资源集添加到 Tomcat 上下文</span></span><br><span class="line">context.resources = root</span><br></pre></td></tr></table></figure>
+<p>Webapp 需要很多资源才能运行，第一行代码创建一个 <code>WebResourceRoot</code> 实例，表示 Webapp 的完整资源集，完整资源集里面还有一些子资源集，比如：Servlet 的 classes、第三方的 JARs 包、JSPs 文件等。</p>
+<p>Webapp 在查找 Servlet 时会从 <code>/WEB-INF/classes</code> 目录下查找，所以第二行代码将编译后的 Servlet classes 的目录 <code>build/classes/kotlin/main</code> 挂载到 <code>/WEB-INF/classes</code> 路径下。</p>
+<p>Webapp 查找资源时按以下顺序：前置资源 -&gt; 主要资源 -&gt; JARs 资源 -&gt; 后置资源，第三行代码将资源集添加到完整资源集的前置资源中。</p>
+<p>然后将完整资源集添加到 Tomcat 上下文中。</p>
+<p>接下来就可以启动 Tomcat 了：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 创建默认的 Server</span></span><br><span class="line"><span class="keyword">val</span> server = tomcat.server</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建默认的 Service 和 Connector</span></span><br><span class="line">tomcat.connector</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动 Tomcat</span></span><br><span class="line">server.start()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等待接收 SHUTDOWN 命令, 阻塞主线程以保证主线程存活</span></span><br><span class="line">server.await()</span><br></pre></td></tr></table></figure>
+<p>然后在浏览器中访问：<code>http://localhost:8080/servlet</code> 即可，在 Servlet 中还可以断点调试。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>嵌入式 Tomcat 不用本地下载并配置 Tomcat 服务器，在开发过程中便于断点调试。</p>
+]]></content>
+      <categories>
+        <category>Servlet</category>
+      </categories>
+      <tags>
+        <tag>kotlin</tag>
+        <tag>servlet</tag>
+      </tags>
+  </entry>
 </search>
