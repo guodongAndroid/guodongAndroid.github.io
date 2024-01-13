@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>AndroidStudio中使用Aliyun Maven</title>
+    <url>/2017/07/06/AndroidStudio%E4%B8%AD%E4%BD%BF%E7%94%A8Aliyun%20Maven/</url>
+    <content><![CDATA[<Contents>
+<blockquote>
+<p>转载请注明出处<br />
+<a href="http://blog.csdn.net/guodongAndroid/article/details/74598095">http://blog.csdn.net/guodongAndroid/article/details/74598095</a><br />
+本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
+</blockquote>
+<h2 id="androidstudio中使用aliyun-maven"><a class="markdownIt-Anchor" href="#androidstudio中使用aliyun-maven"></a> AndroidStudio中使用Aliyun Maven</h2>
+<p>Aliyun Maven地址：<a href="http://maven.aliyun.com">http://maven.aliyun.com</a></p>
+<p>在项目级别的build.gradle中添加如下Maven地址：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        maven&#123; url <span class="string">&#x27;http://maven.aliyun.com/nexus/content/groups/public/&#x27;</span>&#125;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath <span class="string">&#x27;com.android.tools.build:gradle:2.3.3&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        maven&#123; url <span class="string">&#x27;http://maven.aliyun.com/nexus/content/groups/public/&#x27;</span>&#125;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=100% height=86 src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe>]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>androidstudio</tag>
+        <tag>maven</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Android中关于scrollBy的一点点心得</title>
     <url>/2016/06/01/Android%E4%B8%AD%E5%85%B3%E4%BA%8EscrollBy%E7%9A%84%E4%B8%80%E7%82%B9%E7%82%B9%E5%BF%83%E5%BE%97/</url>
     <content><![CDATA[<Contents>
@@ -44,29 +67,6 @@ scrollBy(int dx, int dy)主要用于滑屏操作，第一个参数dx代表滑屏
       <tags>
         <tag>android</tag>
         <tag>scrollBy</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>AndroidStudio中使用Aliyun Maven</title>
-    <url>/2017/07/06/AndroidStudio%E4%B8%AD%E4%BD%BF%E7%94%A8Aliyun%20Maven/</url>
-    <content><![CDATA[<Contents>
-<blockquote>
-<p>转载请注明出处<br />
-<a href="http://blog.csdn.net/guodongAndroid/article/details/74598095">http://blog.csdn.net/guodongAndroid/article/details/74598095</a><br />
-本文来自<a href="http://sunxiaodou.com">【孫小逗的博客】</a></p>
-</blockquote>
-<h2 id="androidstudio中使用aliyun-maven"><a class="markdownIt-Anchor" href="#androidstudio中使用aliyun-maven"></a> AndroidStudio中使用Aliyun Maven</h2>
-<p>Aliyun Maven地址：<a href="http://maven.aliyun.com">http://maven.aliyun.com</a></p>
-<p>在项目级别的build.gradle中添加如下Maven地址：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        maven&#123; url <span class="string">&#x27;http://maven.aliyun.com/nexus/content/groups/public/&#x27;</span>&#125;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        classpath <span class="string">&#x27;com.android.tools.build:gradle:2.3.3&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        maven&#123; url <span class="string">&#x27;http://maven.aliyun.com/nexus/content/groups/public/&#x27;</span>&#125;</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=100% height=86 src="//music.163.com/outchain/player?type=2&id=135768&auto=1&height=66"></iframe>]]></content>
-      <categories>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>android</tag>
-        <tag>androidstudio</tag>
-        <tag>maven</tag>
       </tags>
   </entry>
   <entry>
@@ -3222,57 +3222,6 @@ Kotlin语法：<a href="https://huanglizhuo.gitbooks.io/kotlin-in-chinese/conten
       </tags>
   </entry>
   <entry>
-    <title>2022年终总结</title>
-    <url>/2022/12/31/summary/2022/</url>
-    <content><![CDATA[<h1 id="2022年终总结"><a class="markdownIt-Anchor" href="#2022年终总结"></a> 2022年终总结</h1>
-<h2 id="疫情"><a class="markdownIt-Anchor" href="#疫情"></a> 疫情</h2>
-<p>今年年初疫情“爆发”，当时正值在总公司出差，公司为了同事们的安全着想，号召同事们在公司内办公，同时公司买进了一些床垫、被褥枕头等，还发了个人洗漱用品，就此开始了在公司与同事们吃住办公三个多周。现在回想起来这段与大家共度时艰的经历也是一段美好的回忆。</p>
-<h2 id="文字内容输出"><a class="markdownIt-Anchor" href="#文字内容输出"></a> 文字内容输出</h2>
-<p>做 Android 开发多年，2016年搭建了个人博客，不过一直是荒废状态，正好年初疫情时期在公司内有空闲时间，就把个人博客收拾了一下，重新开始输出，同时也在 <a href="https://juejin.cn/user/4300945216521309">掘金</a> 和个人公众号「guodongAndroid」上发布。</p>
-<p>文章内容主要与以下几个方面相关：</p>
-<ul>
-<li>linphone-sdk-android</li>
-<li>kotlin</li>
-<li>android</li>
-</ul>
-<p><img data-src="/imgs/summary/blog.png" alt="blog" /></p>
-<p><img data-src="/imgs/summary/juejin.png" alt="juejin" /></p>
-<h2 id="视频内容输出"><a class="markdownIt-Anchor" href="#视频内容输出"></a> 视频内容输出</h2>
-<p>视频内容输出纯属巧合吧。下半年在学习 Java 服务端开发，为加强学习记忆，开始时也是以文章的形式输出，后面发现以文章的形式输出较为繁琐并且有些地方以文字的形式描述起来不够通透，存在表述不清的情况，所以考虑以视频的形式输出。</p>
-<p>目前视频主要是 Spring 学习日记：</p>
-<p><img data-src="/imgs/summary/bilibili.png" alt="bilibili" /></p>
-<ul>
-<li><a href="https://space.bilibili.com/10827596/channel/seriesdetail?sid=2865606&amp;ctype=0">《Spring学习日记》更新中，共 6 集</a></li>
-</ul>
-<h2 id="展望2023"><a class="markdownIt-Anchor" href="#展望2023"></a> 展望2023</h2>
-<p>明年可能会主要以视频的形式输出，文字内容输出应该也会有。</p>
-<h3 id="java"><a class="markdownIt-Anchor" href="#java"></a> Java</h3>
-<ol>
-<li>更新完  Spring 学习日记，</li>
-<li>更新  SpringMVC 学习日记，</li>
-<li>更新 MyBatis 学习日记</li>
-</ol>
-<h3 id="openharmony"><a class="markdownIt-Anchor" href="#openharmony"></a> OpenHarmony</h3>
-<p>明年公司可能会转到鸿蒙上面，所以明年可能会更新：</p>
-<ol>
-<li>TypeScript 学习日记</li>
-<li>OpenHarmony 应用开发</li>
-</ol>
-<h3 id="flutter-compose"><a class="markdownIt-Anchor" href="#flutter-compose"></a> Flutter &amp; Compose</h3>
-<p>之前学过一阵子 Flutter 和 Compose，却是没能坚持下来，希望明年能坚持学习下来。</p>
-<h2 id="最后"><a class="markdownIt-Anchor" href="#最后"></a> 最后</h2>
-<p>欢迎大家在 B 站关注我：<strong>孫小逗</strong></p>
-<p>同时也欢迎大家关注微信公众号：「guodongAndroid」。</p>
-<p>2023 继续加油。</p>
-]]></content>
-      <categories>
-        <category>Summary</category>
-      </categories>
-      <tags>
-        <tag>summary</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Servlet入门</title>
     <url>/2023/09/30/servlet/00-servlet-getting-started/</url>
     <content><![CDATA[<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
@@ -3501,6 +3450,128 @@ Kotlin语法：<a href="https://huanglizhuo.gitbooks.io/kotlin-in-chinese/conten
       </tags>
   </entry>
   <entry>
+    <title>2022年终总结</title>
+    <url>/2022/12/31/summary/2022/</url>
+    <content><![CDATA[<h1 id="2022年终总结"><a class="markdownIt-Anchor" href="#2022年终总结"></a> 2022年终总结</h1>
+<h2 id="疫情"><a class="markdownIt-Anchor" href="#疫情"></a> 疫情</h2>
+<p>今年年初疫情“爆发”，当时正值在总公司出差，公司为了同事们的安全着想，号召同事们在公司内办公，同时公司买进了一些床垫、被褥枕头等，还发了个人洗漱用品，就此开始了在公司与同事们吃住办公三个多周。现在回想起来这段与大家共度时艰的经历也是一段美好的回忆。</p>
+<h2 id="文字内容输出"><a class="markdownIt-Anchor" href="#文字内容输出"></a> 文字内容输出</h2>
+<p>做 Android 开发多年，2016年搭建了个人博客，不过一直是荒废状态，正好年初疫情时期在公司内有空闲时间，就把个人博客收拾了一下，重新开始输出，同时也在 <a href="https://juejin.cn/user/4300945216521309">掘金</a> 和个人公众号「guodongAndroid」上发布。</p>
+<p>文章内容主要与以下几个方面相关：</p>
+<ul>
+<li>linphone-sdk-android</li>
+<li>kotlin</li>
+<li>android</li>
+</ul>
+<p><img data-src="/imgs/summary/blog.png" alt="blog" /></p>
+<p><img data-src="/imgs/summary/juejin.png" alt="juejin" /></p>
+<h2 id="视频内容输出"><a class="markdownIt-Anchor" href="#视频内容输出"></a> 视频内容输出</h2>
+<p>视频内容输出纯属巧合吧。下半年在学习 Java 服务端开发，为加强学习记忆，开始时也是以文章的形式输出，后面发现以文章的形式输出较为繁琐并且有些地方以文字的形式描述起来不够通透，存在表述不清的情况，所以考虑以视频的形式输出。</p>
+<p>目前视频主要是 Spring 学习日记：</p>
+<p><img data-src="/imgs/summary/bilibili.png" alt="bilibili" /></p>
+<ul>
+<li><a href="https://space.bilibili.com/10827596/channel/seriesdetail?sid=2865606&amp;ctype=0">《Spring学习日记》更新中，共 6 集</a></li>
+</ul>
+<h2 id="展望2023"><a class="markdownIt-Anchor" href="#展望2023"></a> 展望2023</h2>
+<p>明年可能会主要以视频的形式输出，文字内容输出应该也会有。</p>
+<h3 id="java"><a class="markdownIt-Anchor" href="#java"></a> Java</h3>
+<ol>
+<li>更新完  Spring 学习日记，</li>
+<li>更新  SpringMVC 学习日记，</li>
+<li>更新 MyBatis 学习日记</li>
+</ol>
+<h3 id="openharmony"><a class="markdownIt-Anchor" href="#openharmony"></a> OpenHarmony</h3>
+<p>明年公司可能会转到鸿蒙上面，所以明年可能会更新：</p>
+<ol>
+<li>TypeScript 学习日记</li>
+<li>OpenHarmony 应用开发</li>
+</ol>
+<h3 id="flutter-compose"><a class="markdownIt-Anchor" href="#flutter-compose"></a> Flutter &amp; Compose</h3>
+<p>之前学过一阵子 Flutter 和 Compose，却是没能坚持下来，希望明年能坚持学习下来。</p>
+<h2 id="最后"><a class="markdownIt-Anchor" href="#最后"></a> 最后</h2>
+<p>欢迎大家在 B 站关注我：<strong>孫小逗</strong></p>
+<p>同时也欢迎大家关注微信公众号：「guodongAndroid」。</p>
+<p>2023 继续加油。</p>
+]]></content>
+      <categories>
+        <category>Summary</category>
+      </categories>
+      <tags>
+        <tag>summary</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>2023年终总结</title>
+    <url>/2024/01/13/summary/2023/</url>
+    <content><![CDATA[<h1 id="2023年终总结"><a class="markdownIt-Anchor" href="#2023年终总结"></a> 2023年终总结</h1>
+<iframe src="//player.bilibili.com/player.html?aid=746880613&bvid=BV1WC4y1V7Bs&cid=1294619231&p=1&autoplay=0&muted=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+<p>回首2023年，真切的感觉时间过的真快，古人云“如白驹过隙”，诚不欺我。</p>
+<h2 id="文章内容输出"><a class="markdownIt-Anchor" href="#文章内容输出"></a> 文章内容输出</h2>
+<p>文章内容主要有以下几个方面：</p>
+<ul>
+<li>Kotlin<img data-src="/imgs/summary/2023/kotlin-2023.png" alt="kotlin" /></li>
+<li>Kotlin协程 <img data-src="/imgs/summary/2023/kotlin-coroutines-2023.png" alt="Kotlin协程" /></li>
+<li>OpenHarmony <img data-src="/imgs/summary/2023/openharmony-2023.png" alt="OpenHarmony" /></li>
+<li>Jetpack Compose <img data-src="/imgs/summary/2023/jetpack-compose-2023.png" alt="Jetpack Compose" /></li>
+<li>Servlet <img data-src="/imgs/summary/2023/servlet-2023.png" alt="Servlet" /></li>
+<li>Node CLI <img data-src="/imgs/summary/2023/node-cli-2023.png" alt="Node CLI" /></li>
+<li>MavenCentral <img data-src="/imgs/summary/2023/maven-central-2023.png" alt="MavenCentral" /></li>
+</ul>
+<h2 id="视频内容输出"><a class="markdownIt-Anchor" href="#视频内容输出"></a> 视频内容输出</h2>
+<p>仅有一个视频内容输出，不提也罢😅。</p>
+<h2 id="开源项目"><a class="markdownIt-Anchor" href="#开源项目"></a> 开源项目</h2>
+<p>2023年在开源项目上投入的精力不多，大多数是在10月份之后，主要是维护以下两个项目。</p>
+<p><img data-src="/imgs/summary/2023/github-2023.png" alt="github" /></p>
+<ul>
+<li>
+<p><a href="https://github.com/guodongAndroid/Mask">Mask</a></p>
+<ul>
+<li>适配 AGP 8.0</li>
+<li>适配 Kotlin K2 Compiler</li>
+</ul>
+</li>
+<li>
+<p><a href="https://github.com/guodongAndroid/Sword">Sword</a></p>
+<ul>
+<li>适配 Kotlin K2 Compiler</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结2023"><a class="markdownIt-Anchor" href="#总结2023"></a> 总结2023</h2>
+<p>立下的 Flags 完成度总是差强人意。</p>
+<p>2023又是懈怠的一年，Spring 没有继续学习，SpringMVC 和 MyBatis 就更不用提了，唯一欣慰的是在 OpenHarmony 和 Compose 上有点产出，挖的开源项目的坑也有在填。</p>
+<p>总结起来，归根结底还是自驱力不行。</p>
+<h2 id="展望2024"><a class="markdownIt-Anchor" href="#展望2024"></a> 展望2024</h2>
+<p>计划总是赶不上变化，但是没有计划就是漫无目的的乱飞，所以还是列个小目标，万一实现了呢。</p>
+<h3 id="java"><a class="markdownIt-Anchor" href="#java"></a> Java</h3>
+<p>Java 还是延续2023年的目标吧，希望可以坚持下去。</p>
+<ol>
+<li>更新完  Spring 学习日记，</li>
+<li>更新  SpringMVC 学习日记，</li>
+<li>更新 MyBatis 学习日记</li>
+</ol>
+<h3 id="openharmony"><a class="markdownIt-Anchor" href="#openharmony"></a> <s>OpenHarmony</s></h3>
+<p><strong>手头没有了 OpenHarmony 物理设备，OpenHarmony 暂停一下，接下来可能会关注华为的 HarmonyOS Next。</strong></p>
+<p><s>明年公司可能会转到鸿蒙上面，所以明年可能会更新：</s></p>
+<ol>
+<li><s>TypeScript 学习日记</s></li>
+<li><s>OpenHarmony 应用开发</s></li>
+</ol>
+<h3 id="compose"><a class="markdownIt-Anchor" href="#compose"></a> Compose</h3>
+<p>一直对 Dart 语言不感冒，所以对于 Flutter 的兴趣也不大，导致 Flutter 一直没有坚持学习下去，接下来打算放弃对 Flutter 的学习，转而坚持学习 Compose，随着 Compose Multiplatform 的稳定，Compose 的跨平台能力也有很大提升。</p>
+<h2 id="最后"><a class="markdownIt-Anchor" href="#最后"></a> 最后</h2>
+<p>欢迎大家在 B 站关注我：<strong>孫小逗</strong></p>
+<p>同时也欢迎大家关注微信公众号：「<strong>guodongAndroid</strong>」</p>
+<p>2024 继续加油。</p>
+]]></content>
+      <categories>
+        <category>Summary</category>
+      </categories>
+      <tags>
+        <tag>summary</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Android-自定义View-仿某米的触摸屏测试</title>
     <url>/2022/07/28/Android/TouchView/touch-view/</url>
     <content><![CDATA[<h1 id="android-自定义view-仿某米的触摸屏测试"><a class="markdownIt-Anchor" href="#android-自定义view-仿某米的触摸屏测试"></a> Android-自定义View-仿某米的触摸屏测试</h1>
@@ -3666,182 +3737,6 @@ Kotlin语法：<a href="https://huanglizhuo.gitbooks.io/kotlin-in-chinese/conten
       <tags>
         <tag>android</tag>
         <tag>view</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用Kotlin协程的崩溃纪实(一)</title>
-    <url>/2023/04/07/Kotlin/coroutines/00-for-in-crash/</url>
-    <content><![CDATA[<h1 id="使用kotlin协程的崩溃纪实一"><a class="markdownIt-Anchor" href="#使用kotlin协程的崩溃纪实一"></a> 使用Kotlin协程的崩溃纪实(一)</h1>
-<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
-<p>由于笔者对Kotlin协程缺乏深刻的理解以及充分的实践，导致在实际工作中使用Kotlin协程时遇到一些崩溃的问题。</p>
-<p>那么本文主要记录遇到的这些崩溃问题，这是其中之一。</p>
-<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
-<p>在Kotlin协程中如果不能合理的使用<code>for-in</code>循环，可能会抛出<code>ConcurrentModificationException</code>异常导致崩溃。</p>
-<h2 id="伪代码"><a class="markdownIt-Anchor" href="#伪代码"></a> 伪代码</h2>
-<p>下面是符合背景中描述的伪代码：</p>
-<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> ml = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0.</span><span class="number">.10</span>) &#123;</span><br><span class="line">        ml.add(i)</span><br><span class="line">    &#125;</span><br><span class="line">    println(ml)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> run = RunSuspend&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> scope = CoroutineScope(EmptyCoroutineContext)</span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程A</span></span><br><span class="line">		<span class="keyword">try</span>	&#123;</span><br><span class="line">            <span class="keyword">for</span> (i <span class="keyword">in</span> ml) &#123;</span><br><span class="line">        		log(<span class="string">&quot;<span class="subst">$&#123;suspendWork(<span class="number">500</span>L)&#125;</span>: <span class="variable">$i</span>&quot;</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			run.resumeWith(<span class="number">1</span>)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">            run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> await = RunSuspend&lt;<span class="built_in">Boolean</span>&gt;()</span><br><span class="line">	await.await(<span class="number">1_000L</span>)</span><br><span class="line">    </span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程B</span></span><br><span class="line">        log(<span class="string">&quot;Add 11: <span class="subst">$&#123;ml.add(<span class="number">11</span>)&#125;</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> code = run.await()</span><br><span class="line">    log(<span class="string">&quot;Finish with [<span class="variable">$code</span>]&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">suspendWork</span><span class="params">(timeout: <span class="type">Long</span>)</span></span> = suspendCoroutine&lt;<span class="built_in">Boolean</span>&gt; &#123; continuation -&gt;</span><br><span class="line">    thread &#123;</span><br><span class="line">        Thread.sleep(timeout)</span><br><span class="line">        continuation.resume(Random.nextBoolean())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> DF = SimpleDateFormat(<span class="string">&quot;HH:mm:ss.SSS&quot;</span>)</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">log</span><span class="params">(any: <span class="type">Any</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;[<span class="subst">$&#123;DF.format(Date(System.currentTimeMillis()))&#125;</span> <span class="subst">$&#123;Thread.currentThread().name&#125;</span>]: <span class="variable">$any</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的伪代码大致的逻辑如下：</p>
-<ol>
-<li>创建一个可变列表<code>ml</code>并添加[0, 10]这11条数据，</li>
-<li>创建一个<code>RunSuspend</code>的实例<code>run</code>，用于主线程等待协程执行完毕，否则主线程退出，协程无法执行完毕，</li>
-<li>创建一个协程作用域<code>scope，</code>启动一个协程A，在协程中执行<code>for-in</code>循环，在循环中调用挂起函数<code>suspendWork</code>模拟执行耗时任务，其每500ms输出一条日志，循环执行完毕后或抛出异常时调用<code>run.resumeWith</code>通知协程执行完毕并停止阻塞主线程，</li>
-<li>再创建一个<code>RunSuspend</code>的实例<code>await</code>，用于阻塞主线程1000ms，然后启动一个新的协程B为可变列表<code>ml</code>新增一条数据，</li>
-<li>调用<code>run.await</code>阻塞主线程并等待协程A执行完毕。</li>
-</ol>
-<p>伪代码执行的期望结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:10:39.588 DefaultDispatcher-worker-1]: true: 0</span><br><span class="line">[22:10:40.085 DefaultDispatcher-worker-1]: Add 11: true</span><br><span class="line">[22:10:40.095 DefaultDispatcher-worker-1]: false: 1</span><br><span class="line">[22:10:40.598 DefaultDispatcher-worker-1]: true: 2</span><br><span class="line">[22:10:41.104 DefaultDispatcher-worker-1]: true: 3</span><br><span class="line">[22:10:41.610 DefaultDispatcher-worker-1]: true: 4</span><br><span class="line">[22:10:42.114 DefaultDispatcher-worker-1]: false: 5</span><br><span class="line">[22:10:42.619 DefaultDispatcher-worker-1]: false: 6</span><br><span class="line">[22:10:43.122 DefaultDispatcher-worker-1]: false: 7</span><br><span class="line">[22:10:43.628 DefaultDispatcher-worker-1]: false: 8</span><br><span class="line">[22:10:44.132 DefaultDispatcher-worker-1]: true: 9</span><br><span class="line">[22:10:44.637 DefaultDispatcher-worker-1]: false: 10</span><br><span class="line">[22:10:44.638 main]: Finish with [1]</span><br></pre></td></tr></table></figure>
-<p>笔者期望伪代码可以正常的执行完毕。</p>
-<p>但是，实际上伪代码执行的结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:11:34.338 DefaultDispatcher-worker-1]: false: 0</span><br><span class="line">[22:11:34.836 DefaultDispatcher-worker-1]: Add 11: true</span><br><span class="line">[22:11:34.839 DefaultDispatcher-worker-1]: true: 1</span><br><span class="line">[22:11:34.840 main]: Finish with [-1]</span><br><span class="line">java.util.ConcurrentModificationException</span><br><span class="line">	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:901)</span><br><span class="line">	at java.util.ArrayList$Itr.next(ArrayList.java:851)</span><br><span class="line">	at CoroutinesKt.case1(Coroutines.kt:56)</span><br><span class="line">	at CoroutinesKt.access$case1(Coroutines.kt:1)</span><br><span class="line">	at CoroutinesKt$case1$1.invokeSuspend(Coroutines.kt)</span><br><span class="line">	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)</span><br><span class="line">	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:571)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:678)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:665)</span><br></pre></td></tr></table></figure>
-<p>执行结果分析：</p>
-<ol>
-<li>协程中的<code>for-in</code>循环输出了2条日志，每次输出日志时，其实已经是每次遍历执行500ms之后了，</li>
-<li>阻塞主线程1000ms后，我们在启动的协程B中为可变列表<code>ml</code>新增了一条数据：11，</li>
-<li>在第三次遍历时协程A中抛出了一个异常：<code>java.util.ConcurrentModificationException</code>。</li>
-</ol>
-<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
-<p>为什么执行结果会与我们期望的结果不同呢？接下来我们分析下原因。</p>
-<p>首先我们再仔细观察下协程中的代码：</p>
-<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line">scope.launch &#123;</span><br><span class="line">    <span class="keyword">try</span>	&#123;</span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> ml) &#123;</span><br><span class="line">            log(<span class="string">&quot;<span class="subst">$&#123;suspendWork(<span class="number">500</span>L)&#125;</span>: <span class="variable">$i</span>&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        run.resumeWith(<span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">        e.printStackTrace()</span><br><span class="line">        run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>按照笔者的想法，<code>for-in</code>循环的执行逻辑如下：</p>
-<ol>
-<li>循环体是在同一个线程中执行，</li>
-<li>循环体是同步且顺序执行的，</li>
-</ol>
-<p>可以简单理解循环体的执行是线程安全的。</p>
-<h3 id="真的线程安全么"><a class="markdownIt-Anchor" href="#真的线程安全么"></a> 真的线程安全么？</h3>
-<p>针对第一点，目前的<code>scope</code>没有指定运行的线程，那么协程默认是在<code>Default</code>线程池中执行，同时循环体的每次执行都会触发两次线程切换，其一是从<code>launch</code>协程体执行的线程切换至<code>suspendWork</code>挂起函数执行的线程，其二是<code>suspendWork</code>挂起函数执行完毕后，从<code>suspendWork</code>挂断函数执行线程切换回<code>launch</code>协程体执行的线程，而<code>launch</code>协程体执行的线程由<code>Default</code>线程池分配，线程池分配线程存在不固定性，所以循环体在同一个线程中执行不能成立，自然不能称为是线程安全的。</p>
-<h3 id="为什么会有这样的想法呢"><a class="markdownIt-Anchor" href="#为什么会有这样的想法呢"></a> 为什么会有这样的想法呢？</h3>
-<p>正如前言中所说，笔者对协程缺乏深刻的理解以及充分的实践，而协程的一大特点是：使用「同步代码」写出异步程序。</p>
-<p>其实笔者就是被「同步代码」这一表象所“欺骗”，这也是笔者对协程缺乏深刻理解的佐证。</p>
-<p>使用「同步代码」写出异步程序，对程序猿来说这是多么美好的事情，但是如果对协程理解的不够深入，不清楚它背后的逻辑，那么很容易就像笔者一样被它简单的表象所“欺骗”。</p>
-<p>针对第二点，协程的特点是使用「同步代码」写出异步程序，在循环体中调用了挂起函数，那么循环逻辑必然是异步程序，所以第二点也不成立。</p>
-<h3 id="异常原因"><a class="markdownIt-Anchor" href="#异常原因"></a> 异常原因</h3>
-<p><code>in</code>在集合遍历时是一个操作符重载关键字，我们把鼠标放在<code>in</code>关键字上，然后按住<code>ctrl(windows)</code>或<code>command(macos)</code>键，再点击鼠标左键，会看到它其实重载的是<code>Iterator</code>的<code>next()</code>和<code>hasNext()</code>方法，所以<code>for-in</code>循环其实是通过<code>Iterator</code>来使用的。</p>
-<p>在<code>Iterator</code>的<code>next()</code>方法中会检查集合是否被修改，如果被修改则抛出<code>java.util.ConcurrentModificationException</code>异常。</p>
-<h3 id="如何修复"><a class="markdownIt-Anchor" href="#如何修复"></a> 如何修复？</h3>
-<p>修复方案有多种，比如：</p>
-<ol>
-<li>在协程体中，先对<code>ml</code>集合进行一次浅拷贝赋值给<code>ml2</code>，然后遍历<code>ml2</code>，如此便不会抛出上述异常，但是无法遍历<code>ml</code>中新增的元素，</li>
-<li>使用加锁的方式，遍历<code>ml</code>集合时不允许其他线程对<code>ml</code>集合进行更新，</li>
-<li>其他方式，</li>
-</ol>
-<p>具体选择哪种修复方案，这里可以根据业务场景的不同而选择不同的修复方案。</p>
-<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
-<p>本文记录的笔者在使用Kotlin协程过程中遇到的<code>for-in</code>崩溃问题，通过伪代码笔者复现了崩溃问题，并分析了问题产生的原因以及给出一些修复方案供选择参考。</p>
-<p>其中最重要的是发现自身的不足，发现自己的不足也是一种进步。</p>
-<p>总之就是：</p>
-<blockquote>
-<p>纸上得来终觉浅，绝知此事要躬行。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Kotlin</category>
-      </categories>
-      <tags>
-        <tag>android</tag>
-        <tag>kotlin</tag>
-        <tag>coroutines</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用Kotlin协程的崩溃纪实(二)</title>
-    <url>/2023/04/11/Kotlin/coroutines/01-index-out-of-bounds-crash/</url>
-    <content><![CDATA[<h1 id="使用kotlin协程的崩溃纪实二"><a class="markdownIt-Anchor" href="#使用kotlin协程的崩溃纪实二"></a> 使用Kotlin协程的崩溃纪实(二)</h1>
-<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
-<p>由于笔者对Kotlin协程缺乏深刻的理解以及充分的实践，导致在实际工作中使用Kotlin协程时遇到一些崩溃的问题。</p>
-<p>那么本文主要记录遇到的这些崩溃问题，这是其中之二。</p>
-<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
-<p>在Kotlin协程中如果使用下标访问集合数据，那么可能会抛出<code>IndexOutOfBoundsException</code>异常导致崩溃。</p>
-<blockquote>
-<p>本文记录的崩溃情况与<a href="https://www.sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/">第一篇</a>中的属于同一种类型，只是触发的代码逻辑和业务逻辑略有不同，所以本文的风格与第一篇雷同。</p>
-</blockquote>
-<h2 id="伪代码"><a class="markdownIt-Anchor" href="#伪代码"></a> 伪代码</h2>
-<p>下面是符合背景中描述的伪代码：</p>
-<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> ml = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0.</span><span class="number">.10</span>) &#123;</span><br><span class="line">        ml.add(i)</span><br><span class="line">    &#125;</span><br><span class="line">    println(ml)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> run = RunSuspendKt&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> scope = CoroutineScope(EmptyCoroutineContext)</span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程A</span></span><br><span class="line">        <span class="keyword">try</span>	&#123;</span><br><span class="line">            <span class="keyword">val</span> indexOf = ml.indexOfFirst &#123; it == <span class="number">10</span> &#125;</span><br><span class="line">            log(<span class="string">&quot;Element(10) indexOf: <span class="variable">$indexOf</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            suspendWork(<span class="number">1_000L</span>)</span><br><span class="line">            <span class="keyword">val</span> value = ml[indexOf]</span><br><span class="line">            log(<span class="string">&quot;IndexOf(<span class="variable">$indexOf</span>) element: <span class="variable">$value</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            run.resumeWith(<span class="number">1</span>)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">            run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> await = RunSuspendKt&lt;<span class="built_in">Boolean</span>&gt;()</span><br><span class="line">    await.await(<span class="number">500L</span>)</span><br><span class="line"></span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程B</span></span><br><span class="line">        log(<span class="string">&quot;Remove element(10): <span class="subst">$&#123;ml.remove(<span class="number">10</span>)&#125;</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> code = run.await()</span><br><span class="line">    log(<span class="string">&quot;Finish with [<span class="variable">$code</span>]&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">suspendWork</span><span class="params">(timeout: <span class="type">Long</span>)</span></span> = suspendCoroutine&lt;<span class="built_in">Boolean</span>&gt; &#123; continuation -&gt;</span><br><span class="line">    thread &#123;</span><br><span class="line">        Thread.sleep(timeout)</span><br><span class="line">        continuation.resume(Random.nextBoolean())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> DF = SimpleDateFormat(<span class="string">&quot;HH:mm:ss.SSS&quot;</span>)</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">log</span><span class="params">(any: <span class="type">Any</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;[<span class="subst">$&#123;DF.format(Date(System.currentTimeMillis()))&#125;</span> <span class="subst">$&#123;Thread.currentThread().name&#125;</span>]: <span class="variable">$any</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上面的伪代码大致的逻辑如下：</p>
-<ol>
-<li>
-<p>创建一个可变列表<code>ml</code>并添加**[0, 10]**这11条数据，</p>
-</li>
-<li>
-<p>创建一个<code>RunSuspend</code>的实例<code>run</code>，用于主线程等待协程执行完毕，否则主线程退出，协程无法执行完毕，</p>
-</li>
-<li>
-<p>创建一个协程作用域<code>scope，</code>启动一个<strong>协程A</strong>，</p>
-<ol>
-<li>在协程中首先获取<code>Element(10)</code>的下标(<code>indexOf</code>)，</li>
-<li>然后调用<code>suspendWork</code>挂起函数模拟执行耗时任务，</li>
-<li><code>suspendWork</code>挂起函数执行完毕后，再通过第一步获取的下标(<code>indexOf</code>)获取对应的<code>Element</code>，</li>
-<li>协程体执行完毕后或抛出异常时调用<code>run.resumeWith</code>通知主线程协程执行完毕并停止阻塞主线程，</li>
-</ol>
-</li>
-<li>
-<p>再创建一个<code>RunSuspend</code>的实例<code>await</code>，用于阻塞主线程<strong>500毫秒</strong>，然后启动一个新的<strong>协程B</strong>移除<code>ml</code>可变列表中的<code>Element(10)</code>，</p>
-</li>
-<li>
-<p>调用<code>run.await</code>阻塞主线程并等待<strong>协程A</strong>执行完毕。</p>
-</li>
-</ol>
-<p>伪代码执行的期望结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:00:37.575 DefaultDispatcher-worker-1]: Element(10) indexOf: 10</span><br><span class="line">[22:00:38.080 DefaultDispatcher-worker-1]: Remove element(10): true</span><br><span class="line">[22:00:38.581 DefaultDispatcher-worker-1]: IndexOf(10) element: 10</span><br><span class="line">[22:00:38.581 main]: Finish with [1]</span><br></pre></td></tr></table></figure>
-<p>笔者期望伪代码可以正常的执行完毕。</p>
-<p>但是，实际上伪代码执行的结果如下：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:01:37.814 DefaultDispatcher-worker-1]: Element(10) indexOf: 10</span><br><span class="line">[22:01:38.330 DefaultDispatcher-worker-1]: Remove element(10): true</span><br><span class="line">java.lang.IndexOutOfBoundsException: Index: 10, Size: 10</span><br><span class="line">	at java.util.ArrayList.rangeCheck(ArrayList.java:657)</span><br><span class="line">	at java.util.ArrayList.get(ArrayList.java:433)</span><br><span class="line">	at CoroutinesCrashKt$main$1.invokeSuspend(CoroutinesCrash.kt:31)</span><br><span class="line">	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)</span><br><span class="line">	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:571)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:678)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:665)</span><br><span class="line">[22:01:38.830 main]: Finish with [-1]</span><br></pre></td></tr></table></figure>
-<p>执行结果分析：</p>
-<ol>
-<li><strong>协程A</strong>中仅输出了第一步获取到<code>Element(10)</code>下标(<code>indexOf</code>)的日志，</li>
-<li><code>await</code>实例阻塞主线程<strong>500毫秒</strong>后，我们在启动的<strong>协程B</strong>中移除<code>ml</code>可变列表中的<code>Element(10)</code>，并输出日志移除成功：<code>true</code>，</li>
-<li>回到<strong>协程A</strong>，等到协程体中的<code>suspendWork</code>挂起函数执行完毕后，想通过下标(<code>indexOf</code>)获取对应的<code>Element</code>时，抛出异常，</li>
-</ol>
-<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
-<p>为什么执行结果会与我们期望的结果不同呢？接下来我们分析下原因。</p>
-<p>首先我们再仔细观察下<strong>协程A</strong>中的代码：</p>
-<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line">scope.launch &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">val</span> indexOf = ml.indexOfFirst &#123; it == <span class="number">10</span> &#125;</span><br><span class="line">        log(<span class="string">&quot;Element(10) indexOf: <span class="variable">$indexOf</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        suspendWork(<span class="number">1_000L</span>)</span><br><span class="line">        <span class="keyword">val</span> value = ml[indexOf]</span><br><span class="line">        log(<span class="string">&quot;IndexOf(<span class="variable">$indexOf</span>) element: <span class="variable">$value</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        run.resumeWith(<span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">        e.printStackTrace()</span><br><span class="line">        run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>按照笔者的想法，<strong>协程A</strong>中协程体的执行逻辑如下：</p>
-<ol>
-<li>协程体是在同一个线程中执行，</li>
-<li>协程体是同步且顺序执行的，</li>
-</ol>
-<p>可以简单理解协程体的执行是线程安全的。</p>
-<h3 id="真的线程安全么"><a class="markdownIt-Anchor" href="#真的线程安全么"></a> 真的线程安全么？</h3>
-<p>针对第一点，目前的<code>scope</code>没有指定运行的线程，那么协程默认是在<code>Default</code>线程池中执行，同时循环体的每次执行都会触发两次线程切换：</p>
-<ol>
-<li>其一是从<code>launch</code>协程体执行的线程切换至<code>suspendWork</code>挂起函数执行的线程，</li>
-<li>其二是<code>suspendWork</code>挂起函数执行完毕后，从<code>suspendWork</code>挂断函数执行线程切换回<code>launch</code>协程体执行的线程，</li>
-</ol>
-<p>而<code>launch</code>协程体执行的线程由<code>Default</code>线程池分配，线程池分配线程存在不固定性，所以协程体在同一个线程中执行不能成立，自然不能称为是线程安全的。</p>
-<h3 id="为什么会有这样的想法呢"><a class="markdownIt-Anchor" href="#为什么会有这样的想法呢"></a> 为什么会有这样的想法呢？</h3>
-<p>正如前言中所说，笔者对协程缺乏深刻的理解以及充分的实践，而协程的一大特点是：使用「同步代码」写出异步程序。</p>
-<p>其实笔者就是被「同步代码」这一表象所“欺骗”，这也是笔者对协程缺乏深刻理解的佐证。</p>
-<p>使用「同步代码」写出异步程序，对程序猿来说这是多么美好的事情，但是如果对协程理解的不够深入，不清楚它背后的逻辑，那么很容易就像笔者一样被它简单的表象所“欺骗”。</p>
-<p>针对第二点，协程的特点是使用「同步代码」写出异步程序，在协程体中调用了挂起函数，那么协程体中的逻辑必然是异步程序，所以第二点也不成立。</p>
-<h3 id="异常原因"><a class="markdownIt-Anchor" href="#异常原因"></a> 异常原因</h3>
-<p>本文记录的崩溃原因比较好分析：<strong>协程A</strong>第一步中获取的下标(<code>idnexOf</code>)，在经过<strong>协程B</strong>移除<code>Element(10)</code>之后就变成了一个过期的下标(<code>indexOf</code>)，等到<strong>协程A</strong>中<code>suspendWork</code>挂起函数执行完毕，想通过过期的下标(<code>indexOf</code>)获取对应的<code>Element</code>时，必然会抛出<code>IndexOutOfBoundsException</code>异常。</p>
-<h3 id="如何修复"><a class="markdownIt-Anchor" href="#如何修复"></a> 如何修复？</h3>
-<p>修复方案有多种，比如：</p>
-<ol>
-<li>在<strong>协程A</strong>第一步获取到下标(<code>indexOf</code>)之后，<code>suspendWork</code>挂起函数之前，通过第一步获取到的下标(<code>indexOf</code>)获取对应的<code>Element</code>，</li>
-<li>在<strong>协程A</strong>中的<code>suspendWork</code>挂起函数执行完毕后，需判断下标(<code>indexOf</code>)是否过期，</li>
-<li>使用加锁的方式，<strong>协程A</strong>操作<code>ml</code>集合时不允许其他协程对<code>ml</code>集合进行更新，</li>
-<li>其他方式，</li>
-</ol>
-<p>具体选择哪种修复方案，这里可以根据业务场景的不同而选择不同的修复方案。</p>
-<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
-<p>本文记录了笔者在使用Kotlin协程过程中遇到的下标过期导致的崩溃问题，通过伪代码笔者复现了崩溃问题，并分析了问题产生的原因以及给出一些修复方案供选择参考。</p>
-<p>本文与<a href="https://www.sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/">第一篇</a>中记录的情况，笔者都是被协程特点：<strong>使用「同步代码」写出异步程序</strong>所&quot;欺骗&quot;，所以在协程体中调用其他的挂起函数时，挂起函数的前后代码最好不要有关联性，最好保持独立性，否则可能会发生意想不到的情况，归根结底还是笔者对协程缺乏深刻的理解以及充分的实践。</p>
-<p>其中最重要的是发现自身的不足，发现自身的不足也是一种进步。</p>
-<blockquote>
-<p>纸上得来终觉浅，绝知此事要躬行。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Kotlin</category>
-      </categories>
-      <tags>
-        <tag>android</tag>
-        <tag>kotlin</tag>
-        <tag>coroutines</tag>
       </tags>
   </entry>
   <entry>
@@ -4336,6 +4231,182 @@ Kotlin语法：<a href="https://huanglizhuo.gitbooks.io/kotlin-in-chinese/conten
       <tags>
         <tag>android</tag>
         <tag>kotlin</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Kotlin协程的崩溃纪实(一)</title>
+    <url>/2023/04/07/Kotlin/coroutines/00-for-in-crash/</url>
+    <content><![CDATA[<h1 id="使用kotlin协程的崩溃纪实一"><a class="markdownIt-Anchor" href="#使用kotlin协程的崩溃纪实一"></a> 使用Kotlin协程的崩溃纪实(一)</h1>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>由于笔者对Kotlin协程缺乏深刻的理解以及充分的实践，导致在实际工作中使用Kotlin协程时遇到一些崩溃的问题。</p>
+<p>那么本文主要记录遇到的这些崩溃问题，这是其中之一。</p>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>在Kotlin协程中如果不能合理的使用<code>for-in</code>循环，可能会抛出<code>ConcurrentModificationException</code>异常导致崩溃。</p>
+<h2 id="伪代码"><a class="markdownIt-Anchor" href="#伪代码"></a> 伪代码</h2>
+<p>下面是符合背景中描述的伪代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> ml = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0.</span><span class="number">.10</span>) &#123;</span><br><span class="line">        ml.add(i)</span><br><span class="line">    &#125;</span><br><span class="line">    println(ml)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> run = RunSuspend&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> scope = CoroutineScope(EmptyCoroutineContext)</span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程A</span></span><br><span class="line">		<span class="keyword">try</span>	&#123;</span><br><span class="line">            <span class="keyword">for</span> (i <span class="keyword">in</span> ml) &#123;</span><br><span class="line">        		log(<span class="string">&quot;<span class="subst">$&#123;suspendWork(<span class="number">500</span>L)&#125;</span>: <span class="variable">$i</span>&quot;</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			run.resumeWith(<span class="number">1</span>)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">            run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> await = RunSuspend&lt;<span class="built_in">Boolean</span>&gt;()</span><br><span class="line">	await.await(<span class="number">1_000L</span>)</span><br><span class="line">    </span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程B</span></span><br><span class="line">        log(<span class="string">&quot;Add 11: <span class="subst">$&#123;ml.add(<span class="number">11</span>)&#125;</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> code = run.await()</span><br><span class="line">    log(<span class="string">&quot;Finish with [<span class="variable">$code</span>]&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">suspendWork</span><span class="params">(timeout: <span class="type">Long</span>)</span></span> = suspendCoroutine&lt;<span class="built_in">Boolean</span>&gt; &#123; continuation -&gt;</span><br><span class="line">    thread &#123;</span><br><span class="line">        Thread.sleep(timeout)</span><br><span class="line">        continuation.resume(Random.nextBoolean())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> DF = SimpleDateFormat(<span class="string">&quot;HH:mm:ss.SSS&quot;</span>)</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">log</span><span class="params">(any: <span class="type">Any</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;[<span class="subst">$&#123;DF.format(Date(System.currentTimeMillis()))&#125;</span> <span class="subst">$&#123;Thread.currentThread().name&#125;</span>]: <span class="variable">$any</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的伪代码大致的逻辑如下：</p>
+<ol>
+<li>创建一个可变列表<code>ml</code>并添加[0, 10]这11条数据，</li>
+<li>创建一个<code>RunSuspend</code>的实例<code>run</code>，用于主线程等待协程执行完毕，否则主线程退出，协程无法执行完毕，</li>
+<li>创建一个协程作用域<code>scope，</code>启动一个协程A，在协程中执行<code>for-in</code>循环，在循环中调用挂起函数<code>suspendWork</code>模拟执行耗时任务，其每500ms输出一条日志，循环执行完毕后或抛出异常时调用<code>run.resumeWith</code>通知协程执行完毕并停止阻塞主线程，</li>
+<li>再创建一个<code>RunSuspend</code>的实例<code>await</code>，用于阻塞主线程1000ms，然后启动一个新的协程B为可变列表<code>ml</code>新增一条数据，</li>
+<li>调用<code>run.await</code>阻塞主线程并等待协程A执行完毕。</li>
+</ol>
+<p>伪代码执行的期望结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:10:39.588 DefaultDispatcher-worker-1]: true: 0</span><br><span class="line">[22:10:40.085 DefaultDispatcher-worker-1]: Add 11: true</span><br><span class="line">[22:10:40.095 DefaultDispatcher-worker-1]: false: 1</span><br><span class="line">[22:10:40.598 DefaultDispatcher-worker-1]: true: 2</span><br><span class="line">[22:10:41.104 DefaultDispatcher-worker-1]: true: 3</span><br><span class="line">[22:10:41.610 DefaultDispatcher-worker-1]: true: 4</span><br><span class="line">[22:10:42.114 DefaultDispatcher-worker-1]: false: 5</span><br><span class="line">[22:10:42.619 DefaultDispatcher-worker-1]: false: 6</span><br><span class="line">[22:10:43.122 DefaultDispatcher-worker-1]: false: 7</span><br><span class="line">[22:10:43.628 DefaultDispatcher-worker-1]: false: 8</span><br><span class="line">[22:10:44.132 DefaultDispatcher-worker-1]: true: 9</span><br><span class="line">[22:10:44.637 DefaultDispatcher-worker-1]: false: 10</span><br><span class="line">[22:10:44.638 main]: Finish with [1]</span><br></pre></td></tr></table></figure>
+<p>笔者期望伪代码可以正常的执行完毕。</p>
+<p>但是，实际上伪代码执行的结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:11:34.338 DefaultDispatcher-worker-1]: false: 0</span><br><span class="line">[22:11:34.836 DefaultDispatcher-worker-1]: Add 11: true</span><br><span class="line">[22:11:34.839 DefaultDispatcher-worker-1]: true: 1</span><br><span class="line">[22:11:34.840 main]: Finish with [-1]</span><br><span class="line">java.util.ConcurrentModificationException</span><br><span class="line">	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:901)</span><br><span class="line">	at java.util.ArrayList$Itr.next(ArrayList.java:851)</span><br><span class="line">	at CoroutinesKt.case1(Coroutines.kt:56)</span><br><span class="line">	at CoroutinesKt.access$case1(Coroutines.kt:1)</span><br><span class="line">	at CoroutinesKt$case1$1.invokeSuspend(Coroutines.kt)</span><br><span class="line">	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)</span><br><span class="line">	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:571)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:678)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:665)</span><br></pre></td></tr></table></figure>
+<p>执行结果分析：</p>
+<ol>
+<li>协程中的<code>for-in</code>循环输出了2条日志，每次输出日志时，其实已经是每次遍历执行500ms之后了，</li>
+<li>阻塞主线程1000ms后，我们在启动的协程B中为可变列表<code>ml</code>新增了一条数据：11，</li>
+<li>在第三次遍历时协程A中抛出了一个异常：<code>java.util.ConcurrentModificationException</code>。</li>
+</ol>
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
+<p>为什么执行结果会与我们期望的结果不同呢？接下来我们分析下原因。</p>
+<p>首先我们再仔细观察下协程中的代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line">scope.launch &#123;</span><br><span class="line">    <span class="keyword">try</span>	&#123;</span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> ml) &#123;</span><br><span class="line">            log(<span class="string">&quot;<span class="subst">$&#123;suspendWork(<span class="number">500</span>L)&#125;</span>: <span class="variable">$i</span>&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        run.resumeWith(<span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">        e.printStackTrace()</span><br><span class="line">        run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照笔者的想法，<code>for-in</code>循环的执行逻辑如下：</p>
+<ol>
+<li>循环体是在同一个线程中执行，</li>
+<li>循环体是同步且顺序执行的，</li>
+</ol>
+<p>可以简单理解循环体的执行是线程安全的。</p>
+<h3 id="真的线程安全么"><a class="markdownIt-Anchor" href="#真的线程安全么"></a> 真的线程安全么？</h3>
+<p>针对第一点，目前的<code>scope</code>没有指定运行的线程，那么协程默认是在<code>Default</code>线程池中执行，同时循环体的每次执行都会触发两次线程切换，其一是从<code>launch</code>协程体执行的线程切换至<code>suspendWork</code>挂起函数执行的线程，其二是<code>suspendWork</code>挂起函数执行完毕后，从<code>suspendWork</code>挂断函数执行线程切换回<code>launch</code>协程体执行的线程，而<code>launch</code>协程体执行的线程由<code>Default</code>线程池分配，线程池分配线程存在不固定性，所以循环体在同一个线程中执行不能成立，自然不能称为是线程安全的。</p>
+<h3 id="为什么会有这样的想法呢"><a class="markdownIt-Anchor" href="#为什么会有这样的想法呢"></a> 为什么会有这样的想法呢？</h3>
+<p>正如前言中所说，笔者对协程缺乏深刻的理解以及充分的实践，而协程的一大特点是：使用「同步代码」写出异步程序。</p>
+<p>其实笔者就是被「同步代码」这一表象所“欺骗”，这也是笔者对协程缺乏深刻理解的佐证。</p>
+<p>使用「同步代码」写出异步程序，对程序猿来说这是多么美好的事情，但是如果对协程理解的不够深入，不清楚它背后的逻辑，那么很容易就像笔者一样被它简单的表象所“欺骗”。</p>
+<p>针对第二点，协程的特点是使用「同步代码」写出异步程序，在循环体中调用了挂起函数，那么循环逻辑必然是异步程序，所以第二点也不成立。</p>
+<h3 id="异常原因"><a class="markdownIt-Anchor" href="#异常原因"></a> 异常原因</h3>
+<p><code>in</code>在集合遍历时是一个操作符重载关键字，我们把鼠标放在<code>in</code>关键字上，然后按住<code>ctrl(windows)</code>或<code>command(macos)</code>键，再点击鼠标左键，会看到它其实重载的是<code>Iterator</code>的<code>next()</code>和<code>hasNext()</code>方法，所以<code>for-in</code>循环其实是通过<code>Iterator</code>来使用的。</p>
+<p>在<code>Iterator</code>的<code>next()</code>方法中会检查集合是否被修改，如果被修改则抛出<code>java.util.ConcurrentModificationException</code>异常。</p>
+<h3 id="如何修复"><a class="markdownIt-Anchor" href="#如何修复"></a> 如何修复？</h3>
+<p>修复方案有多种，比如：</p>
+<ol>
+<li>在协程体中，先对<code>ml</code>集合进行一次浅拷贝赋值给<code>ml2</code>，然后遍历<code>ml2</code>，如此便不会抛出上述异常，但是无法遍历<code>ml</code>中新增的元素，</li>
+<li>使用加锁的方式，遍历<code>ml</code>集合时不允许其他线程对<code>ml</code>集合进行更新，</li>
+<li>其他方式，</li>
+</ol>
+<p>具体选择哪种修复方案，这里可以根据业务场景的不同而选择不同的修复方案。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>本文记录的笔者在使用Kotlin协程过程中遇到的<code>for-in</code>崩溃问题，通过伪代码笔者复现了崩溃问题，并分析了问题产生的原因以及给出一些修复方案供选择参考。</p>
+<p>其中最重要的是发现自身的不足，发现自己的不足也是一种进步。</p>
+<p>总之就是：</p>
+<blockquote>
+<p>纸上得来终觉浅，绝知此事要躬行。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Kotlin</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>kotlin</tag>
+        <tag>coroutines</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Kotlin协程的崩溃纪实(二)</title>
+    <url>/2023/04/11/Kotlin/coroutines/01-index-out-of-bounds-crash/</url>
+    <content><![CDATA[<h1 id="使用kotlin协程的崩溃纪实二"><a class="markdownIt-Anchor" href="#使用kotlin协程的崩溃纪实二"></a> 使用Kotlin协程的崩溃纪实(二)</h1>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>由于笔者对Kotlin协程缺乏深刻的理解以及充分的实践，导致在实际工作中使用Kotlin协程时遇到一些崩溃的问题。</p>
+<p>那么本文主要记录遇到的这些崩溃问题，这是其中之二。</p>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>在Kotlin协程中如果使用下标访问集合数据，那么可能会抛出<code>IndexOutOfBoundsException</code>异常导致崩溃。</p>
+<blockquote>
+<p>本文记录的崩溃情况与<a href="https://www.sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/">第一篇</a>中的属于同一种类型，只是触发的代码逻辑和业务逻辑略有不同，所以本文的风格与第一篇雷同。</p>
+</blockquote>
+<h2 id="伪代码"><a class="markdownIt-Anchor" href="#伪代码"></a> 伪代码</h2>
+<p>下面是符合背景中描述的伪代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> ml = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0.</span><span class="number">.10</span>) &#123;</span><br><span class="line">        ml.add(i)</span><br><span class="line">    &#125;</span><br><span class="line">    println(ml)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> run = RunSuspendKt&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> scope = CoroutineScope(EmptyCoroutineContext)</span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程A</span></span><br><span class="line">        <span class="keyword">try</span>	&#123;</span><br><span class="line">            <span class="keyword">val</span> indexOf = ml.indexOfFirst &#123; it == <span class="number">10</span> &#125;</span><br><span class="line">            log(<span class="string">&quot;Element(10) indexOf: <span class="variable">$indexOf</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            suspendWork(<span class="number">1_000L</span>)</span><br><span class="line">            <span class="keyword">val</span> value = ml[indexOf]</span><br><span class="line">            log(<span class="string">&quot;IndexOf(<span class="variable">$indexOf</span>) element: <span class="variable">$value</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            run.resumeWith(<span class="number">1</span>)</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">            run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> await = RunSuspendKt&lt;<span class="built_in">Boolean</span>&gt;()</span><br><span class="line">    await.await(<span class="number">500L</span>)</span><br><span class="line"></span><br><span class="line">    scope.launch &#123;</span><br><span class="line">        <span class="comment">// 协程B</span></span><br><span class="line">        log(<span class="string">&quot;Remove element(10): <span class="subst">$&#123;ml.remove(<span class="number">10</span>)&#125;</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> code = run.await()</span><br><span class="line">    log(<span class="string">&quot;Finish with [<span class="variable">$code</span>]&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">suspend</span> <span class="function"><span class="keyword">fun</span> <span class="title">suspendWork</span><span class="params">(timeout: <span class="type">Long</span>)</span></span> = suspendCoroutine&lt;<span class="built_in">Boolean</span>&gt; &#123; continuation -&gt;</span><br><span class="line">    thread &#123;</span><br><span class="line">        Thread.sleep(timeout)</span><br><span class="line">        continuation.resume(Random.nextBoolean())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> DF = SimpleDateFormat(<span class="string">&quot;HH:mm:ss.SSS&quot;</span>)</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">log</span><span class="params">(any: <span class="type">Any</span>)</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;[<span class="subst">$&#123;DF.format(Date(System.currentTimeMillis()))&#125;</span> <span class="subst">$&#123;Thread.currentThread().name&#125;</span>]: <span class="variable">$any</span>&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的伪代码大致的逻辑如下：</p>
+<ol>
+<li>
+<p>创建一个可变列表<code>ml</code>并添加**[0, 10]**这11条数据，</p>
+</li>
+<li>
+<p>创建一个<code>RunSuspend</code>的实例<code>run</code>，用于主线程等待协程执行完毕，否则主线程退出，协程无法执行完毕，</p>
+</li>
+<li>
+<p>创建一个协程作用域<code>scope，</code>启动一个<strong>协程A</strong>，</p>
+<ol>
+<li>在协程中首先获取<code>Element(10)</code>的下标(<code>indexOf</code>)，</li>
+<li>然后调用<code>suspendWork</code>挂起函数模拟执行耗时任务，</li>
+<li><code>suspendWork</code>挂起函数执行完毕后，再通过第一步获取的下标(<code>indexOf</code>)获取对应的<code>Element</code>，</li>
+<li>协程体执行完毕后或抛出异常时调用<code>run.resumeWith</code>通知主线程协程执行完毕并停止阻塞主线程，</li>
+</ol>
+</li>
+<li>
+<p>再创建一个<code>RunSuspend</code>的实例<code>await</code>，用于阻塞主线程<strong>500毫秒</strong>，然后启动一个新的<strong>协程B</strong>移除<code>ml</code>可变列表中的<code>Element(10)</code>，</p>
+</li>
+<li>
+<p>调用<code>run.await</code>阻塞主线程并等待<strong>协程A</strong>执行完毕。</p>
+</li>
+</ol>
+<p>伪代码执行的期望结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:00:37.575 DefaultDispatcher-worker-1]: Element(10) indexOf: 10</span><br><span class="line">[22:00:38.080 DefaultDispatcher-worker-1]: Remove element(10): true</span><br><span class="line">[22:00:38.581 DefaultDispatcher-worker-1]: IndexOf(10) element: 10</span><br><span class="line">[22:00:38.581 main]: Finish with [1]</span><br></pre></td></tr></table></figure>
+<p>笔者期望伪代码可以正常的执行完毕。</p>
+<p>但是，实际上伪代码执行的结果如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</span><br><span class="line">[22:01:37.814 DefaultDispatcher-worker-1]: Element(10) indexOf: 10</span><br><span class="line">[22:01:38.330 DefaultDispatcher-worker-1]: Remove element(10): true</span><br><span class="line">java.lang.IndexOutOfBoundsException: Index: 10, Size: 10</span><br><span class="line">	at java.util.ArrayList.rangeCheck(ArrayList.java:657)</span><br><span class="line">	at java.util.ArrayList.get(ArrayList.java:433)</span><br><span class="line">	at CoroutinesCrashKt$main$1.invokeSuspend(CoroutinesCrash.kt:31)</span><br><span class="line">	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)</span><br><span class="line">	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:571)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:678)</span><br><span class="line">	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:665)</span><br><span class="line">[22:01:38.830 main]: Finish with [-1]</span><br></pre></td></tr></table></figure>
+<p>执行结果分析：</p>
+<ol>
+<li><strong>协程A</strong>中仅输出了第一步获取到<code>Element(10)</code>下标(<code>indexOf</code>)的日志，</li>
+<li><code>await</code>实例阻塞主线程<strong>500毫秒</strong>后，我们在启动的<strong>协程B</strong>中移除<code>ml</code>可变列表中的<code>Element(10)</code>，并输出日志移除成功：<code>true</code>，</li>
+<li>回到<strong>协程A</strong>，等到协程体中的<code>suspendWork</code>挂起函数执行完毕后，想通过下标(<code>indexOf</code>)获取对应的<code>Element</code>时，抛出异常，</li>
+</ol>
+<h2 id="分析"><a class="markdownIt-Anchor" href="#分析"></a> 分析</h2>
+<p>为什么执行结果会与我们期望的结果不同呢？接下来我们分析下原因。</p>
+<p>首先我们再仔细观察下<strong>协程A</strong>中的代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="code"><pre><span class="line">scope.launch &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">val</span> indexOf = ml.indexOfFirst &#123; it == <span class="number">10</span> &#125;</span><br><span class="line">        log(<span class="string">&quot;Element(10) indexOf: <span class="variable">$indexOf</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        suspendWork(<span class="number">1_000L</span>)</span><br><span class="line">        <span class="keyword">val</span> value = ml[indexOf]</span><br><span class="line">        log(<span class="string">&quot;IndexOf(<span class="variable">$indexOf</span>) element: <span class="variable">$value</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        run.resumeWith(<span class="number">1</span>)</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">        e.printStackTrace()</span><br><span class="line">        run.resumeWith(-<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>按照笔者的想法，<strong>协程A</strong>中协程体的执行逻辑如下：</p>
+<ol>
+<li>协程体是在同一个线程中执行，</li>
+<li>协程体是同步且顺序执行的，</li>
+</ol>
+<p>可以简单理解协程体的执行是线程安全的。</p>
+<h3 id="真的线程安全么"><a class="markdownIt-Anchor" href="#真的线程安全么"></a> 真的线程安全么？</h3>
+<p>针对第一点，目前的<code>scope</code>没有指定运行的线程，那么协程默认是在<code>Default</code>线程池中执行，同时循环体的每次执行都会触发两次线程切换：</p>
+<ol>
+<li>其一是从<code>launch</code>协程体执行的线程切换至<code>suspendWork</code>挂起函数执行的线程，</li>
+<li>其二是<code>suspendWork</code>挂起函数执行完毕后，从<code>suspendWork</code>挂断函数执行线程切换回<code>launch</code>协程体执行的线程，</li>
+</ol>
+<p>而<code>launch</code>协程体执行的线程由<code>Default</code>线程池分配，线程池分配线程存在不固定性，所以协程体在同一个线程中执行不能成立，自然不能称为是线程安全的。</p>
+<h3 id="为什么会有这样的想法呢"><a class="markdownIt-Anchor" href="#为什么会有这样的想法呢"></a> 为什么会有这样的想法呢？</h3>
+<p>正如前言中所说，笔者对协程缺乏深刻的理解以及充分的实践，而协程的一大特点是：使用「同步代码」写出异步程序。</p>
+<p>其实笔者就是被「同步代码」这一表象所“欺骗”，这也是笔者对协程缺乏深刻理解的佐证。</p>
+<p>使用「同步代码」写出异步程序，对程序猿来说这是多么美好的事情，但是如果对协程理解的不够深入，不清楚它背后的逻辑，那么很容易就像笔者一样被它简单的表象所“欺骗”。</p>
+<p>针对第二点，协程的特点是使用「同步代码」写出异步程序，在协程体中调用了挂起函数，那么协程体中的逻辑必然是异步程序，所以第二点也不成立。</p>
+<h3 id="异常原因"><a class="markdownIt-Anchor" href="#异常原因"></a> 异常原因</h3>
+<p>本文记录的崩溃原因比较好分析：<strong>协程A</strong>第一步中获取的下标(<code>idnexOf</code>)，在经过<strong>协程B</strong>移除<code>Element(10)</code>之后就变成了一个过期的下标(<code>indexOf</code>)，等到<strong>协程A</strong>中<code>suspendWork</code>挂起函数执行完毕，想通过过期的下标(<code>indexOf</code>)获取对应的<code>Element</code>时，必然会抛出<code>IndexOutOfBoundsException</code>异常。</p>
+<h3 id="如何修复"><a class="markdownIt-Anchor" href="#如何修复"></a> 如何修复？</h3>
+<p>修复方案有多种，比如：</p>
+<ol>
+<li>在<strong>协程A</strong>第一步获取到下标(<code>indexOf</code>)之后，<code>suspendWork</code>挂起函数之前，通过第一步获取到的下标(<code>indexOf</code>)获取对应的<code>Element</code>，</li>
+<li>在<strong>协程A</strong>中的<code>suspendWork</code>挂起函数执行完毕后，需判断下标(<code>indexOf</code>)是否过期，</li>
+<li>使用加锁的方式，<strong>协程A</strong>操作<code>ml</code>集合时不允许其他协程对<code>ml</code>集合进行更新，</li>
+<li>其他方式，</li>
+</ol>
+<p>具体选择哪种修复方案，这里可以根据业务场景的不同而选择不同的修复方案。</p>
+<h2 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h2>
+<p>本文记录了笔者在使用Kotlin协程过程中遇到的下标过期导致的崩溃问题，通过伪代码笔者复现了崩溃问题，并分析了问题产生的原因以及给出一些修复方案供选择参考。</p>
+<p>本文与<a href="https://www.sunxiaodou.com/2023/04/07/Kotlin/coroutines/00-for-in-crash/">第一篇</a>中记录的情况，笔者都是被协程特点：<strong>使用「同步代码」写出异步程序</strong>所&quot;欺骗&quot;，所以在协程体中调用其他的挂起函数时，挂起函数的前后代码最好不要有关联性，最好保持独立性，否则可能会发生意想不到的情况，归根结底还是笔者对协程缺乏深刻的理解以及充分的实践。</p>
+<p>其中最重要的是发现自身的不足，发现自身的不足也是一种进步。</p>
+<blockquote>
+<p>纸上得来终觉浅，绝知此事要躬行。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Kotlin</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>kotlin</tag>
+        <tag>coroutines</tag>
       </tags>
   </entry>
 </search>
